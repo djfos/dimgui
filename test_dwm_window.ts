@@ -23,6 +23,11 @@ function main() {
     gles: false,
   });
 
+  const result = imgui.glfwInit();
+  if (!result) {
+    throw new Error("imgui glfw init faild");
+  }
+
   imgui.glfwMakeContextCurrent(window.nativeHandle);
   imgui.glfwSwapInterval(1);
   gl.load(getProcAddress);
