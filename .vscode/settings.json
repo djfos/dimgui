@@ -1,0 +1,14 @@
+{
+    "deno.enable": true,
+    "deno.unstable": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/imgui",
+    "files.associations": {
+        "imgui.h": "c",
+        "xstring": "cpp",
+        "gl.h": "c",
+        "cimgui.h": "c",
+        "imgui_impl_opengl3.h": "c",
+        "internal.h": "c"
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}

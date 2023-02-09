@@ -1,0 +1,6 @@
+[submodule "imgui/cimgui"]
+	path = imgui/cimgui
+	url = https://github.com/cimgui/cimgui.git
+[submodule "imgui/build-glfw"]
+	path = imgui/build-glfw
+	url = https://github.com/deno-windowing/build-glfw.git
