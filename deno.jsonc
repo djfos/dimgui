@@ -1,7 +1,8 @@
 {
   "tasks": {
     "build": "deno run --unstable --allow-all build.ts",
-    "test-self": "deno run --unstable --allow-all --allow-ffi test_self_window.ts",
-    "test-dwm": "deno run --unstable --allow-all --allow-ffi test_dwm_window.ts"
+    "gen": "deno run --unstable --allow-all gen_binding.ts",
+    "test-self": "deno run --unstable --allow-all --allow-ffi test/test_self_window.ts",
+    "test-dwm": "deno run --unstable --allow-all --allow-ffi test/test_dwm_window.ts"
   }
 }

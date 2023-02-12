@@ -1,5 +1,5 @@
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
-import { cstr, ffi as imgui } from "./ffi.ts";
+import { cstr, ffi as imgui } from "../src/ffi.ts";
 
 {
   const result = imgui.glfwInit();
@@ -28,19 +28,20 @@ function main() {
   imgui.glfwSwapInterval(1);
   gl.load(getProcAddress);
 
-  const imguiContext = imgui.createContext(null);
-  imgui.SetCurrentContext(imguiContext);
-  imgui.StyleColorsDark(null);
-  imgui.ImplGlfw_InitForOpenGL(window, true);
-  imgui.ImplOpenGL3_Init(cstr("#version 130"));
+  const imguiContext = imgui.igCreateContext(null);
+  imgui.igSetCurrentContext(imguiContext);
+  imgui.igStyleColorsDark(null);
+  imgui.ImGui_ImplGlfw_InitForOpenGL(window, true);
+  imgui.ImGui_ImplOpenGL3_Init(cstr("#version 130"));
 
   while (!imgui.glfwWindowShouldClose(window)) {
-    imgui.ImplOpenGL3_NewFrame();
-    imgui.ImplGlfw_NewFrame();
-    imgui.NewFrame();
-    imgui.ShowDemoWindow(null);
-    imgui.Render();
-    const drawData = imgui.GetDrawData();
+    imgui.ImGui_ImplOpenGL3_NewFrame();
+    imgui.ImGui_ImplGlfw_NewFrame();
+    imgui.igNewFrame();
+    imgui.igShowDemoWindow(null);
+    imgui.igRender();
+
+    const drawData = imgui.igGetDrawData();
 
     gl.Clear(gl.COLOR_BUFFER_BIT);
     imgui.ImGui_ImplOpenGL3_RenderDrawData(drawData);
@@ -48,9 +49,9 @@ function main() {
     imgui.glfwPollEvents();
   }
 
-  imgui.ImplOpenGL3_Shutdown();
-  imgui.ImplGlfw_Shutdown();
-  imgui.destroyContext(imguiContext);
+  imgui.ImGui_ImplOpenGL3_Shutdown();
+  imgui.ImGui_ImplGlfw_Shutdown();
+  imgui.igDestroyContext(imguiContext);
 
   imgui.glfwDestroyWindow(window);
   imgui.glfwTerminate();

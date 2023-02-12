@@ -9,6 +9,10 @@
 # build
 deno task build
 
-# test
-deno task test-self
+# generate cimgui ffi symbols
+deno task gen 
+# test for window created by imgui.dll
+deno task test-self 
+# test for window created by dwm
+deno task test-dwm 
 ```
