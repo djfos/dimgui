@@ -503,46 +503,7 @@ export enum ImGuiKey
     ImGuiMod_Super                  = 1 << 15, // Cmd/Super/Windows
     ImGuiMod_Shortcut               = 1 << 11, // Alias for Ctrl (non-macOS) _or_ Super (macOS).
     ImGuiMod_Mask_                  = 0xF800,  // 5-bits
-
-    // [Internal] Prior to 1.87 we required user to fill io.KeysDown[512] using their own native index + the io.KeyMap[] array.
-    // We are ditching this method but keeping a legacy path for user code doing e.g. IsKeyPressed(MY_NATIVE_KEY_CODE)
-    NamedKey_BEGIN         = 512,
-    NamedKey_END           = COUNT,
-    NamedKey_COUNT         = NamedKey_END - NamedKey_BEGIN,
-
-    // ----------- DIMGUI NOTICE -----------
-    // IMGUI_DISABLE_OBSOLETE_KEYIO seems undefined by default.
-    // and not defined in our build
-
-// #ifdef IMGUI_DISABLE_OBSOLETE_KEYIO
-    // KeysData_SIZE          = NamedKey_COUNT,          // Size of KeysData[]: only hold named keys
-    // KeysData_OFFSET        = NamedKey_BEGIN,          // First key stored in io.KeysData[0]. Accesses to io.KeysData[] must use (key - KeysData_OFFSET).
-// #else
-    KeysData_SIZE          = COUNT,                   // Size of KeysData[]: hold legacy 0..512 keycodes + named keys
-    KeysData_OFFSET        = 0,                                // First key stored in io.KeysData[0]. Accesses to io.KeysData[] must use (key - KeysData_OFFSET).
-// #endif
-
-    // ----------- DIMGUI NOTICE -----------
-    // IMGUI_DISABLE_OBSOLETE_FUNCTIONS seems undefined by default.
-    // and not defined in our build
-
-// #ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-//     ModCtrl = ImGuiMod_Ctrl, ModShift = ImGuiMod_Shift, ModAlt = ImGuiMod_Alt, ModSuper = ImGuiMod_Super, // Renamed in 1.89
-//     KeyPadEnter = KeypadEnter,    // Renamed in 1.87
-// #endif
 }
-
-// #ifndef IMGUI_DISABLE_OBSOLETE_KEYIO
-// // OBSOLETED in 1.88 (from July 2022): ImGuiNavInput and io.NavInputs[].
-// // Official backends between 1.60 and 1.86: will keep working and feed gamepad inputs as long as IMGUI_DISABLE_OBSOLETE_KEYIO is not set.
-// // Custom backends: feed gamepad inputs via io.AddKeyEvent() and ImGuiKey_GamepadXXX enums.
-// enum ImGuiNavInput
-// {
-//     ImGuiNavInput_Activate, ImGuiNavInput_Cancel, ImGuiNavInput_Input, ImGuiNavInput_Menu, ImGuiNavInput_DpadLeft, ImGuiNavInput_DpadRight, ImGuiNavInput_DpadUp, ImGuiNavInput_DpadDown,
-//     ImGuiNavInput_LStickLeft, ImGuiNavInput_LStickRight, ImGuiNavInput_LStickUp, ImGuiNavInput_LStickDown, ImGuiNavInput_FocusPrev, ImGuiNavInput_FocusNext, ImGuiNavInput_TweakSlow, ImGuiNavInput_TweakFast,
-//     ImGuiNavInput_COUNT,
-// }
-// #endif
 
 // Configuration flags stored in io.ConfigFlags. Set by user/application.
 export enum ImGuiConfigFlagBits
@@ -690,10 +651,6 @@ export enum ImGuiButtonFlagBits
     MouseButtonLeft        = 1 << 0,   // React on left mouse button (default)
     MouseButtonRight       = 1 << 1,   // React on right mouse button
     MouseButtonMiddle      = 1 << 2,   // React on center mouse button
-
-    // [Internal]
-    MouseButtonMask_       = MouseButtonLeft | MouseButtonRight | MouseButtonMiddle,
-    MouseButtonDefault_    = MouseButtonLeft,
 }
 
 // Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()
@@ -729,15 +686,6 @@ export enum ImGuiColorEditFlagBits
     // Defaults Options. You can set application defaults using SetColorEditOptions(). The intent is that you probably don't want to
     // override them in most of your calls. Let the user choose via the option menu and/or call SetColorEditOptions() once during startup.
     DefaultOptions_ = Uint8 | DisplayRGB | InputRGB | PickerHueBar,
-
-    // [Internal] Masks
-    DisplayMask_    = DisplayRGB | DisplayHSV | DisplayHex,
-    DataTypeMask_   = Uint8 | Float,
-    PickerMask_     = PickerHueWheel | PickerHueBar,
-    InputMask_      = InputRGB | InputHSV,
-
-    // Obsolete names (will be removed)
-    // RGB = DisplayRGB, HSV = DisplayHSV, HEX = DisplayHex  // [renamed in 1.69]
 }
 
 // Flags for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
@@ -751,11 +699,6 @@ export enum ImGuiSliderFlagBits
     NoRoundToFormat        = 1 << 6,       // Disable rounding underlying value to match precision of the display format string (e.g. %.3f values are rounded to those 3 digits)
     NoInput                = 1 << 7,       // Disable CTRL+Click or Enter key allowing to input text directly into the widget
     InvalidMask_           = 0x7000000F,   // [Internal] We treat using those bits as being potentially a 'float power' argument from the previous API that has got miscast to this enum, and will trigger an assert if needed.
-
-//     // Obsolete names (will be removed)
-// #ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-//     ImGuiSliderFlagBitsClampOnInput = ImGuiSliderFlagBitsAlwaysClamp, // [renamed in 1.79]
-// #endif
 }
 
 // Identify a mouse button.
