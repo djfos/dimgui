@@ -4,18 +4,19 @@ import imguiBackendSymbols from "../symbol/imgui_backend.ts";
 
 const imguiCustomFunctions = {
   LogImDrawData: {
-    name: "LogImDrawData",
     parameters: ["pointer"],
     result: "void",
   },
   ImGuiIOGetConfigFlag: {
-    name: "ImGuiIOGetConfigFlag",
     parameters: ["pointer", "i32"],
     result: "bool",
   },
   ImGuiIOSetConfigFlag: {
-    name: "ImGuiIOSetConfigFlag",
     parameters: ["pointer", "i32", "bool"],
+    result: "void",
+  },
+  dimguiSetErrorCallback: {
+    parameters: ["function"],
     result: "void",
   },
 } as const satisfies Deno.ForeignLibraryInterface;

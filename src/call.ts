@@ -13,7 +13,27 @@ import {
 } from "./type.ts";
 import { ImGuiDir } from "./enum.ts";
 
+// not register error callback by defualt.
+// there are some bug in imgui and only a few error could be reported by this.
 
+// use to limit message repeat
+// const errorMessageMap = new Map<string, number>();
+// const errorMessageMaxRepeat = 10;
+// const errorCallback = new Deno.UnsafeCallback(
+//   {
+//     parameters: ["pointer"],
+//     result: "void",
+//   } as const,
+//   (messagePointer) => {
+//     const message = Deno.UnsafePointerView.getCString(messagePointer);
+//     const repeat = errorMessageMap.get(message) ?? 0;
+//     if (repeat < errorMessageMaxRepeat) {
+//       errorMessageMap.set(message, repeat + 1);
+//       console.error("ImGuiError:", message);
+//     }
+//   },
+// );
+// imgui.dimguiSetErrorCallback(errorCallback.pointer);
 
 //  // Context creation and access
 //   // - Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between contexts.
@@ -305,7 +325,6 @@ export function text(text: string, text_end: string): void {
 //   IMGUI_API void          ProgressBar(float fraction, const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), const char* overlay = NULL);
 //   IMGUI_API void          Bullet();                                                       // draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses
 
-
 /**
  * button
  */
@@ -359,7 +378,6 @@ export function radioButton(label: string, active: boolean): boolean {
 export function bullet(): void {
   imgui.igBullet();
 }
-
 
 //   // Widgets: Images
 //   // - Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples

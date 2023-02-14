@@ -41,7 +41,7 @@ set(IMGUI_SOURCE_FILE
     # ${IMGUI_SOURCE_DIR}/backends/imgui_impl_vulkan.cpp
     ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
     cimgui/cimgui.cpp
-    log.cpp
+    dim_config.cpp
 )
 
 add_library(imgui SHARED ${IMGUI_SOURCE_FILE})
@@ -56,6 +56,9 @@ if(WIN32)
     set(IMGUI_IMPL_API "extern \"C\" __declspec(dllexport)")
     target_compile_definitions(imgui PUBLIC IMGUI_IMPL_API=${IMGUI_IMPL_API})
 endif()
+
+target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(imgui PUBLIC IMGUI_USER_CONFIG=\"dim_config.h\")
 
 # add_executable(test_glfw_opengl3 test/glfw_opengl3.cpp)
 # target_include_directories(test_glfw_opengl3 PUBLIC cimgui)

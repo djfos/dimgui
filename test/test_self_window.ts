@@ -1,5 +1,5 @@
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
-import { cstr, ffi as imgui } from "../src/ffi.ts";
+import { cstring, ffi as imgui } from "../src/ffi.ts";
 
 {
   const result = imgui.glfwInit();
@@ -9,14 +9,14 @@ import { cstr, ffi as imgui } from "../src/ffi.ts";
 }
 
 function getProcAddress(name: string) {
-  return imgui.glfwGetProcAddress(cstr(name));
+  return imgui.glfwGetProcAddress(cstring(name));
 }
 
 function main() {
   const window = imgui.glfwCreateWindow(
     800,
     600,
-    cstr("DwmWindow"),
+    cstring("DwmWindow"),
     null,
     null,
   );
@@ -32,7 +32,7 @@ function main() {
   imgui.igSetCurrentContext(imguiContext);
   imgui.igStyleColorsDark(null);
   imgui.ImGui_ImplGlfw_InitForOpenGL(window, true);
-  imgui.ImGui_ImplOpenGL3_Init(cstr("#version 130"));
+  imgui.ImGui_ImplOpenGL3_Init(cstring("#version 130"));
 
   while (!imgui.glfwWindowShouldClose(window)) {
     imgui.ImGui_ImplOpenGL3_NewFrame();

@@ -1,9 +1,23 @@
+#include "./dim_config.h"
 #include "imgui.h"
 #include "stdio.h"
 
-#define LOG_EXPORT extern "C" __declspec(dllexport)
+static DImGuiReportUserErrorCallback errorCallback = nullptr;
 
-LOG_EXPORT void LogImDrawData(ImDrawData *drawData)
+void dimguiSetErrorCallback(DImGuiReportUserErrorCallback callback)
+{
+    errorCallback = callback;
+}
+
+void dimguiReportcUserError(const char *message)
+{
+    if (errorCallback != nullptr)
+    {
+        errorCallback(message);
+    }
+}
+
+DIMGUI_EXPORT void LogImDrawData(ImDrawData *drawData)
 {
     if (drawData == nullptr)
     {
@@ -17,7 +31,7 @@ LOG_EXPORT void LogImDrawData(ImDrawData *drawData)
     printf_s("DisplayPos: [%f,%f]\n", drawData->DisplayPos.x, drawData->DisplayPos.y);
 }
 
-LOG_EXPORT bool ImGuiIOGetConfigFlag(ImGuiContext *context, int bitpos)
+DIMGUI_EXPORT bool ImGuiIOGetConfigFlag(ImGuiContext *context, int bitpos)
 {
     if (bitpos < 0 || bitpos > 31)
         return false;
@@ -26,7 +40,7 @@ LOG_EXPORT bool ImGuiIOGetConfigFlag(ImGuiContext *context, int bitpos)
     return io.ConfigFlags & 1 << bitpos;
 }
 
-LOG_EXPORT void ImGuiIOSetConfigFlag(ImGuiContext *context, int bitpos, bool value)
+DIMGUI_EXPORT void ImGuiIOSetConfigFlag(ImGuiContext *context, int bitpos, bool value)
 {
     if (bitpos < 0 || bitpos > 31)
         return;
@@ -42,6 +56,3 @@ LOG_EXPORT void ImGuiIOSetConfigFlag(ImGuiContext *context, int bitpos, bool val
         io.ConfigFlags &= ~mask;
     }
 }
-
-#ifdef GLFW_DLL
-#endif
