@@ -32,6 +32,6 @@ const lib = Deno.dlopen(
 
 export const ffi = lib.symbols;
 
-export function cstr(str: string) {
+export function cstring(str: string) {
   return new TextEncoder().encode(str + "\0");
 }
