@@ -22,7 +22,7 @@ const imguiCustomFunctions = {
 } as const satisfies Deno.ForeignLibraryInterface;
 
 const lib = Deno.dlopen(
-  "D:/dev/deno-imgui/imgui/build/bin/imgui.dll",
+  "./imgui/build/bin/imgui.dll",
   {
     ...cimguiSymbols,
     ...glfwSymbols,
