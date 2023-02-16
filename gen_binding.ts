@@ -1,4 +1,7 @@
-import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import {
+  assert,
+  unreachable,
+} from "https://deno.land/std@0.177.0/testing/asserts.ts";
 
 const apiExport = "CIMGUI_API";
 const C_TYPES = {
@@ -21,6 +24,7 @@ const C_TYPES = {
   "bool": "boolean",
 
   "char*": "string",
+  "void*": "ArrayBuffer",
   // "ImGuiCol": "number",
   // "ImGuiCond": "number",
   // "ImGuiDataType": "number",
@@ -67,6 +71,11 @@ const C_TYPES_FFI = {
 
   "bool*": "buffer",
   "char*": "buffer",
+  "float*": "buffer",
+  "int*": "buffer",
+  "void*": "buffer",
+  "double*": "buffer",
+  "ImVec2*": "buffer",
 
   "ImGuiCol": "i32",
   "ImGuiCond": "i32",
@@ -124,7 +133,7 @@ const igonreFunctions = [
   "igSetNavID",
 ];
 
-export function typeToJS(ty: string, name = ""): string {
+export function typeToJS(ty: string): string {
   if (ty in C_TYPES) {
     return Reflect.get(C_TYPES, ty) as string;
   }
@@ -146,14 +155,14 @@ export function typeToJS(ty: string, name = ""): string {
   return ty;
 }
 
-export function typeToFFI(type: string, name = ""): string {
+export function typeToFFI(type: string): string {
   if (type in C_TYPES_FFI) {
     return Reflect.get(C_TYPES_FFI, type) as string;
   }
   if (type.includes("*")) {
     return "pointer";
   }
-  if (name.includes("[")) {
+  if (type.includes("[")) {
     return "buffer";
   }
   if (type.includes("Flags")) {
@@ -249,6 +258,14 @@ function lowerCaseFirstLetter(s: string): string {
 }
 
 function parseParamter(parameter: string) {
+  const arrayPattern = /(?<type>([\w\*]+ +)+)(?<name>\w+)\[\d*\]/;
+  const match = parameter.trim().match(arrayPattern);
+  if (match) {
+    return {
+      name: match.groups!.name.trim(),
+      type: match.groups!.type.trim() + "[]",
+    };
+  }
   // sometype name
   const speaceIndex = parameter.lastIndexOf(" ");
   // assert(speaceIndex > -1, `not find space in ${p}`);
@@ -273,7 +290,7 @@ function makeSymbol(
   for (const parameter of parameters_) {
     const parameterInfo = parseParamter(parameter);
     if (parameterInfo) {
-      const type = typeToFFI(parameterInfo.type, parameterInfo.name);
+      const type = typeToFFI(parameterInfo.type);
       paramterFFITypes.push(type);
     } else {
       // paramterFFITypes.push("void");
@@ -301,21 +318,63 @@ interface Paramter {
 
 function transformParamter(type: string, name: string): Paramter {
   const cleanName = name.startsWith("p_") ? name.substring(2) : name;
-  if (type == "bool*") {
+
+  if (type.includes("Callback")) {
     return {
       name: cleanName,
-      type: "CBool | null = null",
-      asArgument: `${cleanName} ? ${cleanName}[BUFFER] : null`,
+      type: type,
+      asArgument: `${cleanName}.pointer`,
     };
-  } else if (type == "char*") {
-    return {
-      name: cleanName,
-      type: "string",
-      asArgument: `cstring(${cleanName})`,
-    };
-  } else {
-    const jsType = typeToJS(type, name);
-    return { name: cleanName, type: jsType };
+  }
+
+  switch (type) {
+    case "bool*": {
+      return {
+        name: cleanName,
+        type: "CBool | null = null",
+        asArgument: `${cleanName} ? ${cleanName}[BUFFER] : null`,
+      };
+    }
+    case "char*": {
+      return {
+        name: cleanName,
+        type: "string",
+        asArgument: `cString(${cleanName})`,
+      };
+    }
+    case "float*":
+    case "float[]": {
+      return {
+        name: cleanName,
+        type: "Float32Array",
+      };
+    }
+    case "int*":
+    case "int[]": {
+      return {
+        name: cleanName,
+        type: "Int32Array",
+      };
+    }
+    case "double*":
+    case "double[]": {
+      return {
+        name: cleanName,
+        type: "Float64Array",
+      };
+    }
+    case "ImVec2":
+    case "ImVec4": {
+      return {
+        name: cleanName,
+        type: type,
+        asArgument: `${cleanName}[BUFFER]`,
+      };
+    }
+    default: {
+      const jsType = typeToJS(type);
+      return { name: cleanName, type: jsType };
+    }
   }
 }
 
@@ -336,19 +395,8 @@ function makeDraft(
     }
 
     const { type, name } = parameterInfo;
-    const tranformedParameter = transformParamter(type,name)
+    const tranformedParameter = transformParamter(type, name);
     parameterInofs.push(tranformedParameter);
-    // const claenName = name.startsWith("p_") ? name.substring(2) : name;
-    // if (type == "bool*") {
-    //   parameterInofs.push({
-    //     name: claenName,
-    //     type: "CBool | null = null",
-    //     asArgument: `${claenName} ? ${claenName}[BUFFER] : null`,
-    //   });
-    // } else {
-    //   const jsType = typeToJS(type, name);
-    //   parameterInofs.push({ name: claenName, type: jsType });
-    // }
   }
 
   const outerParamters = parameterInofs.map((info) =>
@@ -357,7 +405,7 @@ function makeDraft(
   const innerArguments = parameterInofs.map((info) =>
     info.asArgument ?? info.name
   ).join(", ");
-  const returnText = outerParamters.length === 0 ? "" : "return";
+  const returnText = resultJSType == "void" ? "" : "return";
   const outerFunctionName = lowerCaseFirstLetter(
     functionName.replace("ig", ""),
   );

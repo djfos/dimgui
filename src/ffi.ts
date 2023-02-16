@@ -33,6 +33,10 @@ const lib = Deno.dlopen(
 
 export const ffi = lib.symbols;
 
-export function cstring(str: string) {
+export function cString(str: string) {
   return new TextEncoder().encode(str + "\0");
+}
+
+export function jsString(cstring: Deno.PointerValue): string {
+  return new Deno.UnsafePointerView(cstring).getCString();
 }
