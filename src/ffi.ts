@@ -1,12 +1,8 @@
-import { cachedir } from "https://deno.land/x/cache@0.2.13/directories.ts";
-import { join } from "https://deno.land/std@0.177.0/path/mod.ts";
-
-import { getOutFileName } from "../script/convention.ts";
+import { getOutFileName, getTemptLibraryPath } from "../script/convention.ts";
 import cimguiSymbols from "../symbol/cimgui.ts";
 import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
-
-export const DIMGUI_VERSION = "0.1.0";
+import { DIMGUI_VERSION } from "../script/version.ts";
 
 const imguiCustomFunctions = {
   LogImDrawData: {
@@ -28,16 +24,7 @@ const imguiCustomFunctions = {
 } as const satisfies Deno.ForeignLibraryInterface;
 
 async function prepareLibraryFile(): Promise<string> {
-  const suffix = Deno.build.os === "windows"
-    ? "dll"
-    : Deno.build.os === "darwin"
-    ? "dylib"
-    : "so";
-  const tmp = join(
-    cachedir(),
-    `imgui${DIMGUI_VERSION.replaceAll(".", "-")}.${suffix}`,
-  );
-
+  const tmp = getTemptLibraryPath(DIMGUI_VERSION);
   try {
     Deno.statSync(tmp);
   } catch (error) {

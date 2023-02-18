@@ -1,7 +1,17 @@
 import { join } from "https://deno.land/std@0.177.0/path/mod.ts";
-import { getBinFileName, getOutFileName } from "./convention.ts";
+import {
+  getBinFileName,
+  getOutFileName,
+  getTemptLibraryPath,
+} from "./convention.ts";
+import { DIMGUI_VERSION } from "./version.ts";
+
+function print(message: string) {
+  console.log(`%c${message}`, "color: #888");
+}
+
 const $ = (cmd: string, ...args: string[]) => {
-  console.log(`%c$ ${cmd} ${args.join(" ")}`, "color: #888");
+  print(`$ ${cmd} ${args.join(" ")}`);
   return new Deno.Command(cmd, {
     args,
     stdin: "null",
@@ -9,23 +19,6 @@ const $ = (cmd: string, ...args: string[]) => {
     stderr: "inherit",
   }).outputSync();
 };
-
-// try {
-//   Deno.removeSync("./imgui/build", { recursive: true });
-// } catch (_e) {
-//   // ignore
-// }
-
-const cmakeArgs = [
-  "-S",
-  "./imgui",
-  "-B",
-  "./imgui/build",
-];
-
-$("cmake", ...cmakeArgs);
-
-$("cmake", "--build", "./imgui/build", "--config", "Release");
 
 function embed(): void {
   const binPath = "./imgui/build/bin";
@@ -45,7 +38,31 @@ function embed(): void {
   ];
 
   Deno.writeTextFileSync(outFile, outSource.join("\n"));
-  console.log(`%cWrote ${outFile}`, "color: #888");
+  print(`Wrote ${outFile}`);
 }
 
+function removeCachedFile() {
+  const filePath = getTemptLibraryPath(DIMGUI_VERSION);
+  try {
+    Deno.removeSync(filePath);
+    print(`Remove cache file ${filePath}`);
+  } catch (error) {
+    if (error instanceof Deno.errors.NotFound) {
+      print(`No cache file found, clear.`);
+    }
+  }
+}
+
+// commands
+const cmakeArgs = [
+  "-S",
+  "./imgui",
+  "-B",
+  "./imgui/build",
+];
+
+$("cmake", ...cmakeArgs);
+$("cmake", "--build", "./imgui/build", "--config", "Release");
+
 embed();
+removeCachedFile();
