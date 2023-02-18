@@ -375,21 +375,17 @@ export function getWindowDpiScale(): number {
 /**
  * get current window position in screen space
  * (useful if you want to do your own drawing via the DrawList API).
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowPos(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowPos(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowPos(vec2[BUFFER]);
   return vec2;
 }
 /**
  * get current window size.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowSize(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowSize(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowSize(vec2[BUFFER]);
   return vec2;
 }
@@ -572,43 +568,35 @@ export function setWindowFocus(name?: string): void {
 
 /**
  * == GetContentRegionMax() - GetCursorPos().
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getContentRegionAvail(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getContentRegionAvail(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetContentRegionAvail(vec2[BUFFER]);
   return vec2;
 }
 /**
  * current content boundaries (typically window boundaries
  * including scrolling, or current column boundaries), in windows coordinates.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getContentRegionMax(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getContentRegionMax(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetContentRegionMax(vec2[BUFFER]);
   return vec2;
 }
 /**
  * content boundaries min for the full window (roughly (0,0)-Scroll), in window coordinates.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowContentRegionMin(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowContentRegionMin(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowContentRegionMin(vec2[BUFFER]);
   return vec2;
 }
 /**
  * content boundaries max for the full window (roughly (0,0)+Size-Scroll)
  * where Size can be overridden with SetNextWindowContentSize(), in window coordinates.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowContentRegionMax(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowContentRegionMax(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowContentRegionMax(vec2[BUFFER]);
   return vec2;
 }
@@ -835,12 +823,8 @@ export function getFontSize(): number {
   return imgui.igGetFontSize();
 }
 
-/**
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
- */
-export function getFontTexUvWhitePixel(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getFontTexUvWhitePixel(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetFontTexUvWhitePixel(vec2[BUFFER]);
   return vec2;
 }
@@ -854,13 +838,9 @@ export function getColorU32_U32(col: ImU32): ImU32 {
   return imgui.igGetColorU32_U32(col);
 }
 
-/**
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
- */
-// export function getStyleColorVec4(idx: ImGuiCol, out?: ImVec4): ImVec4 {
+// export function getStyleColorVec4(idx: ImGuiCol): ImVec4 {
 // TODO editable ImVec4
-//   const vec4 = out ?? new ImVec4();
+//   const vec4 = new ImVec4();
 //   return imgui.igGetStyleColorVec4(idx);
 //   return vec4;
 // }
