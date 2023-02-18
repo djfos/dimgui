@@ -68,6 +68,7 @@ const C_TYPES_FFI = {
   "int": "i32",
   "unsigned int": "u32",
   "unsigned char": "u8",
+  "bool": "bool",
 
   "bool*": "buffer",
   "char*": "buffer",
@@ -76,6 +77,8 @@ const C_TYPES_FFI = {
   "void*": "buffer",
   "double*": "buffer",
   "ImVec2*": "buffer",
+  "ImVec4*": "buffer",
+  "ImRect*": "buffer",
 
   "ImGuiCol": "i32",
   "ImGuiCond": "i32",
@@ -102,9 +105,6 @@ const C_TYPES_FFI = {
   "ImWchar": "u16",
   "ImGuiKey": "i32",
   "ImGuiKeyChord": "i32",
-  "ImVec2": "buffer",
-  "ImVec4": "buffer",
-  "ImRect": "buffer",
   "ImGuiAxis": "i32",
   "ImGuiPlotType": "i32",
   // usize
@@ -157,20 +157,32 @@ export function typeToJS(ty: string): string {
 
 export function typeToFFI(type: string): string {
   if (type in C_TYPES_FFI) {
-    return Reflect.get(C_TYPES_FFI, type) as string;
+    return quote(Reflect.get(C_TYPES_FFI, type) as string);
   }
   if (type.includes("*")) {
-    return "pointer";
+    return quote("pointer");
   }
   if (type.includes("[")) {
-    return "buffer";
+    return quote("buffer");
   }
   if (type.includes("Flags")) {
-    return "i32";
+    return quote("i32");
   }
   if (type.includes("Callback")) {
-    return "function";
+    return quote("function");
   }
+
+  // pass struct by value
+  // details reference to https://github.com/denoland/deno/pull/15060
+  switch (type) {
+    case "ImVec2":
+      return "{struct:ImVec2}";
+    case "ImVec4":
+      return "{struct:ImVec4}";
+    case "ImRect":
+      return "{struct:ImRect}";
+  }
+
   return type;
 }
 
@@ -237,6 +249,10 @@ function writeSymboleFile(lines: string[]) {
   const outFile = "symbol/cimgui.ts";
   const encoder = new TextEncoder();
   const source = [
+    "// deno-fmt-ignore-file",
+    `const ImVec2 = ["f32","f32"] as const;`,
+    `const ImVec4 = ["f32","f32","f32","f32"] as const;`,
+    `const ImRect = ["f32","f32","f32","f32"] as const;`,
     "const cimguiSymbols = {",
     ...shift(lines),
     // "} as const;",
@@ -299,9 +315,9 @@ function makeSymbol(
 
   const lines = [
     `// signature: ${quote(parameters)},`,
-    `parameters: [${paramterFFITypes.map(quote).join(",")}],`,
+    `parameters: [${paramterFFITypes.join(",")}],`,
     `// resultType: ${quote(resultType)},`,
-    `result: ${quote(resultFFIType)},`,
+    `result: ${resultFFIType},`,
   ];
   return [
     `${functionName}:{`,

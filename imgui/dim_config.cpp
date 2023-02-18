@@ -31,6 +31,11 @@ DIMGUI_EXPORT void LogImDrawData(ImDrawData *drawData)
     printf_s("DisplayPos: [%f,%f]\n", drawData->DisplayPos.x, drawData->DisplayPos.y);
 }
 
+DIMGUI_EXPORT void DImGuiPrintImVec2(const ImVec2 vec)
+{
+    printf_s("vec2 [%.3f ,%.3f]\n", vec.x, vec.y);
+}
+
 DIMGUI_EXPORT bool ImGuiIOGetConfigFlag(ImGuiContext *context, int bitpos)
 {
     if (bitpos < 0 || bitpos > 31)

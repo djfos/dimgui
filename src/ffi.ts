@@ -21,6 +21,10 @@ const imguiCustomFunctions = {
     parameters: ["function"],
     result: "void",
   },
+  DImGuiPrintImVec2: {
+    parameters: [{ struct: ["f32", "f32"] }],
+    result: "void",
+  },
 } as const satisfies Deno.ForeignLibraryInterface;
 
 async function prepareLibraryFile(): Promise<string> {
@@ -53,6 +57,9 @@ const library = await loadLibrary();
 export const ffi = library.symbols;
 
 export function cString(str: string) {
+  // if (str.length === 0) {
+  //   return null;
+  // }
   return new TextEncoder().encode(str + "\0");
 }
 
