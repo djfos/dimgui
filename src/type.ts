@@ -1,3 +1,5 @@
+import { ffi as imgui } from "./ffi.ts";
+
 export const BUFFER = Symbol("vkStructBuffer");
 export const DATAVIEW = Symbol("vkStructDataView");
 export const LE =
@@ -113,7 +115,20 @@ export type ImGuiContext = Deno.PointerValue;
 /**
  * Main configuration and I/O between your application and ImGui
  */
-export type ImGuiIO = Deno.PointerValue;
+export class ImGuiIO {
+  #cPointer: Deno.PointerValue;
+
+  constructor(imGuiIOPointer: Deno.PointerValue) {
+    this.#cPointer = imGuiIOPointer;
+  }
+
+  get ConfigFlags(): number {
+    return imgui.DImGuiIOGetConfigFlags(this.#cPointer);
+  }
+  set ConfigFlags(value: number) {
+    imgui.DImGuiIOSetConfigFlags(this.#cPointer, value);
+  }
+}
 /**
  * Shared state of InputText() when using
  * custom ImGuiInputTextCallback (rare/advanced use)

@@ -17,7 +17,7 @@ import {
   type ImGuiID,
   type ImGuiInputTextCallback,
   type ImGuiInputTextFlags,
-  type ImGuiIO,
+  ImGuiIO,
   type ImGuiPayload,
   type ImGuiPopupFlags,
   type ImGuiSelectableFlags,
@@ -119,7 +119,7 @@ export function setCurrentContext(context: ImGuiContext): void {
  * various configuration options/flags)
  */
 export function getIO(): ImGuiIO {
-  return imgui.igGetIO();
+  return new ImGuiIO(imgui.igGetIO());
 }
 /**
  * access the Style structure (colors, sizes).
@@ -375,21 +375,17 @@ export function getWindowDpiScale(): number {
 /**
  * get current window position in screen space
  * (useful if you want to do your own drawing via the DrawList API).
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowPos(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowPos(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowPos(vec2[BUFFER]);
   return vec2;
 }
 /**
  * get current window size.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowSize(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowSize(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowSize(vec2[BUFFER]);
   return vec2;
 }
@@ -572,43 +568,35 @@ export function setWindowFocus(name?: string): void {
 
 /**
  * == GetContentRegionMax() - GetCursorPos().
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getContentRegionAvail(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getContentRegionAvail(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetContentRegionAvail(vec2[BUFFER]);
   return vec2;
 }
 /**
  * current content boundaries (typically window boundaries
  * including scrolling, or current column boundaries), in windows coordinates.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getContentRegionMax(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getContentRegionMax(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetContentRegionMax(vec2[BUFFER]);
   return vec2;
 }
 /**
  * content boundaries min for the full window (roughly (0,0)-Scroll), in window coordinates.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowContentRegionMin(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowContentRegionMin(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowContentRegionMin(vec2[BUFFER]);
   return vec2;
 }
 /**
  * content boundaries max for the full window (roughly (0,0)+Size-Scroll)
  * where Size can be overridden with SetNextWindowContentSize(), in window coordinates.
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
  */
-export function getWindowContentRegionMax(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getWindowContentRegionMax(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetWindowContentRegionMax(vec2[BUFFER]);
   return vec2;
 }
@@ -835,12 +823,8 @@ export function getFontSize(): number {
   return imgui.igGetFontSize();
 }
 
-/**
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
- */
-export function getFontTexUvWhitePixel(out?: ImVec2): ImVec2 {
-  const vec2 = out ?? new ImVec2();
+export function getFontTexUvWhitePixel(): ImVec2 {
+  const vec2 = new ImVec2();
   imgui.igGetFontTexUvWhitePixel(vec2[BUFFER]);
   return vec2;
 }
@@ -854,13 +838,9 @@ export function getColorU32_U32(col: ImU32): ImU32 {
   return imgui.igGetColorU32_U32(col);
 }
 
-/**
- * fill `out` if it is presented and return it.
- * return a created `ImVec2` otherwize.
- */
-// export function getStyleColorVec4(idx: ImGuiCol, out?: ImVec4): ImVec4 {
+// export function getStyleColorVec4(idx: ImGuiCol): ImVec4 {
 // TODO editable ImVec4
-//   const vec4 = out ?? new ImVec4();
+//   const vec4 = new ImVec4();
 //   return imgui.igGetStyleColorVec4(idx);
 //   return vec4;
 // }
@@ -1266,12 +1246,13 @@ export function imageButton(
 export function dragFloat(
   label: string,
   v: Float32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igDragFloat(
     cString(label),
     v,
@@ -1285,12 +1266,13 @@ export function dragFloat(
 export function dragFloat2(
   label: string,
   v: Float32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igDragFloat2(
     cString(label),
     v,
@@ -1304,12 +1286,13 @@ export function dragFloat2(
 export function dragFloat3(
   label: string,
   v: Float32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igDragFloat3(
     cString(label),
     v,
@@ -1323,12 +1306,13 @@ export function dragFloat3(
 export function dragFloat4(
   label: string,
   v: Float32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igDragFloat4(
     cString(label),
     v,
@@ -1343,13 +1327,15 @@ export function dragFloatRange2(
   label: string,
   v_current_min: Float32Array,
   v_current_max: Float32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  format_max: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%.3f",
+  format_max: string = "",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v_current_min.length >= 1);
+  assert(v_current_max.length >= 1);
   return imgui.igDragFloatRange2(
     cString(label),
     v_current_min,
@@ -1365,12 +1351,13 @@ export function dragFloatRange2(
 export function dragInt(
   label: string,
   v: Int32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igDragInt(
     cString(label),
     v,
@@ -1384,12 +1371,13 @@ export function dragInt(
 export function dragInt2(
   label: string,
   v: Int32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igDragInt2(
     cString(label),
     v,
@@ -1403,12 +1391,13 @@ export function dragInt2(
 export function dragInt3(
   label: string,
   v: Int32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igDragInt3(
     cString(label),
     v,
@@ -1422,12 +1411,13 @@ export function dragInt3(
 export function dragInt4(
   label: string,
   v: Int32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igDragInt4(
     cString(label),
     v,
@@ -1442,13 +1432,15 @@ export function dragIntRange2(
   label: string,
   v_current_min: Int32Array,
   v_current_max: Int32Array,
-  v_speed: number,
-  v_min: number,
-  v_max: number,
-  format: string,
-  format_max: string,
-  flags: ImGuiSliderFlags,
+  v_speed: number = 1.0,
+  v_min: number = 0,
+  v_max: number = 0,
+  format: string = "%d",
+  format_max: string = "",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v_current_min.length >= 1);
+  assert(v_current_max.length >= 1);
   return imgui.igDragIntRange2(
     cString(label),
     v_current_min,
@@ -1458,50 +1450,6 @@ export function dragIntRange2(
     v_max,
     cString(format),
     cString(format_max),
-    flags,
-  );
-}
-export function dragScalar(
-  label: string,
-  data_type: ImGuiDataType,
-  data: ArrayBuffer,
-  v_speed: number,
-  min: ArrayBuffer,
-  max: ArrayBuffer,
-  format: string,
-  flags: ImGuiSliderFlags,
-): boolean {
-  return imgui.igDragScalar(
-    cString(label),
-    data_type,
-    data,
-    v_speed,
-    min,
-    max,
-    cString(format),
-    flags,
-  );
-}
-export function dragScalarN(
-  label: string,
-  data_type: ImGuiDataType,
-  data: ArrayBuffer,
-  components: number,
-  v_speed: number,
-  min: ArrayBuffer,
-  max: ArrayBuffer,
-  format: string,
-  flags: ImGuiSliderFlags,
-): boolean {
-  return imgui.igDragScalarN(
-    cString(label),
-    data_type,
-    data,
-    components,
-    v_speed,
-    min,
-    max,
-    cString(format),
     flags,
   );
 }
@@ -1532,9 +1480,10 @@ export function sliderFloat(
   v: Float32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igSliderFloat(
     cString(label),
     v,
@@ -1549,9 +1498,10 @@ export function sliderFloat2(
   v: Float32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igSliderFloat2(
     cString(label),
     v,
@@ -1566,9 +1516,10 @@ export function sliderFloat3(
   v: Float32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igSliderFloat3(
     cString(label),
     v,
@@ -1583,9 +1534,10 @@ export function sliderFloat4(
   v: Float32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igSliderFloat4(
     cString(label),
     v,
@@ -1598,11 +1550,12 @@ export function sliderFloat4(
 export function sliderAngle(
   label: string,
   v_rad: Float32Array,
-  v_degrees_min: number,
-  v_degrees_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  v_degrees_min: number = -360.0,
+  v_degrees_max: number = 360.0,
+  format: string = "%.0f deg",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v_rad.length >= 1);
   return imgui.igSliderAngle(
     cString(label),
     v_rad,
@@ -1617,9 +1570,10 @@ export function sliderInt(
   v: Int32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igSliderInt(
     cString(label),
     v,
@@ -1634,9 +1588,10 @@ export function sliderInt2(
   v: Int32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igSliderInt2(
     cString(label),
     v,
@@ -1651,9 +1606,10 @@ export function sliderInt3(
   v: Int32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igSliderInt3(
     cString(label),
     v,
@@ -1668,9 +1624,10 @@ export function sliderInt4(
   v: Int32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igSliderInt4(
     cString(label),
     v,
@@ -1680,55 +1637,19 @@ export function sliderInt4(
     flags,
   );
 }
-export function sliderScalar(
-  label: string,
-  data_type: ImGuiDataType,
-  data: ArrayBuffer,
-  min: ArrayBuffer,
-  max: ArrayBuffer,
-  format: string,
-  flags: ImGuiSliderFlags,
-): boolean {
-  return imgui.igSliderScalar(
-    cString(label),
-    data_type,
-    data,
-    min,
-    max,
-    cString(format),
-    flags,
-  );
-}
-export function sliderScalarN(
-  label: string,
-  data_type: ImGuiDataType,
-  data: ArrayBuffer,
-  components: number,
-  min: ArrayBuffer,
-  max: ArrayBuffer,
-  format: string,
-  flags: ImGuiSliderFlags,
-): boolean {
-  return imgui.igSliderScalarN(
-    cString(label),
-    data_type,
-    data,
-    components,
-    min,
-    max,
-    cString(format),
-    flags,
-  );
-}
+/**
+ * vertical silder
+ */
 export function vSliderFloat(
   label: string,
   size: ImVec2,
   v: Float32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%.3f",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igVSliderFloat(
     cString(label),
     size[BUFFER],
@@ -1739,42 +1660,25 @@ export function vSliderFloat(
     flags,
   );
 }
+/**
+ * vertical silder
+ */
 export function vSliderInt(
   label: string,
   size: ImVec2,
   v: Int32Array,
   v_min: number,
   v_max: number,
-  format: string,
-  flags: ImGuiSliderFlags,
+  format: string = "%d",
+  flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igVSliderInt(
     cString(label),
     size[BUFFER],
     v,
     v_min,
     v_max,
-    cString(format),
-    flags,
-  );
-}
-export function vSliderScalar(
-  label: string,
-  size: ImVec2,
-  data_type: ImGuiDataType,
-  data: ArrayBuffer,
-  min: ArrayBuffer,
-  max: ArrayBuffer,
-  format: string,
-  flags: ImGuiSliderFlags,
-): boolean {
-  return imgui.igVSliderScalar(
-    cString(label),
-    size[BUFFER],
-    data_type,
-    data,
-    min,
-    max,
     cString(format),
     flags,
   );
@@ -3161,4 +3065,9 @@ export function implGlfwNewFrame(): void {
 }
 export function implOpenGL3RenderDrawData(drawData: ImDrawData): void {
   imgui.ImGui_ImplOpenGL3_RenderDrawData(drawData);
+}
+
+// helper
+export function printImVec2(vec2: ImVec2): void {
+  imgui.DImGuiPrintImVec2(vec2[BUFFER]);
 }

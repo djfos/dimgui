@@ -4,21 +4,25 @@ import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
 import { DIMGUI_VERSION } from "../script/version.ts";
 
-const imguiCustomFunctions = {
+const dImGuiCustomFunctions = {
   LogImDrawData: {
     parameters: ["pointer"],
     result: "void",
   },
-  ImGuiIOGetConfigFlag: {
-    parameters: ["pointer", "i32"],
-    result: "bool",
+  DImGuiIOGetConfigFlags: {
+    parameters: ["pointer"],
+    result: "i32",
   },
-  ImGuiIOSetConfigFlag: {
-    parameters: ["pointer", "i32", "bool"],
+  DImGuiIOSetConfigFlags: {
+    parameters: ["pointer", "i32"],
     result: "void",
   },
   dimguiSetErrorCallback: {
     parameters: ["function"],
+    result: "void",
+  },
+  DImGuiPrintImVec2: {
+    parameters: [{ struct: ["f32", "f32"] }],
     result: "void",
   },
 } as const satisfies Deno.ForeignLibraryInterface;
@@ -44,7 +48,7 @@ async function loadLibrary() {
       ...cimguiSymbols,
       ...glfwSymbols,
       ...imguiBackendSymbols,
-      ...imguiCustomFunctions,
+      ...dImGuiCustomFunctions,
     } as const,
   );
 }
@@ -53,6 +57,9 @@ const library = await loadLibrary();
 export const ffi = library.symbols;
 
 export function cString(str: string) {
+  if (str.length === 0) {
+    return null;
+  }
   return new TextEncoder().encode(str + "\0");
 }
 
