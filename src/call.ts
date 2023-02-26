@@ -17,7 +17,7 @@ import {
   type ImGuiID,
   type ImGuiInputTextCallback,
   type ImGuiInputTextFlags,
-  type ImGuiIO,
+  ImGuiIO,
   type ImGuiPayload,
   type ImGuiPopupFlags,
   type ImGuiSelectableFlags,
@@ -119,7 +119,7 @@ export function setCurrentContext(context: ImGuiContext): void {
  * various configuration options/flags)
  */
 export function getIO(): ImGuiIO {
-  return imgui.igGetIO();
+  return new ImGuiIO(imgui.igGetIO());
 }
 /**
  * access the Style structure (colors, sizes).

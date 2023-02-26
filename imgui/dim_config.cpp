@@ -36,28 +36,14 @@ DIMGUI_EXPORT void DImGuiPrintImVec2(const ImVec2 vec)
     printf_s("vec2 [%.3f ,%.3f]\n", vec.x, vec.y);
 }
 
-DIMGUI_EXPORT bool ImGuiIOGetConfigFlag(ImGuiContext *context, int bitpos)
+// ImGuiIO getter and setter
+
+DIMGUI_EXPORT ImGuiConfigFlags DImGuiIOGetConfigFlags(ImGuiIO *io)
 {
-    if (bitpos < 0 || bitpos > 31)
-        return false;
-    ImGui::SetCurrentContext(context);
-    auto io = ImGui::GetIO();
-    return io.ConfigFlags & 1 << bitpos;
+    return io->ConfigFlags;
 }
 
-DIMGUI_EXPORT void ImGuiIOSetConfigFlag(ImGuiContext *context, int bitpos, bool value)
+DIMGUI_EXPORT void DImGuiIOSetConfigFlags(ImGuiIO *io, ImGuiConfigFlags flags)
 {
-    if (bitpos < 0 || bitpos > 31)
-        return;
-    ImGui::SetCurrentContext(context);
-    auto io = ImGui::GetIO();
-    auto mask = 1 << bitpos;
-    if (value)
-    {
-        io.ConfigFlags |= mask;
-    }
-    else
-    {
-        io.ConfigFlags &= ~mask;
-    }
+    io->ConfigFlags = flags;
 }

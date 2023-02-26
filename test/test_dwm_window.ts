@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/x/dwm@0.3.0/mod.ts";
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "../mod.ts";
-import { CBool } from "../mod.ts";
+import { CBool, ImGuiConfigFlagBits } from "../mod.ts";
 import { testWidget } from "./test_widget.ts";
 
 const window = createWindow({
@@ -25,6 +25,9 @@ imgui.printImVec2(new imgui.ImVec2(10, 20));
 const imguiContext = imgui.createContext();
 imgui.implGlfwInitForOpenGL(window.nativeHandle);
 imgui.implOpenGL3Init("#version 130");
+
+const io = imgui.getIO();
+io.ConfigFlags |= ImGuiConfigFlagBits.DockingEnable
 
 const showDemoWindow = new CBool(true);
 const showMetricsWindow = new CBool(false);

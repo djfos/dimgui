@@ -4,17 +4,17 @@ import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
 import { DIMGUI_VERSION } from "../script/version.ts";
 
-const imguiCustomFunctions = {
+const dImGuiCustomFunctions = {
   LogImDrawData: {
     parameters: ["pointer"],
     result: "void",
   },
-  ImGuiIOGetConfigFlag: {
-    parameters: ["pointer", "i32"],
-    result: "bool",
+  DImGuiIOGetConfigFlags: {
+    parameters: ["pointer"],
+    result: "i32",
   },
-  ImGuiIOSetConfigFlag: {
-    parameters: ["pointer", "i32", "bool"],
+  DImGuiIOSetConfigFlags: {
+    parameters: ["pointer", "i32"],
     result: "void",
   },
   dimguiSetErrorCallback: {
@@ -48,7 +48,7 @@ async function loadLibrary() {
       ...cimguiSymbols,
       ...glfwSymbols,
       ...imguiBackendSymbols,
-      ...imguiCustomFunctions,
+      ...dImGuiCustomFunctions,
     } as const,
   );
 }
