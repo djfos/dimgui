@@ -57,9 +57,9 @@ const library = await loadLibrary();
 export const ffi = library.symbols;
 
 export function cString(str: string) {
-  // if (str.length === 0) {
-  //   return null;
-  // }
+  if (str.length === 0) {
+    return null;
+  }
   return new TextEncoder().encode(str + "\0");
 }
 

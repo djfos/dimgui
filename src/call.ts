@@ -1252,6 +1252,7 @@ export function dragFloat(
   format: string = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igDragFloat(
     cString(label),
     v,
@@ -1271,6 +1272,7 @@ export function dragFloat2(
   format: string = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igDragFloat2(
     cString(label),
     v,
@@ -1290,6 +1292,7 @@ export function dragFloat3(
   format: string = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igDragFloat3(
     cString(label),
     v,
@@ -1309,6 +1312,7 @@ export function dragFloat4(
   format: string = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igDragFloat4(
     cString(label),
     v,
@@ -1327,9 +1331,11 @@ export function dragFloatRange2(
   v_min: number = 0,
   v_max: number = 0,
   format: string = "%.3f",
-  format_max: string,
+  format_max: string = "",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v_current_min.length >= 1);
+  assert(v_current_max.length >= 1);
   return imgui.igDragFloatRange2(
     cString(label),
     v_current_min,
@@ -1351,6 +1357,7 @@ export function dragInt(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igDragInt(
     cString(label),
     v,
@@ -1370,6 +1377,7 @@ export function dragInt2(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igDragInt2(
     cString(label),
     v,
@@ -1389,6 +1397,7 @@ export function dragInt3(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igDragInt3(
     cString(label),
     v,
@@ -1408,6 +1417,7 @@ export function dragInt4(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igDragInt4(
     cString(label),
     v,
@@ -1426,9 +1436,11 @@ export function dragIntRange2(
   v_min: number = 0,
   v_max: number = 0,
   format: string = "%d",
-  format_max: string,
+  format_max: string = "",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v_current_min.length >= 1);
+  assert(v_current_max.length >= 1);
   return imgui.igDragIntRange2(
     cString(label),
     v_current_min,
@@ -1561,6 +1573,7 @@ export function sliderInt(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igSliderInt(
     cString(label),
     v,
@@ -1578,6 +1591,7 @@ export function sliderInt2(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 2);
   return imgui.igSliderInt2(
     cString(label),
     v,
@@ -1595,6 +1609,7 @@ export function sliderInt3(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 3);
   return imgui.igSliderInt3(
     cString(label),
     v,
@@ -1612,6 +1627,7 @@ export function sliderInt4(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 4);
   return imgui.igSliderInt4(
     cString(label),
     v,
@@ -1633,6 +1649,7 @@ export function vSliderFloat(
   format: string = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igVSliderFloat(
     cString(label),
     size[BUFFER],
@@ -1655,6 +1672,7 @@ export function vSliderInt(
   format: string = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igVSliderInt(
     cString(label),
     size[BUFFER],
