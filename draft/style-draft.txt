@@ -1,0 +1,788 @@
+
+
+
+
+DIMGUI_EXPORT float DImGuiGetAlpha (ImGuiStyle* style){ return style->Alpha;}
+DIMGUI_EXPORT float DImGuiGetDisabledAlpha (ImGuiStyle* style){ return style->DisabledAlpha;}
+DIMGUI_EXPORT ImVec2 DImGuiGetWindowPadding (ImGuiStyle* style){ return style->WindowPadding;}
+DIMGUI_EXPORT float DImGuiGetWindowRounding (ImGuiStyle* style){ return style->WindowRounding;}
+DIMGUI_EXPORT float DImGuiGetWindowBorderSize (ImGuiStyle* style){ return style->WindowBorderSize;}
+DIMGUI_EXPORT ImVec2 DImGuiGetWindowMinSize (ImGuiStyle* style){ return style->WindowMinSize;}
+DIMGUI_EXPORT ImVec2 DImGuiGetWindowTitleAlign (ImGuiStyle* style){ return style->WindowTitleAlign;}
+DIMGUI_EXPORT ImGuiDir DImGuiGetWindowMenuButtonPosition (ImGuiStyle* style){ return style->WindowMenuButtonPosition;}
+DIMGUI_EXPORT float DImGuiGetChildRounding (ImGuiStyle* style){ return style->ChildRounding;}
+DIMGUI_EXPORT float DImGuiGetChildBorderSize (ImGuiStyle* style){ return style->ChildBorderSize;}
+DIMGUI_EXPORT float DImGuiGetPopupRounding (ImGuiStyle* style){ return style->PopupRounding;}
+DIMGUI_EXPORT float DImGuiGetPopupBorderSize (ImGuiStyle* style){ return style->PopupBorderSize;}
+DIMGUI_EXPORT ImVec2 DImGuiGetFramePadding (ImGuiStyle* style){ return style->FramePadding;}
+DIMGUI_EXPORT float DImGuiGetFrameRounding (ImGuiStyle* style){ return style->FrameRounding;}
+DIMGUI_EXPORT float DImGuiGetFrameBorderSize (ImGuiStyle* style){ return style->FrameBorderSize;}
+DIMGUI_EXPORT ImVec2 DImGuiGetItemSpacing (ImGuiStyle* style){ return style->ItemSpacing;}
+DIMGUI_EXPORT ImVec2 DImGuiGetItemInnerSpacing (ImGuiStyle* style){ return style->ItemInnerSpacing;}
+DIMGUI_EXPORT ImVec2 DImGuiGetCellPadding (ImGuiStyle* style){ return style->CellPadding;}
+DIMGUI_EXPORT ImVec2 DImGuiGetTouchExtraPadding (ImGuiStyle* style){ return style->TouchExtraPadding;}
+DIMGUI_EXPORT float DImGuiGetIndentSpacing (ImGuiStyle* style){ return style->IndentSpacing;}
+DIMGUI_EXPORT float DImGuiGetColumnsMinSpacing (ImGuiStyle* style){ return style->ColumnsMinSpacing;}
+DIMGUI_EXPORT float DImGuiGetScrollbarSize (ImGuiStyle* style){ return style->ScrollbarSize;}
+DIMGUI_EXPORT float DImGuiGetScrollbarRounding (ImGuiStyle* style){ return style->ScrollbarRounding;}
+DIMGUI_EXPORT float DImGuiGetGrabMinSize (ImGuiStyle* style){ return style->GrabMinSize;}
+DIMGUI_EXPORT float DImGuiGetGrabRounding (ImGuiStyle* style){ return style->GrabRounding;}
+DIMGUI_EXPORT float DImGuiGetLogSliderDeadzone (ImGuiStyle* style){ return style->LogSliderDeadzone;}
+DIMGUI_EXPORT float DImGuiGetTabRounding (ImGuiStyle* style){ return style->TabRounding;}
+DIMGUI_EXPORT float DImGuiGetTabBorderSize (ImGuiStyle* style){ return style->TabBorderSize;}
+DIMGUI_EXPORT float DImGuiGetTabMinWidthForCloseButton (ImGuiStyle* style){ return style->TabMinWidthForCloseButton;}
+DIMGUI_EXPORT ImGuiDir DImGuiGetColorButtonPosition (ImGuiStyle* style){ return style->ColorButtonPosition;}
+DIMGUI_EXPORT ImVec2 DImGuiGetButtonTextAlign (ImGuiStyle* style){ return style->ButtonTextAlign;}
+DIMGUI_EXPORT ImVec2 DImGuiGetSelectableTextAlign (ImGuiStyle* style){ return style->SelectableTextAlign;}
+DIMGUI_EXPORT ImVec2 DImGuiGetDisplayWindowPadding (ImGuiStyle* style){ return style->DisplayWindowPadding;}
+DIMGUI_EXPORT ImVec2 DImGuiGetDisplaySafeAreaPadding (ImGuiStyle* style){ return style->DisplaySafeAreaPadding;}
+DIMGUI_EXPORT float DImGuiGetMouseCursorScale (ImGuiStyle* style){ return style->MouseCursorScale;}
+DIMGUI_EXPORT bool DImGuiGetAntiAliasedLines (ImGuiStyle* style){ return style->AntiAliasedLines;}
+DIMGUI_EXPORT bool DImGuiGetAntiAliasedLinesUseTex (ImGuiStyle* style){ return style->AntiAliasedLinesUseTex;}
+DIMGUI_EXPORT bool DImGuiGetAntiAliasedFill (ImGuiStyle* style){ return style->AntiAliasedFill;}
+DIMGUI_EXPORT float DImGuiGetCurveTessellationTol (ImGuiStyle* style){ return style->CurveTessellationTol;}
+DIMGUI_EXPORT float DImGuiGetCircleTessellationMaxError (ImGuiStyle* style){ return style->CircleTessellationMaxError;}
+
+
+
+
+DIMGUI_EXPORT void DImGuiSetAlpha (ImGuiStyle* style, float value){ style->Alpha=value;}
+DIMGUI_EXPORT void DImGuiSetDisabledAlpha (ImGuiStyle* style, float value){ style->DisabledAlpha=value;}
+DIMGUI_EXPORT void DImGuiSetWindowPadding (ImGuiStyle* style, ImVec2 value){ style->WindowPadding=value;}
+DIMGUI_EXPORT void DImGuiSetWindowRounding (ImGuiStyle* style, float value){ style->WindowRounding=value;}
+DIMGUI_EXPORT void DImGuiSetWindowBorderSize (ImGuiStyle* style, float value){ style->WindowBorderSize=value;}
+DIMGUI_EXPORT void DImGuiSetWindowMinSize (ImGuiStyle* style, ImVec2 value){ style->WindowMinSize=value;}
+DIMGUI_EXPORT void DImGuiSetWindowTitleAlign (ImGuiStyle* style, ImVec2 value){ style->WindowTitleAlign=value;}
+DIMGUI_EXPORT void DImGuiSetWindowMenuButtonPosition (ImGuiStyle* style, ImGuiDir value){ style->WindowMenuButtonPosition=value;}
+DIMGUI_EXPORT void DImGuiSetChildRounding (ImGuiStyle* style, float value){ style->ChildRounding=value;}
+DIMGUI_EXPORT void DImGuiSetChildBorderSize (ImGuiStyle* style, float value){ style->ChildBorderSize=value;}
+DIMGUI_EXPORT void DImGuiSetPopupRounding (ImGuiStyle* style, float value){ style->PopupRounding=value;}
+DIMGUI_EXPORT void DImGuiSetPopupBorderSize (ImGuiStyle* style, float value){ style->PopupBorderSize=value;}
+DIMGUI_EXPORT void DImGuiSetFramePadding (ImGuiStyle* style, ImVec2 value){ style->FramePadding=value;}
+DIMGUI_EXPORT void DImGuiSetFrameRounding (ImGuiStyle* style, float value){ style->FrameRounding=value;}
+DIMGUI_EXPORT void DImGuiSetFrameBorderSize (ImGuiStyle* style, float value){ style->FrameBorderSize=value;}
+DIMGUI_EXPORT void DImGuiSetItemSpacing (ImGuiStyle* style, ImVec2 value){ style->ItemSpacing=value;}
+DIMGUI_EXPORT void DImGuiSetItemInnerSpacing (ImGuiStyle* style, ImVec2 value){ style->ItemInnerSpacing=value;}
+DIMGUI_EXPORT void DImGuiSetCellPadding (ImGuiStyle* style, ImVec2 value){ style->CellPadding=value;}
+DIMGUI_EXPORT void DImGuiSetTouchExtraPadding (ImGuiStyle* style, ImVec2 value){ style->TouchExtraPadding=value;}
+DIMGUI_EXPORT void DImGuiSetIndentSpacing (ImGuiStyle* style, float value){ style->IndentSpacing=value;}
+DIMGUI_EXPORT void DImGuiSetColumnsMinSpacing (ImGuiStyle* style, float value){ style->ColumnsMinSpacing=value;}
+DIMGUI_EXPORT void DImGuiSetScrollbarSize (ImGuiStyle* style, float value){ style->ScrollbarSize=value;}
+DIMGUI_EXPORT void DImGuiSetScrollbarRounding (ImGuiStyle* style, float value){ style->ScrollbarRounding=value;}
+DIMGUI_EXPORT void DImGuiSetGrabMinSize (ImGuiStyle* style, float value){ style->GrabMinSize=value;}
+DIMGUI_EXPORT void DImGuiSetGrabRounding (ImGuiStyle* style, float value){ style->GrabRounding=value;}
+DIMGUI_EXPORT void DImGuiSetLogSliderDeadzone (ImGuiStyle* style, float value){ style->LogSliderDeadzone=value;}
+DIMGUI_EXPORT void DImGuiSetTabRounding (ImGuiStyle* style, float value){ style->TabRounding=value;}
+DIMGUI_EXPORT void DImGuiSetTabBorderSize (ImGuiStyle* style, float value){ style->TabBorderSize=value;}
+DIMGUI_EXPORT void DImGuiSetTabMinWidthForCloseButton (ImGuiStyle* style, float value){ style->TabMinWidthForCloseButton=value;}
+DIMGUI_EXPORT void DImGuiSetColorButtonPosition (ImGuiStyle* style, ImGuiDir value){ style->ColorButtonPosition=value;}
+DIMGUI_EXPORT void DImGuiSetButtonTextAlign (ImGuiStyle* style, ImVec2 value){ style->ButtonTextAlign=value;}
+DIMGUI_EXPORT void DImGuiSetSelectableTextAlign (ImGuiStyle* style, ImVec2 value){ style->SelectableTextAlign=value;}
+DIMGUI_EXPORT void DImGuiSetDisplayWindowPadding (ImGuiStyle* style, ImVec2 value){ style->DisplayWindowPadding=value;}
+DIMGUI_EXPORT void DImGuiSetDisplaySafeAreaPadding (ImGuiStyle* style, ImVec2 value){ style->DisplaySafeAreaPadding=value;}
+DIMGUI_EXPORT void DImGuiSetMouseCursorScale (ImGuiStyle* style, float value){ style->MouseCursorScale=value;}
+DIMGUI_EXPORT void DImGuiSetAntiAliasedLines (ImGuiStyle* style, bool value){ style->AntiAliasedLines=value;}
+DIMGUI_EXPORT void DImGuiSetAntiAliasedLinesUseTex (ImGuiStyle* style, bool value){ style->AntiAliasedLinesUseTex=value;}
+DIMGUI_EXPORT void DImGuiSetAntiAliasedFill (ImGuiStyle* style, bool value){ style->AntiAliasedFill=value;}
+DIMGUI_EXPORT void DImGuiSetCurveTessellationTol (ImGuiStyle* style, float value){ style->CurveTessellationTol=value;}
+DIMGUI_EXPORT void DImGuiSetCircleTessellationMaxError (ImGuiStyle* style, float value){ style->CircleTessellationMaxError=value;}
+
+
+
+
+DImGuiGetAlpha:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetAlpha:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetDisabledAlpha:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetDisabledAlpha:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetWindowPadding:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetWindowPadding:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetWindowRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetWindowRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetWindowBorderSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetWindowBorderSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetWindowMinSize:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetWindowMinSize:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetWindowTitleAlign:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetWindowTitleAlign:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetWindowMenuButtonPosition:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetWindowMenuButtonPosition:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetChildRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetChildRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetChildBorderSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetChildBorderSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetPopupRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetPopupRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetPopupBorderSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetPopupBorderSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetFramePadding:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetFramePadding:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetFrameRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetFrameRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetFrameBorderSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetFrameBorderSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetItemSpacing:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetItemSpacing:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetItemInnerSpacing:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetItemInnerSpacing:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetCellPadding:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetCellPadding:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetTouchExtraPadding:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetTouchExtraPadding:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetIndentSpacing:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetIndentSpacing:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetColumnsMinSpacing:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetColumnsMinSpacing:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetScrollbarSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetScrollbarSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetScrollbarRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetScrollbarRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetGrabMinSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetGrabMinSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetGrabRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetGrabRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetLogSliderDeadzone:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetLogSliderDeadzone:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetTabRounding:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetTabRounding:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetTabBorderSize:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetTabBorderSize:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetTabMinWidthForCloseButton:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetTabMinWidthForCloseButton:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetColorButtonPosition:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetColorButtonPosition:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetButtonTextAlign:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetButtonTextAlign:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetSelectableTextAlign:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetSelectableTextAlign:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetDisplayWindowPadding:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetDisplayWindowPadding:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetDisplaySafeAreaPadding:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetDisplaySafeAreaPadding:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetMouseCursorScale:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetMouseCursorScale:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetAntiAliasedLines:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetAntiAliasedLines:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetAntiAliasedLinesUseTex:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetAntiAliasedLinesUseTex:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetAntiAliasedFill:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetAntiAliasedFill:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetCurveTessellationTol:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetCurveTessellationTol:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiGetCircleTessellationMaxError:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiSetCircleTessellationMaxError:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+
+
+
+
+/*
+ *  Global alpha applies to everything in Dear ImGui.
+*/
+get Alpha(): number {
+  return imgui.DImGuiGetAlpha(this.#self);
+}
+set Alpha(value: number) {
+  imgui.DImGuiSetAlpha(this.#self, value);
+}
+/*
+ *  Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.
+*/
+get DisabledAlpha(): number {
+  return imgui.DImGuiGetDisabledAlpha(this.#self);
+}
+set DisabledAlpha(value: number) {
+  imgui.DImGuiSetDisabledAlpha(this.#self, value);
+}
+/*
+ *  Padding within a window.
+*/
+get WindowPadding(): ImVec2 {
+  const data = imgui.DImGuiGetWindowPadding(this.#self);
+  return new ImVec2(data);
+}
+set WindowPadding(value: ImVec2) {
+  imgui.DImGuiSetWindowPadding(this.#self, value[BUFFER]);
+}
+/*
+ *  Radius of window corners rounding. Set to 0.0f to have rectangular windows. Large values tend to lead to variety of artifacts and are not recommended.
+*/
+get WindowRounding(): number {
+  return imgui.DImGuiGetWindowRounding(this.#self);
+}
+set WindowRounding(value: number) {
+  imgui.DImGuiSetWindowRounding(this.#self, value);
+}
+/*
+ *  Thickness of border around windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+*/
+get WindowBorderSize(): number {
+  return imgui.DImGuiGetWindowBorderSize(this.#self);
+}
+set WindowBorderSize(value: number) {
+  imgui.DImGuiSetWindowBorderSize(this.#self, value);
+}
+/*
+ *  Minimum window size. This is a global setting. If you want to constrain individual windows, use SetNextWindowSizeConstraints().
+*/
+get WindowMinSize(): ImVec2 {
+  const data = imgui.DImGuiGetWindowMinSize(this.#self);
+  return new ImVec2(data);
+}
+set WindowMinSize(value: ImVec2) {
+  imgui.DImGuiSetWindowMinSize(this.#self, value[BUFFER]);
+}
+/*
+ *  Alignment for title bar text. Defaults to (0.0f,0.5f) for left-aligned,vertically centered.
+*/
+get WindowTitleAlign(): ImVec2 {
+  const data = imgui.DImGuiGetWindowTitleAlign(this.#self);
+  return new ImVec2(data);
+}
+set WindowTitleAlign(value: ImVec2) {
+  imgui.DImGuiSetWindowTitleAlign(this.#self, value[BUFFER]);
+}
+/*
+ *  Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.
+*/
+get WindowMenuButtonPosition(): ImGuiDir {
+  return imgui.DImGuiGetWindowMenuButtonPosition(this.#self);
+}
+set WindowMenuButtonPosition(value: ImGuiDir) {
+  imgui.DImGuiSetWindowMenuButtonPosition(this.#self, value);
+}
+/*
+ *  Radius of child window corners rounding. Set to 0.0f to have rectangular windows.
+*/
+get ChildRounding(): number {
+  return imgui.DImGuiGetChildRounding(this.#self);
+}
+set ChildRounding(value: number) {
+  imgui.DImGuiSetChildRounding(this.#self, value);
+}
+/*
+ *  Thickness of border around child windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+*/
+get ChildBorderSize(): number {
+  return imgui.DImGuiGetChildBorderSize(this.#self);
+}
+set ChildBorderSize(value: number) {
+  imgui.DImGuiSetChildBorderSize(this.#self, value);
+}
+/*
+ *  Radius of popup window corners rounding. (Note that tooltip windows use WindowRounding)
+*/
+get PopupRounding(): number {
+  return imgui.DImGuiGetPopupRounding(this.#self);
+}
+set PopupRounding(value: number) {
+  imgui.DImGuiSetPopupRounding(this.#self, value);
+}
+/*
+ *  Thickness of border around popup/tooltip windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+*/
+get PopupBorderSize(): number {
+  return imgui.DImGuiGetPopupBorderSize(this.#self);
+}
+set PopupBorderSize(value: number) {
+  imgui.DImGuiSetPopupBorderSize(this.#self, value);
+}
+/*
+ *  Padding within a framed rectangle (used by most widgets).
+*/
+get FramePadding(): ImVec2 {
+  const data = imgui.DImGuiGetFramePadding(this.#self);
+  return new ImVec2(data);
+}
+set FramePadding(value: ImVec2) {
+  imgui.DImGuiSetFramePadding(this.#self, value[BUFFER]);
+}
+/*
+ *  Radius of frame corners rounding. Set to 0.0f to have rectangular frame (used by most widgets).
+*/
+get FrameRounding(): number {
+  return imgui.DImGuiGetFrameRounding(this.#self);
+}
+set FrameRounding(value: number) {
+  imgui.DImGuiSetFrameRounding(this.#self, value);
+}
+/*
+ *  Thickness of border around frames. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+*/
+get FrameBorderSize(): number {
+  return imgui.DImGuiGetFrameBorderSize(this.#self);
+}
+set FrameBorderSize(value: number) {
+  imgui.DImGuiSetFrameBorderSize(this.#self, value);
+}
+/*
+ *  Horizontal and vertical spacing between widgets/lines.
+*/
+get ItemSpacing(): ImVec2 {
+  const data = imgui.DImGuiGetItemSpacing(this.#self);
+  return new ImVec2(data);
+}
+set ItemSpacing(value: ImVec2) {
+  imgui.DImGuiSetItemSpacing(this.#self, value[BUFFER]);
+}
+/*
+ *  Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label).
+*/
+get ItemInnerSpacing(): ImVec2 {
+  const data = imgui.DImGuiGetItemInnerSpacing(this.#self);
+  return new ImVec2(data);
+}
+set ItemInnerSpacing(value: ImVec2) {
+  imgui.DImGuiSetItemInnerSpacing(this.#self, value[BUFFER]);
+}
+/*
+ *  Padding within a table cell
+*/
+get CellPadding(): ImVec2 {
+  const data = imgui.DImGuiGetCellPadding(this.#self);
+  return new ImVec2(data);
+}
+set CellPadding(value: ImVec2) {
+  imgui.DImGuiSetCellPadding(this.#self, value[BUFFER]);
+}
+/*
+ *  Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
+*/
+get TouchExtraPadding(): ImVec2 {
+  const data = imgui.DImGuiGetTouchExtraPadding(this.#self);
+  return new ImVec2(data);
+}
+set TouchExtraPadding(value: ImVec2) {
+  imgui.DImGuiSetTouchExtraPadding(this.#self, value[BUFFER]);
+}
+/*
+ *  Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
+*/
+get IndentSpacing(): number {
+  return imgui.DImGuiGetIndentSpacing(this.#self);
+}
+set IndentSpacing(value: number) {
+  imgui.DImGuiSetIndentSpacing(this.#self, value);
+}
+/*
+ *  Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).
+*/
+get ColumnsMinSpacing(): number {
+  return imgui.DImGuiGetColumnsMinSpacing(this.#self);
+}
+set ColumnsMinSpacing(value: number) {
+  imgui.DImGuiSetColumnsMinSpacing(this.#self, value);
+}
+/*
+ *  Width of the vertical scrollbar, Height of the horizontal scrollbar.
+*/
+get ScrollbarSize(): number {
+  return imgui.DImGuiGetScrollbarSize(this.#self);
+}
+set ScrollbarSize(value: number) {
+  imgui.DImGuiSetScrollbarSize(this.#self, value);
+}
+/*
+ *  Radius of grab corners for scrollbar.
+*/
+get ScrollbarRounding(): number {
+  return imgui.DImGuiGetScrollbarRounding(this.#self);
+}
+set ScrollbarRounding(value: number) {
+  imgui.DImGuiSetScrollbarRounding(this.#self, value);
+}
+/*
+ *  Minimum width/height of a grab box for slider/scrollbar.
+*/
+get GrabMinSize(): number {
+  return imgui.DImGuiGetGrabMinSize(this.#self);
+}
+set GrabMinSize(value: number) {
+  imgui.DImGuiSetGrabMinSize(this.#self, value);
+}
+/*
+ *  Radius of grabs corners rounding. Set to 0.0f to have rectangular slider grabs.
+*/
+get GrabRounding(): number {
+  return imgui.DImGuiGetGrabRounding(this.#self);
+}
+set GrabRounding(value: number) {
+  imgui.DImGuiSetGrabRounding(this.#self, value);
+}
+/*
+ *  The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
+*/
+get LogSliderDeadzone(): number {
+  return imgui.DImGuiGetLogSliderDeadzone(this.#self);
+}
+set LogSliderDeadzone(value: number) {
+  imgui.DImGuiSetLogSliderDeadzone(this.#self, value);
+}
+/*
+ *  Radius of upper corners of a tab. Set to 0.0f to have rectangular tabs.
+*/
+get TabRounding(): number {
+  return imgui.DImGuiGetTabRounding(this.#self);
+}
+set TabRounding(value: number) {
+  imgui.DImGuiSetTabRounding(this.#self, value);
+}
+/*
+ *  Thickness of border around tabs.
+*/
+get TabBorderSize(): number {
+  return imgui.DImGuiGetTabBorderSize(this.#self);
+}
+set TabBorderSize(value: number) {
+  imgui.DImGuiSetTabBorderSize(this.#self, value);
+}
+/*
+ *  Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0f to always show when hovering, set to FLT_MAX to never show close button unless selected.
+*/
+get TabMinWidthForCloseButton(): number {
+  return imgui.DImGuiGetTabMinWidthForCloseButton(this.#self);
+}
+set TabMinWidthForCloseButton(value: number) {
+  imgui.DImGuiSetTabMinWidthForCloseButton(this.#self, value);
+}
+/*
+ *  Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
+*/
+get ColorButtonPosition(): ImGuiDir {
+  return imgui.DImGuiGetColorButtonPosition(this.#self);
+}
+set ColorButtonPosition(value: ImGuiDir) {
+  imgui.DImGuiSetColorButtonPosition(this.#self, value);
+}
+/*
+ *  Alignment of button text when button is larger than text. Defaults to (0.5f, 0.5f) (centered).
+*/
+get ButtonTextAlign(): ImVec2 {
+  const data = imgui.DImGuiGetButtonTextAlign(this.#self);
+  return new ImVec2(data);
+}
+set ButtonTextAlign(value: ImVec2) {
+  imgui.DImGuiSetButtonTextAlign(this.#self, value[BUFFER]);
+}
+/*
+ *  Alignment of selectable text. Defaults to (0.0f, 0.0f) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.
+*/
+get SelectableTextAlign(): ImVec2 {
+  const data = imgui.DImGuiGetSelectableTextAlign(this.#self);
+  return new ImVec2(data);
+}
+set SelectableTextAlign(value: ImVec2) {
+  imgui.DImGuiSetSelectableTextAlign(this.#self, value[BUFFER]);
+}
+/*
+ *  Window position are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.
+*/
+get DisplayWindowPadding(): ImVec2 {
+  const data = imgui.DImGuiGetDisplayWindowPadding(this.#self);
+  return new ImVec2(data);
+}
+set DisplayWindowPadding(value: ImVec2) {
+  imgui.DImGuiSetDisplayWindowPadding(this.#self, value[BUFFER]);
+}
+/*
+ *  If you cannot see the edges of your screen (e.g. on a TV) increase the safe area padding. Apply to popups/tooltips as well regular windows. NB: Prefer configuring your TV sets correctly!
+*/
+get DisplaySafeAreaPadding(): ImVec2 {
+  const data = imgui.DImGuiGetDisplaySafeAreaPadding(this.#self);
+  return new ImVec2(data);
+}
+set DisplaySafeAreaPadding(value: ImVec2) {
+  imgui.DImGuiSetDisplaySafeAreaPadding(this.#self, value[BUFFER]);
+}
+/*
+ *  Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.
+*/
+get MouseCursorScale(): number {
+  return imgui.DImGuiGetMouseCursorScale(this.#self);
+}
+set MouseCursorScale(value: number) {
+  imgui.DImGuiSetMouseCursorScale(this.#self, value);
+}
+/*
+ *  Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
+*/
+get AntiAliasedLines(): boolean {
+  return imgui.DImGuiGetAntiAliasedLines(this.#self);
+}
+set AntiAliasedLines(value: boolean) {
+  imgui.DImGuiSetAntiAliasedLines(this.#self, value);
+}
+/*
+ *  Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).
+*/
+get AntiAliasedLinesUseTex(): boolean {
+  return imgui.DImGuiGetAntiAliasedLinesUseTex(this.#self);
+}
+set AntiAliasedLinesUseTex(value: boolean) {
+  imgui.DImGuiSetAntiAliasedLinesUseTex(this.#self, value);
+}
+/*
+ *  Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
+*/
+get AntiAliasedFill(): boolean {
+  return imgui.DImGuiGetAntiAliasedFill(this.#self);
+}
+set AntiAliasedFill(value: boolean) {
+  imgui.DImGuiSetAntiAliasedFill(this.#self, value);
+}
+/*
+ *  Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
+*/
+get CurveTessellationTol(): number {
+  return imgui.DImGuiGetCurveTessellationTol(this.#self);
+}
+set CurveTessellationTol(value: number) {
+  imgui.DImGuiSetCurveTessellationTol(this.#self, value);
+}
+/*
+ *  Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
+*/
+get CircleTessellationMaxError(): number {
+  return imgui.DImGuiGetCircleTessellationMaxError(this.#self);
+}
+set CircleTessellationMaxError(value: number) {
+  imgui.DImGuiSetCircleTessellationMaxError(this.#self, value);
+}

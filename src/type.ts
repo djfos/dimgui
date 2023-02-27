@@ -1,11 +1,10 @@
-import { ffi as imgui } from "./ffi.ts";
+import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import { cString, ffi as imgui } from "./ffi.ts";
 
 export const BUFFER = Symbol("vkStructBuffer");
 export const DATAVIEW = Symbol("vkStructDataView");
 export const LE =
   new Uint8Array(new Uint32Array([0x12345678]).buffer)[0] === 0x78;
-
-type BufferSource = ArrayBufferView | ArrayBuffer;
 
 export class CBool {
   static readonly size = 1;
@@ -41,6 +40,9 @@ export class CBool {
     }
   }
 }
+
+type Int32 = number;
+type Float = number;
 
 // structs
 /**
@@ -86,7 +88,64 @@ export type ImFont = Deno.PointerValue;
  * Runtime data for multiple fonts, bake multiple
  * fonts into a single texture, TTF/OTF font loader
  */
-export type ImFontAtlas = Deno.PointerValue;
+export class ImFontAtlas {
+  #self: Deno.PointerValue;
+
+  constructor(imGuiIOPointer: Deno.PointerValue) {
+    this.#self = imGuiIOPointer;
+  }
+
+  addFontFromMemoryTTF(
+    font_data: BufferSource,
+    size_pixels: Float,
+    font_cfg?: ImFontConfig,
+    glyph_ranges?: string,
+  ): ImFont {
+    return imgui.ImFontAtlas_AddFontFromMemoryTTF(
+      this.#self,
+      font_data,
+      font_data.byteLength,
+      size_pixels,
+      font_cfg ?? null,
+      cString(glyph_ranges),
+    );
+  }
+
+  //-------------------------------------------
+  // Glyph Ranges
+  //-------------------------------------------
+
+  // Helpers to retrieve list of common Unicode ranges (2 value per range, values are inclusive, zero-terminated list)
+  // NB: Make sure that your string are UTF-8 and NOT in your local code page. In C++11, you can create UTF-8 string literal using the u8"Hello world" syntax. See FAQ for details.
+  // NB: Consider using ImFontGlyphRangesBuilder to build glyph ranges from textual data.
+  GetGlyphRangesDefault(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesDefault(this.#self);
+  }
+  GetGlyphRangesGreek(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesGreek(this.#self);
+  }
+  GetGlyphRangesKorean(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesKorean(this.#self);
+  }
+  GetGlyphRangesJapanese(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesJapanese(this.#self);
+  }
+  GetGlyphRangesChineseFull(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesChineseFull(this.#self);
+  }
+  GetGlyphRangesChineseSimplifiedCommon(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(this.#self);
+  }
+  GetGlyphRangesCyrillic(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesCyrillic(this.#self);
+  }
+  GetGlyphRangesThai(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesThai(this.#self);
+  }
+  GetGlyphRangesVietnamese(): Deno.PointerValue {
+    return imgui.ImFontAtlas_GetGlyphRangesVietnamese(this.#self);
+  }
+}
 /**
  * Opaque interface to a font builder (stb_truetype or FreeType).
  */
@@ -107,7 +166,7 @@ export type ImFontGlyphRangesBuilder = Deno.PointerValue;
  * Helper functions to create a color that can be converted to
  * either u32 or float4 (*OBSOLETE* please avoid using)
  */
-export type ImColor = Deno.PointerValue;
+// export type ImColor = Deno.PointerValue;
 /**
  * Dear ImGui context (opaque structure, unless including imgui_internal.h)
  */
@@ -116,17 +175,21 @@ export type ImGuiContext = Deno.PointerValue;
  * Main configuration and I/O between your application and ImGui
  */
 export class ImGuiIO {
-  #cPointer: Deno.PointerValue;
+  #self: Deno.PointerValue;
 
-  constructor(imGuiIOPointer: Deno.PointerValue) {
-    this.#cPointer = imGuiIOPointer;
+  constructor(self: Deno.PointerValue) {
+    this.#self = self;
   }
 
   get ConfigFlags(): number {
-    return imgui.DImGuiIOGetConfigFlags(this.#cPointer);
+    return imgui.DImGuiIOGetConfigFlags(this.#self);
   }
   set ConfigFlags(value: number) {
-    imgui.DImGuiIOSetConfigFlags(this.#cPointer, value);
+    imgui.DImGuiIOSetConfigFlags(this.#self, value);
+  }
+
+  get Fonts(): ImFontAtlas {
+    return new ImFontAtlas(imgui.DImGuiIOGetFonts(this.#self));
   }
 }
 /**
@@ -176,7 +239,8 @@ export type ImGuiStorage = Deno.PointerValue;
 /**
  * Runtime data for styling/colors
  */
-export type ImGuiStyle = Deno.PointerValue;
+// export type ImGuiStyle = Deno.PointerValue;
+export { ImGuiStyle } from "./imgui_style.ts";
 /**
  * Sorting specifications for a table
  * (often handling sort specs for a single column, occasionally more)
@@ -210,8 +274,54 @@ export type ImGuiWindowClass = Deno.PointerValue;
  * ImVec2: 2D vector used to store positions, sizes etc.
  */
 export class ImVec2 {
-  static readonly size = 8;
-  #data: ArrayBuffer;
+  #data: Float32Array;
+
+  get [BUFFER]() {
+    return this.#data;
+  }
+
+  constructor();
+  constructor(x: number, y: number);
+  constructor(x: ImVec2);
+  constructor(x: BufferSource);
+  constructor(x?: number | ImVec2 | BufferSource, y?: number) {
+    if (x === undefined) { // zeros
+      this.#data = new Float32Array(2);
+    } else if (x instanceof ImVec2) { // clone
+      this.#data = new Float32Array(2);
+      this.#data = x.#data.slice(0);
+    } else if (typeof x == "number") { // assign
+      assert(y !== undefined && typeof y == "number");
+      this.#data = new Float32Array(2);
+      this.x = x;
+      this.y = y;
+    } else if (x instanceof ArrayBuffer) { // view
+      this.#data = new Float32Array(x, 0, 2);
+    } else { // view of TypedArray
+      this.#data = new Float32Array(x.buffer, x.byteOffset, 2);
+    }
+  }
+
+  get x() {
+    return this.#data[0];
+  }
+  set x(value: number) {
+    this.#data[0] = value;
+  }
+
+  get y() {
+    return this.#data[1];
+  }
+  set y(value: number) {
+    this.#data[1] = value;
+  }
+}
+
+/**
+ * ImVec4: 4D vector used to store clipping rectangles, colors etc.
+ */
+export class ImVec4 {
+  #data: Float32Array;
   #view: DataView;
 
   get [BUFFER]() {
@@ -222,16 +332,21 @@ export class ImVec2 {
   }
 
   constructor();
-  constructor(x: number, y: number);
-  constructor(v: ImVec2);
-  constructor(data?: number | ImVec2, y?: number) {
-    this.#data = new ArrayBuffer(ImVec2.size);
-    this.#view = new DataView(this.#data);
-    if (data instanceof ImVec2) {
-      this.#data = data.#data.slice(0);
-    } else if (typeof data == "number" && typeof y == "number") {
-      this.x = data;
+  constructor(x: number, y: number, z: number, w: number);
+  constructor(v: ImVec4);
+  constructor(x?: number | ImVec4, y?: number, z?: number, w?: number) {
+    this.#data = new Float32Array(4);
+    this.#view = new DataView(this.#data.buffer);
+    if (x instanceof ImVec4) {
+      this.#data = x.#data.slice(0);
+    } else if (
+      typeof x == "number" && typeof y == "number" && typeof z == "number" &&
+      typeof w == "number"
+    ) {
+      this.x = x;
       this.y = y;
+      this.z = z;
+      this.w = w;
     }
   }
 
@@ -241,72 +356,30 @@ export class ImVec2 {
   set x(value: number) {
     this.#view.setFloat32(0, value, LE);
   }
-
   get y() {
     return this.#view.getFloat32(4, LE);
   }
   set y(value: number) {
     this.#view.setFloat32(4, value, LE);
   }
-}
-
-/**
- * ImVec4: 4D vector used to store clipping rectangles, colors etc.
- */
-export class ImVec4 {
-  static readonly size = 16;
-  #data: ArrayBuffer;
-  #view: DataView;
-
-  get [BUFFER]() {
-    return this.#data;
-  }
-  get [DATAVIEW]() {
-    return this.#view;
-  }
-
-  constructor();
-  constructor(r: number, g: number, b: number, a: number);
-  constructor(v: ImVec4);
-  constructor(r?: number | ImVec4, g?: number, b?: number, a?: number) {
-    this.#data = new ArrayBuffer(ImVec4.size);
-    this.#view = new DataView(this.#data);
-    if (r instanceof ImVec4) {
-      this.#data = r.#data.slice(0);
-    } else if (
-      typeof r == "number" && typeof g == "number" && typeof b == "number" &&
-      typeof a == "number"
-    ) {
-      this.r = r;
-      this.g = g;
-      this.b = b;
-      this.a = a;
-    }
-  }
-
-  get r() {
-    return this.#view.getFloat32(0, LE);
-  }
-  set r(value: number) {
-    this.#view.setFloat32(0, value, LE);
-  }
-  get g() {
-    return this.#view.getFloat32(4, LE);
-  }
-  set g(value: number) {
-    this.#view.setFloat32(4, value, LE);
-  }
-  get b() {
+  get z() {
     return this.#view.getFloat32(8, LE);
   }
-  set b(value: number) {
+  set z(value: number) {
     this.#view.setFloat32(8, value, LE);
   }
-  get a() {
+  get w() {
     return this.#view.getFloat32(12, LE);
   }
-  set a(value: number) {
+  set w(value: number) {
     this.#view.setFloat32(12, value, LE);
+  }
+
+  pointer(index: number): Float32Array {
+    return new Float32Array(
+      this.#data.buffer,
+      index * this.#data.BYTES_PER_ELEMENT,
+    );
   }
 }
 

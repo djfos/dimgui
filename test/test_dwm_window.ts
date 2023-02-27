@@ -1,5 +1,6 @@
 import {
   createWindow,
+  getPrimaryMonitor,
   getProcAddress,
   mainloop,
   pollEvents,
@@ -7,12 +8,27 @@ import {
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "../mod.ts";
 import { CBool, ImGuiConfigFlagBits } from "../mod.ts";
-import { testWidget } from "./test_widget.ts";
+import { showDemoWindowWidgets } from "./test_demo.ts";
+
+function queryWindowSizeAndFontSize() {
+  const aspectRatio = 16 / 9;
+  const lines = 40;
+
+  const monitor = getPrimaryMonitor();
+  const height = Math.ceil(monitor.workArea.height * 0.7);
+  const width = Math.ceil(height * aspectRatio);
+  const fontSize = Math.min(32, Math.ceil(height / lines));
+
+  return { width, height, fontSize };
+}
+const windowInfo = queryWindowSizeAndFontSize();
+console.info(windowInfo);
 
 const window = createWindow({
   title: "IMGUI DWM",
-  width: 1600,
-  height: 1200,
+  width: windowInfo.width,
+  height: windowInfo.height,
+
   resizable: true,
   glVersion: "v3.2",
   gles: false,
@@ -20,14 +36,25 @@ const window = createWindow({
 
 gl.load(getProcAddress);
 
-imgui.printImVec2(new imgui.ImVec2(10, 20));
-
 const imguiContext = imgui.createContext();
 imgui.implGlfwInitForOpenGL(window.nativeHandle);
 imgui.implOpenGL3Init("#version 130");
 
+// set io
 const io = imgui.getIO();
-io.ConfigFlags |= ImGuiConfigFlagBits.DockingEnable
+io.ConfigFlags |= ImGuiConfigFlagBits.DockingEnable;
+
+// set font
+const fonts = io.Fonts;
+if (Deno.build.os == "windows") {
+  const fontFile = "C:/Windows/Fonts/consola.ttf";
+  try {
+    const fontData = Deno.readFileSync(fontFile);
+    fonts.addFontFromMemoryTTF(fontData, windowInfo.fontSize);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 const showDemoWindow = new CBool(true);
 const showMetricsWindow = new CBool(false);
@@ -35,7 +62,7 @@ const showDebugLogWindow = new CBool(false);
 const showStackToolWindow = new CBool(false);
 const showAboutWindow = new CBool(false);
 
-function testRender() {
+function showControllWindow() {
   imgui.begin("deno, debug, info windows control");
   imgui.checkbox("demo", showDemoWindow);
   imgui.checkbox("metrics", showMetricsWindow);
@@ -44,11 +71,6 @@ function testRender() {
   imgui.checkbox("about", showAboutWindow);
   imgui.showStyleSelector("style selector");
   imgui.showFontSelector("font selector");
-
-  imgui.separator();
-
-  imgui.text("The following is user guide!");
-  imgui.showUserGuide();
   imgui.end();
 
   if (showDemoWindow.value) {
@@ -75,8 +97,8 @@ await mainloop(() => {
   imgui.implOpenGL3NewFrame();
   imgui.implGlfwNewFrame();
   imgui.newFrame();
-  testRender();
-  testWidget();
+  showControllWindow();
+  showDemoWindowWidgets();
   imgui.render();
   const drawData = imgui.getDrawData();
 

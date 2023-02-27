@@ -47,3 +47,13 @@ DIMGUI_EXPORT void DImGuiIOSetConfigFlags(ImGuiIO *io, ImGuiConfigFlags flags)
 {
     io->ConfigFlags = flags;
 }
+
+DIMGUI_EXPORT ImFontAtlas *DImGuiIOGetFonts(ImGuiIO *io)
+{
+    return io->Fonts;
+}
+
+DIMGUI_EXPORT int DImGuiStyle(ImGuiStyle *style)
+{
+    return 0;
+}

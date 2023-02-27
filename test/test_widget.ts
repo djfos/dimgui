@@ -20,6 +20,8 @@ const maxInt = 10;
 const speedFloat = 0.01;
 const speedInt = 0.1;
 
+const text = new Uint8Array(8);
+
 export function testWidget() {
   const size = new ImVec2(40, 160);
   imgui.begin("test widget");
@@ -98,6 +100,11 @@ export function testWidget() {
     minInt,
     maxInt,
   );
+  imgui.popID();
+
+  imgui.pushID("input");
+  imgui.text(text);
+  imgui.inputText("text input", text,text.length)
   imgui.popID();
 
   imgui.end();

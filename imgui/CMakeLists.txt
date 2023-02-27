@@ -42,6 +42,7 @@ set(IMGUI_SOURCE_FILE
     ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
     cimgui/cimgui.cpp
     dim_config.cpp
+    dimgui_style.cpp
 )
 
 add_library(imgui SHARED ${IMGUI_SOURCE_FILE})

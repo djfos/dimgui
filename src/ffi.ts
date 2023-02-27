@@ -2,6 +2,7 @@ import { getOutFileName, getTemptLibraryPath } from "../script/convention.ts";
 import cimguiSymbols from "../symbol/cimgui.ts";
 import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
+import dimguiStyleSymbols from "../symbol/dimgui_style.ts";
 import { DIMGUI_VERSION } from "../script/version.ts";
 
 const dImGuiCustomFunctions = {
@@ -16,6 +17,10 @@ const dImGuiCustomFunctions = {
   DImGuiIOSetConfigFlags: {
     parameters: ["pointer", "i32"],
     result: "void",
+  },
+  DImGuiIOGetFonts: {
+    parameters: ["pointer"],
+    result: "pointer",
   },
   dimguiSetErrorCallback: {
     parameters: ["function"],
@@ -49,6 +54,7 @@ async function loadLibrary() {
       ...glfwSymbols,
       ...imguiBackendSymbols,
       ...dImGuiCustomFunctions,
+      ...dimguiStyleSymbols,
     } as const,
   );
 }
@@ -56,11 +62,15 @@ async function loadLibrary() {
 const library = await loadLibrary();
 export const ffi = library.symbols;
 
-export function cString(str: string) {
-  if (str.length === 0) {
+export type StringSource = string | BufferSource;
+export function cString(str?: StringSource) {
+  if (str === undefined) {
     return null;
   }
-  return new TextEncoder().encode(str + "\0");
+  if (typeof str == "string") {
+    return new TextEncoder().encode(str + "\0");
+  }
+  return str;
 }
 
 export function jsString(cstring: Deno.PointerValue): string {

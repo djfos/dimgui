@@ -1,7 +1,4 @@
-import {
-  assert,
-  unreachable,
-} from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 
 const apiExport = "CIMGUI_API";
 const C_TYPES = {
@@ -25,6 +22,7 @@ const C_TYPES = {
 
   "char*": "string",
   "void*": "ArrayBuffer",
+  "ImWchar*": "string",
   // "ImGuiCol": "number",
   // "ImGuiCond": "number",
   // "ImGuiDataType": "number",
@@ -69,6 +67,7 @@ const C_TYPES_FFI = {
   "unsigned int": "u32",
   "unsigned char": "u8",
   "bool": "bool",
+  "short": "i16",
 
   "bool*": "buffer",
   "char*": "buffer",
@@ -79,6 +78,7 @@ const C_TYPES_FFI = {
   "ImVec2*": "buffer",
   "ImVec4*": "buffer",
   "ImRect*": "buffer",
+  "ImWchar*": "buffer",
 
   "ImGuiCol": "i32",
   "ImGuiCond": "i32",
@@ -219,14 +219,18 @@ function shift(lines: string[]) {
 // }
 
 function isUsefulCall(call: string): boolean {
-  if (call.startsWith(apiExport) && call.includes(" ig")) {
-    if (call.includes("...") || call.includes("va_list")) {
-      return false;
-    }
+  if (call.startsWith(apiExport) /*  && call.includes(" ig") */) {
+    // if (call.includes("...") || call.includes("va_list")) {
+    //   return false;
+    // }
     if (call.includes("File")) {
       return false;
     }
     if (call.includes("Allocator")) {
+      return false;
+    }
+    // just put aside for now
+    if (call.includes("ImGuiListClipperRange")) {
       return false;
     }
     for (const name of igonreFunctions) {
@@ -274,6 +278,11 @@ function lowerCaseFirstLetter(s: string): string {
 }
 
 function parseParamter(parameter: string) {
+  if (parameter.includes("...") || parameter.includes("va_list")) {
+    return undefined;
+  }
+
+  // use to match array syntax ,lile "float v[2]"  "char* text[250]"
   const arrayPattern = /(?<type>([\w\*]+ +)+)(?<name>\w+)\[\d*\]/;
   const match = parameter.trim().match(arrayPattern);
   if (match) {
@@ -282,12 +291,19 @@ function parseParamter(parameter: string) {
       type: match.groups!.type.trim() + "[]",
     };
   }
-  // sometype name
+
+  // contains no "[]""
+  // in the form "sometype name"
   const speaceIndex = parameter.lastIndexOf(" ");
   // assert(speaceIndex > -1, `not find space in ${p}`);
   if (speaceIndex > 1) {
     const type = parameter.substring(0, speaceIndex).trim();
     const name = parameter.substring(speaceIndex + 1).trim();
+
+    // fix "ImColor *pOut", move "*" from name to type
+    if (name.startsWith("*")) {
+      return { name: name.substring(1), type: type + "*" };
+    }
     return { name, type };
   } else {
     assert(parameter == "void", `${parameter} is not void`);
@@ -304,7 +320,7 @@ function makeSymbol(
   const paramterFFITypes: string[] = [];
   const parameters_ = parameters.split(",");
   for (const parameter of parameters_) {
-    const parameterInfo = parseParamter(parameter);
+    const parameterInfo = parseParamter(parameter.trim());
     if (parameterInfo) {
       const type = typeToFFI(parameterInfo.type);
       paramterFFITypes.push(type);
@@ -406,8 +422,7 @@ function makeDraft(
   for (const parameter of parameters_) {
     const parameterInfo = parseParamter(parameter);
     if (parameterInfo === undefined) {
-      assert(parameters_.length == 1);
-      break;
+      continue;
     }
 
     const { type, name } = parameterInfo;
@@ -451,6 +466,120 @@ function parseFunction(func: string) {
   return { symbol, draft };
 }
 
+function makeStyleDraft() {
+  const file = Deno.readTextFileSync("draft/style.txt");
+  const lines = file.split("\n");
+  interface DeclareInfo {
+    name: string;
+    type: string;
+    comment: string;
+  }
+  function parseLine(line: string) {
+    const [declare, comment] = line.split("//");
+    const match = declare.trim().match(/(\w+) +(\w+)/);
+    assert(match && match.length > 2);
+    const type = match[1];
+    const name = match[2];
+    return { name, type, comment };
+  }
+
+  function getterName(info: DeclareInfo) {
+    return "DImGuiGet" + info.name;
+  }
+  function setterName(info: DeclareInfo) {
+    return "DImGuiSet" + info.name;
+  }
+  function makeFunctions(info: DeclareInfo): string[] {
+    const ffiType = typeToFFI(info.type);
+    const lines = [
+      `${getterName(info)}:{`,
+      ...shift([
+        `parameters: ["pointer"],`,
+        `result: ${ffiType},`,
+      ]),
+      "} as const satisfies Deno.ForeignFunction,",
+      `${setterName(info)}:{`,
+      ...shift([
+        `parameters: ["pointer",${ffiType}],`,
+        `result: "void",`,
+      ]),
+      "} as const satisfies Deno.ForeignFunction,",
+    ];
+    return lines;
+  }
+  function makeCPPGetter(info: DeclareInfo): string {
+    // deno-fmt-ignore
+    return `DIMGUI_EXPORT ${info.type} ${ getterName(info) } (ImGuiStyle* style){ return style->${info.name};}`;
+  }
+  function makeCPPSetter(info: DeclareInfo): string {
+    // deno-fmt-ignore
+    return `DIMGUI_EXPORT void ${ setterName(info) } (ImGuiStyle* style, ${info.type} value){ style->${info.name}=value;}`;
+  }
+
+  function makeJsCall(info: DeclareInfo): string[] {
+    const jsType = typeToJS(info.type);
+    const lines_ = [] as string[];
+
+    // comment
+    lines_.push(
+      `/*`,
+      ` * ${info.comment}`,
+      `*/`,
+    );
+    if (jsType == "ImVec2") {
+      // getter
+      lines_.push(
+        `get ${info.name}(): ${jsType} {`,
+        `  const data = imgui.${getterName(info)}(this.#self);`,
+        `  return new ImVec2(data);`,
+        `}`,
+      );
+      // setter
+      lines_.push(
+        `set ${info.name}(value: ${jsType}) {`,
+        `  imgui.${setterName(info)}(this.#self, value[BUFFER]);`,
+        `}`,
+      );
+    } else {
+      // getter
+      lines_.push(
+        `get ${info.name}(): ${jsType} {`,
+        `  return imgui.${getterName(info)}(this.#self);`,
+        `}`,
+      );
+      // setter
+      lines_.push(
+        `set ${info.name}(value: ${jsType}) {`,
+        `  imgui.${setterName(info)}(this.#self, value);`,
+        `}`,
+      );
+    }
+    return lines_;
+  }
+
+  const declareInfos = lines.map(parseLine);
+
+  const output = [] as string[];
+  output.push("\n".repeat(3));
+  for (const info of declareInfos) {
+    output.push(makeCPPGetter(info));
+  }
+  output.push("\n".repeat(3));
+  for (const info of declareInfos) {
+    output.push(makeCPPSetter(info));
+  }
+  output.push("\n".repeat(3));
+  for (const info of declareInfos) {
+    output.push(...makeFunctions(info));
+  }
+  output.push("\n".repeat(3));
+  for (const info of declareInfos) {
+    output.push(...makeJsCall(info));
+  }
+
+  Deno.writeTextFileSync("draft/style-draft.txt", output.join("\n"));
+}
+
 function gen() {
   const source = readHeaderFile();
   const functions = source.split("\n").filter(isUsefulCall);
@@ -464,6 +593,8 @@ function gen() {
 
   writeDraftFile(draftLines);
   writeSymboleFile(symbolLines);
+
+  makeStyleDraft();
 }
 
 gen();
