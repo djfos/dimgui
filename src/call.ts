@@ -9,6 +9,7 @@ import {
   type ImFont,
   type ImGuiButtonFlags,
   type ImGuiColorEditFlags,
+  ImGuiComboFlags,
   type ImGuiContext,
   type ImGuiDockNodeFlags,
   type ImGuiDragDropFlags,
@@ -18,6 +19,7 @@ import {
   type ImGuiInputTextCallback,
   type ImGuiInputTextFlags,
   ImGuiIO,
+  ImGuiListClipper,
   type ImGuiPayload,
   type ImGuiPopupFlags,
   type ImGuiSelectableFlags,
@@ -1101,6 +1103,10 @@ export function text(text: StringSource): void {
   imgui.igText(cString(text));
 }
 
+export function textDisabled(text: StringSource): void {
+  imgui.igTextDisabled(cString(text));
+}
+
 export function labelText(label: StringSource, text: StringSource): void {
   imgui.igLabelText(cString(label), cString(text));
 }
@@ -1238,8 +1244,50 @@ export function imageButton(
 //   IMGUI_API bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int popup_max_height_in_items = -1);      // Separate items with \0 within a string, end item-list with \0\0. e.g. "One\0Two\0Three\0"
 //   IMGUI_API bool          Combo(const char* label, int* current_item, bool(*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int popup_max_height_in_items = -1);
 
-// TODO
+export function beginCombo(
+  label: string,
+  preview_value: string,
+  flags: ImGuiComboFlags = 0,
+): boolean {
+  return imgui.igBeginCombo(cString(label), cString(preview_value), flags);
+}
+export function endCombo(): void {
+  imgui.igEndCombo();
+}
 
+export function combo(
+  label: string,
+  currentItem: Int32Array,
+  items: string[],
+  popup_max_height_in_items?: number,
+): boolean {
+  const combo_preview_value = items[currentItem[0]];
+  let changed = false;
+  if (beginCombo(label, combo_preview_value)) {
+    for (let n = 0; n < items.length; n++) {
+      const isSelected = currentItem[0] == n;
+      const itemText = items[n] ?? "unkonw item";
+      if (selectable(itemText, isSelected)) {
+        currentItem[0] = n;
+        changed = true;
+      }
+      if (isSelected) {
+        setItemDefaultFocus();
+      }
+    }
+    endCombo();
+  }
+  return changed;
+}
+// export function combo_Str_arr(label: string, current_item: Int32Array, items: char[], items_count: number, popup_max_height_in_items: number): boolean {
+//   return imgui.igCombo_Str_arr(cString(label), current_item, items, items_count, popup_max_height_in_items);
+// }
+// export function combo_Str(label: string, current_item: Int32Array, items_separated_by_zeros: string, popup_max_height_in_items: number): boolean {
+//   return imgui.igCombo_Str(cString(label), current_item, cString(items_separated_by_zeros), popup_max_height_in_items);
+// }
+// export function combo_FnBoolPtr(label: string, current_item: Int32Array, data: Deno.UnsafeCallback, idx: number, out_text): Deno.UnsafeCallback, data: ArrayBuffer, items_count: number, popup_max_height_in_items: number): boolean {
+//   return imgui.igCombo_FnBoolPtr(cString(label), current_item, data, idx, out_text), data, items_count, popup_max_height_in_items);
+// }
 //   // Widgets: Drag Sliders
 //   // - CTRL+Click on any drag box to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use ImGuiSliderFlags_AlwaysClamp to always clamp.
 //   // - For all the Float2/Float3/Float4/Int2/Int3/Int4 versions of every function, note that a 'float v[X]' function argument is the same as 'float* v',
@@ -2006,31 +2054,45 @@ export function setNextItemOpen(is_open: boolean, cond: ImGuiCond = 0): void {
  * - size.y==0.0: use label height.
  * - size.y> 0.0: specify height.
  */
-export function selectable_Bool(
+export function selectable(
   label: StringSource,
-  selected: boolean = false,
+  selected: boolean | CBool = false,
   flags: ImGuiSelectableFlags = 0,
   size: ImVec2 = new ImVec2(0, 0),
 ): boolean {
-  return imgui.igSelectable_Bool(cString(label), selected, flags, size[BUFFER]);
+  if (selected instanceof CBool) {
+    return imgui.igSelectable_BoolPtr(
+      cString(label),
+      selected ? selected[BUFFER] : null,
+      flags,
+      size[BUFFER],
+    );
+  } else {
+    return imgui.igSelectable_Bool(
+      cString(label),
+      selected,
+      flags,
+      size[BUFFER],
+    );
+  }
 }
 /**
  * "bool* p_selected" point to the selection state (read-write),
  * as a convenient helper.
  */
-export function selectable_BoolPtr(
-  label: StringSource,
-  selected: CBool | null = null,
-  flags: ImGuiSelectableFlags = 0,
-  size: ImVec2 = new ImVec2(0, 0),
-): boolean {
-  return imgui.igSelectable_BoolPtr(
-    cString(label),
-    selected ? selected[BUFFER] : null,
-    flags,
-    size[BUFFER],
-  );
-}
+// export function selectable_BoolPtr(
+//   label: StringSource,
+//   selected: CBool | null = null,
+//   flags: ImGuiSelectableFlags = 0,
+//   size: ImVec2 = new ImVec2(0, 0),
+// ): boolean {
+//   return imgui.igSelectable_BoolPtr(
+//     cString(label),
+//     selected ? selected[BUFFER] : null,
+//     flags,
+//     size[BUFFER],
+//   );
+// }
 
 //   // Widgets: List Boxes
 //   // - This is essentially a thin wrapper to using BeginChild/EndChild with some stylistic changes.
@@ -2043,11 +2105,66 @@ export function selectable_BoolPtr(
 //   IMGUI_API bool          ListBox(const char* label, int* current_item, const char* const items[], int items_count, int height_in_items = -1);
 //   IMGUI_API bool          ListBox(const char* label, int* current_item, bool (*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int height_in_items = -1);
 
-export function beginListBox(label: StringSource, size: ImVec2): boolean {
-  return imgui.igBeginListBox(cString(label), size[BUFFER]);
+export function beginListBox(
+  label: StringSource,
+  size: ImVec2 = new ImVec2(0, 0),
+): boolean {
+  return imgui.igBeginListBox(cString(label), size.buffer);
 }
 export function endListBox(): void {
   imgui.igEndListBox();
+}
+export function listBox(
+  label: StringSource,
+  current_item: Int32Array,
+  items: string[],
+  items_count: number,
+  height_in_items: number = -1,
+): boolean {
+  const g = getCurrentContext();
+
+  // Calculate size from "height_in_items"
+  if (height_in_items < 0) {
+    height_in_items = Math.min(items_count, 7);
+  }
+  const height_in_items_f = height_in_items + 0.25;
+  const size = new ImVec2(
+    0.0,
+    Math.floor(
+      getTextLineHeightWithSpacing() * height_in_items_f +
+        getStyle().FramePadding.y * 2.0,
+    ),
+  );
+
+  if (!beginListBox(label, size)) {
+    return false;
+  }
+
+  // Assume all items have even height (= 1 line of text). If you need items of different height,
+  // you can create a custom version of ListBox() in your code without using the clipper.
+  let value_changed = false;
+  const clipper = new ImGuiListClipper();
+  // ImGuiListClipper clipper;
+  // clipper.Begin(items_count, GetTextLineHeightWithSpacing()); // We know exactly our line height here so we pass it as a minor optimization, but generally you don't need to.
+  clipper.begin(items_count);
+  while (clipper.step()) {
+    for (let i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+      const item_text = items[i] ?? "*Unknown item*";
+      pushID(i);
+      const item_selected = i == current_item[0];
+      if (selectable(item_text, item_selected)) {
+        current_item[0] = i;
+        value_changed = true;
+      }
+      if (item_selected) {
+        setItemDefaultFocus();
+      }
+      popID();
+    }
+  }
+  endListBox();
+
+  return value_changed;
 }
 // TODO
 // export function listBox_Str_arr(label: StringSource, current_item: Int32Array, items: char[], items_count: number, height_in_items: number): boolean {
@@ -2065,7 +2182,29 @@ export function endListBox(): void {
 //   IMGUI_API void          PlotHistogram(const char* label, float(*values_getter)(void* data, int idx), void* data, int values_count, int values_offset = 0, const char* overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0));
 
 // TODO
-
+export function plotLines(
+  label: StringSource,
+  values: Float32Array,
+  values_count: number,
+  values_offset = 0,
+  overlay_text?: StringSource,
+  scale_min = imgui.igGET_FLT_MAX(),
+  scale_max = imgui.igGET_FLT_MAX(),
+  graph_size = new ImVec2(0, 0),
+  stride = 8,
+) {
+  imgui.igPlotLines_FloatPtr(
+    cString(label),
+    values,
+    values_count,
+    values_offset,
+    cString(overlay_text),
+    scale_min,
+    scale_max,
+    graph_size.buffer,
+    stride,
+  );
+}
 //   // Widgets: Value() Helpers.
 //   // - Those are merely shortcut to calling Text() with a format string. Output single value in "name: value" format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
 //   IMGUI_API void          Value(const char* prefix, bool b);
@@ -2159,8 +2298,9 @@ export function beginTooltip(): void {
 export function endTooltip(): void {
   imgui.igEndTooltip();
 }
-
-// TODO  SetTooltip(const char* fmt, ...)
+export function setTooltip(text: StringSource) {
+  imgui.igSetTooltip(cString(text));
+}
 
 //   // Popups, Modals
 //   //  - They block normal mouse hovering detection (and therefore most mouse interactions) behind them.
@@ -2636,7 +2776,7 @@ export function setKeyboardFocusHere(offset: number): void {
 //   IMGUI_API ImVec2        GetItemRectSize();                                                  // get size of last item
 //   IMGUI_API void          SetItemAllowOverlap();                                              // allow last item to be overlapped by a subsequent item. sometimes useful with invisible buttons, selectables, etc. to catch unused area.
 
-export function isItemHovered(flags: ImGuiHoveredFlags): boolean {
+export function isItemHovered(flags: ImGuiHoveredFlags = 0): boolean {
   return imgui.igIsItemHovered(flags);
 }
 export function isItemActive(): boolean {

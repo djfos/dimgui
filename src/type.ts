@@ -6,6 +6,19 @@ export const DATAVIEW = Symbol("vkStructDataView");
 export const LE =
   new Uint8Array(new Uint32Array([0x12345678]).buffer)[0] === 0x78;
 
+function getPointerByte() {
+  switch (Deno.build.arch) {
+    case "x86_64":
+      return 8;
+
+    case "aarch64":
+      return 16;
+
+    default:
+      throw Error("unhandled arch");
+  }
+}
+
 export class CBool {
   static readonly size = 1;
   #data: Uint8Array;
@@ -41,8 +54,82 @@ export class CBool {
   }
 }
 
-type Int32 = number;
-type Float = number;
+// type Int32 = number;
+// type Float = number;
+export class Float {
+  #buffer: Float32Array;
+  constructor() {
+    this.#buffer = new Float32Array(1);
+  }
+
+  static of(value: number) {
+    const ret = new Float();
+    ret.value = value;
+    return ret;
+  }
+
+  get value() {
+    return this.#buffer[0];
+  }
+
+  set value(value: number) {
+    this.#buffer[0] = value;
+  }
+
+  get buffer() {
+    return this.#buffer;
+  }
+}
+
+export class Double {
+  #buffer: Float64Array;
+  constructor() {
+    this.#buffer = new Float64Array(1);
+  }
+
+  static of(value: number) {
+    const ret = new Double();
+    ret.value = value;
+    return ret;
+  }
+
+  get value() {
+    return this.#buffer[0];
+  }
+
+  set value(value: number) {
+    this.#buffer[0] = value;
+  }
+
+  get buffer() {
+    return this.#buffer;
+  }
+}
+
+export class Int32 {
+  #buffer: Int32Array;
+  constructor() {
+    this.#buffer = new Int32Array(1);
+  }
+
+  static of(value: number) {
+    const ret = new Int32();
+    ret.value = value;
+    return ret;
+  }
+
+  get value() {
+    return this.#buffer[0];
+  }
+
+  set value(value: number) {
+    this.#buffer[0] = value;
+  }
+
+  get buffer() {
+    return this.#buffer;
+  }
+}
 
 // structs
 /**
@@ -97,7 +184,7 @@ export class ImFontAtlas {
 
   addFontFromMemoryTTF(
     font_data: BufferSource,
-    size_pixels: Float,
+    size_pixels: number,
     font_cfg?: ImFontConfig,
     glyph_ranges?: string,
   ): ImFont {
@@ -204,7 +291,64 @@ export type ImGuiKeyData = Deno.PointerValue;
 /**
  * Helper to manually clip large list of items
  */
-export type ImGuiListClipper = Deno.PointerValue;
+export class ImGuiListClipper {
+  #buffer: Uint8Array;
+  #view: DataView;
+  // int             DisplayStart;       // First item to display, updated by each call to Step()
+  // int             DisplayEnd;         // End of items to display (exclusive)
+  // int             ItemsCount;         // [Internal] Number of items
+  // float           ItemsHeight;        // [Internal] Height of item after a first step and item submission can calculate it
+  // float           StartPosY;          // [Internal] Cursor position at the time of Begin() or after table frozen rows are all processed
+  // void*           TempData;           // [Internal] Internal data
+  static readonly size = 20 + getPointerByte();
+
+  constructor() {
+    this.#buffer = new Uint8Array(ImGuiListClipper.size);
+    this.#view = new DataView(this.#buffer.buffer, this.#buffer.byteOffset);
+    this.#view.setUint32(8, -1, LE);
+  }
+
+  get buffer() {
+    return this.#buffer;
+  }
+
+  get DisplayStart() {
+    return this.#view.getInt32(0, LE);
+  }
+
+  set DisplayStart(value: number) {
+    this.#view.setInt32(0, value, LE);
+  }
+  get DisplayEnd() {
+    return this.#view.getInt32(4, LE);
+  }
+
+  set DisplayEnd(value: number) {
+    this.#view.setInt32(4, value, LE);
+  }
+
+  begin(items_count: number, items_height = -1.0) {
+    imgui.ImGuiListClipper_Begin(
+      Deno.UnsafePointer.of(this.#buffer),
+      items_count,
+      items_height,
+    );
+  }
+
+  /**
+   * Automatically called on the last call of Step() that returns false.
+   */
+  end() {
+    imgui.ImGuiListClipper_End(Deno.UnsafePointer.of(this.#buffer));
+  }
+
+  /**
+   * Call until it returns false. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.
+   */
+  step(): boolean {
+    return imgui.ImGuiListClipper_Step(Deno.UnsafePointer.of(this.#buffer));
+  }
+}
 /**
  * Helper for running a block of code not more than once a frame
  */
@@ -302,6 +446,10 @@ export class ImVec2 {
     }
   }
 
+  get buffer() {
+    return this.#data;
+  }
+
   get x() {
     return this.#data[0];
   }
@@ -322,13 +470,9 @@ export class ImVec2 {
  */
 export class ImVec4 {
   #data: Float32Array;
-  #view: DataView;
 
   get [BUFFER]() {
     return this.#data;
-  }
-  get [DATAVIEW]() {
-    return this.#view;
   }
 
   constructor();
@@ -336,7 +480,6 @@ export class ImVec4 {
   constructor(v: ImVec4);
   constructor(x?: number | ImVec4, y?: number, z?: number, w?: number) {
     this.#data = new Float32Array(4);
-    this.#view = new DataView(this.#data.buffer);
     if (x instanceof ImVec4) {
       this.#data = x.#data.slice(0);
     } else if (
@@ -350,29 +493,33 @@ export class ImVec4 {
     }
   }
 
+  get buffer() {
+    return this.#data;
+  }
+
   get x() {
-    return this.#view.getFloat32(0, LE);
+    return this.#data[0];
   }
   set x(value: number) {
-    this.#view.setFloat32(0, value, LE);
+    this.#data[0] = value;
   }
   get y() {
-    return this.#view.getFloat32(4, LE);
+    return this.#data[1];
   }
   set y(value: number) {
-    this.#view.setFloat32(4, value, LE);
+    this.#data[1] = value;
   }
   get z() {
-    return this.#view.getFloat32(8, LE);
+    return this.#data[2];
   }
   set z(value: number) {
-    this.#view.setFloat32(8, value, LE);
+    this.#data[2] = value;
   }
   get w() {
-    return this.#view.getFloat32(12, LE);
+    return this.#data[3];
   }
   set w(value: number) {
-    this.#view.setFloat32(12, value, LE);
+    this.#data[3] = value;
   }
 
   pointer(index: number): Float32Array {
