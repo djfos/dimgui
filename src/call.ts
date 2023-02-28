@@ -3002,13 +3002,13 @@ export function createHSVColor(
 //   IMGUI_API const char*   GetKeyName(ImGuiKey key);                                           // [DEBUG] returns English name of the key. Those names a provided for debugging purpose and are not meant to be saved persistently not compared.
 //   IMGUI_API void          SetNextFrameWantCaptureKeyboard(bool want_capture_keyboard);        // Override io.WantCaptureKeyboard flag next frame (said flag is left for your application to handle, typically when true it instructs your app to ignore inputs). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard"; after the next NewFrame() call.
 
-export function isKeyDown_Nil(key: ImGuiKey): boolean {
+export function isKeyDown(key: ImGuiKey): boolean {
   return imgui.igIsKeyDown_Nil(key);
 }
-export function isKeyPressed_Bool(key: ImGuiKey, repeat: boolean): boolean {
+export function isKeyPressed(key: ImGuiKey, repeat: boolean = true): boolean {
   return imgui.igIsKeyPressed_Bool(key, repeat);
 }
-export function isKeyReleased_Nil(key: ImGuiKey): boolean {
+export function isKeyReleased(key: ImGuiKey): boolean {
   return imgui.igIsKeyReleased_Nil(key);
 }
 export function getKeyPressedAmount(
@@ -3018,7 +3018,7 @@ export function getKeyPressedAmount(
 ): number {
   return imgui.igGetKeyPressedAmount(key, repeat_delay, rate);
 }
-export function getKeyName(key: ImGuiKey): StringSource {
+export function getKeyName(key: ImGuiKey): string {
   return jsString(imgui.igGetKeyName(key));
 }
 export function setNextFrameWantCaptureKeyboard(

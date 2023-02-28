@@ -7,6 +7,7 @@ import {
   ImGuiCond,
   ImGuiDir,
   ImGuiHoveredFlagBits,
+  ImGuiKey,
   ImGuiSliderFlagBits,
   ImGuiTreeNodeFlagBits,
   ImVec2,
@@ -89,6 +90,17 @@ const status = {
       col1: Float32Array.of(1.0, 0.0, 0.2),
       col2: Float32Array.of(0.4, 0.7, 0.0, 0.5),
     },
+  },
+  tree: {
+    base_flags: Int32.of(
+      ImGuiTreeNodeFlagBits.OpenOnArrow |
+        ImGuiTreeNodeFlagBits.OpenOnDoubleClick |
+        ImGuiTreeNodeFlagBits.SpanAvailWidth,
+    ),
+    align_label_with_current_x_position: Bool.of(false),
+    test_drag_and_drop: Bool.of(false),
+    selection_mask: 1 << 2,
+    node_clicked: -1,
   },
 };
 
@@ -361,7 +373,6 @@ export function showDemoWindowWidgets() {
     imgui.treePop();
   }
 
-  // IMGUI_DEMO_MARKER("Widgets/Trees");
   if (imgui.treeNode("Trees")) {
     if (imgui.treeNode("Basic trees")) {
       for (let i = 0; i < 5; i++) {
@@ -381,31 +392,25 @@ export function showDemoWindowWidgets() {
       imgui.treePop();
     }
 
+    const tree = status.tree;
     if (imgui.treeNode("Advanced, with Selectable nodes")) {
       helpMarker(
         "This is a more typical looking tree with selectable nodes.\n" +
           "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.",
       );
-      const base_flags = Int32.of(
-        ImGuiTreeNodeFlagBits.OpenOnArrow |
-          ImGuiTreeNodeFlagBits.OpenOnDoubleClick |
-          ImGuiTreeNodeFlagBits.SpanAvailWidth,
-      );
-      const align_label_with_current_x_position = Bool.of(false);
-      const test_drag_and_drop = Bool.of(false);
       imgui.checkboxFlags(
         "ImGuiTreeNodeFlags_OpenOnArrow",
-        base_flags.buffer,
+        tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.OpenOnArrow,
       );
       imgui.checkboxFlags(
         "ImGuiTreeNodeFlags_OpenOnDoubleClick",
-        base_flags.buffer,
+        tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.OpenOnDoubleClick,
       );
       imgui.checkboxFlags(
         "ImGuiTreeNodeFlags_SpanAvailWidth",
-        base_flags.buffer,
+        tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.SpanAvailWidth,
       );
       imgui.sameLine();
@@ -414,19 +419,19 @@ export function showDemoWindowWidgets() {
       );
       imgui.checkboxFlags(
         "ImGuiTreeNodeFlags_SpanFullWidth",
-        base_flags.buffer,
+        tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.SpanFullWidth,
       );
       imgui.checkbox(
         "Align label with current X position",
-        align_label_with_current_x_position.buffer,
+        tree.align_label_with_current_x_position.buffer,
       );
       imgui.checkbox(
         "Test tree node as drag source",
-        test_drag_and_drop.buffer,
+        tree.test_drag_and_drop.buffer,
       );
       imgui.text("Hello!");
-      if (align_label_with_current_x_position) {
+      if (tree.align_label_with_current_x_position.value) {
         imgui.unindent(imgui.getTreeNodeToLabelSpacing());
       }
 
@@ -434,26 +439,24 @@ export function showDemoWindowWidgets() {
       //  You may retain selection state inside or outside your objects in whatever format you see fit.
       // 'node_clicked' is temporary storage of what node we have clicked to process selection at the end
       /// of the loop. May be a pointer to your own node type, etc.
-      let selection_mask = 1 << 2;
-      let node_clicked = -1;
       for (let i = 0; i < 6; i++) {
         // Disable the default "open on single-click behavior" + set Selected flag according to our selection.
         // To alter selection we use IsItemClicked() && !IsItemToggledOpen(), so clicking on an arrow doesn't alter selection.
-        const node_flags = base_flags;
-        const is_selected = (selection_mask & (1 << i)) != 0;
+        let node_flags = tree.base_flags.value;
+        const is_selected = (tree.selection_mask & (1 << i)) != 0;
         if (is_selected) {
-          node_flags.value |= ImGuiTreeNodeFlagBits.Selected;
+          node_flags |= ImGuiTreeNodeFlagBits.Selected;
         }
         if (i < 3) {
           // Items 0..2 are Tree Node
           const node_open = imgui.treeNodeEx(
             `Selectable Node ${i}`,
-            node_flags.value,
+            node_flags,
           );
           if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
-            node_clicked = i;
+            tree.node_clicked = i;
           }
-          if (test_drag_and_drop && imgui.beginDragDropSource()) {
+          if (tree.test_drag_and_drop && imgui.beginDragDropSource()) {
             imgui.setDragDropPayload("_TREENODE", null, 0);
             imgui.text("This is a drag and drop source");
             imgui.endDragDropSource();
@@ -466,30 +469,30 @@ export function showDemoWindowWidgets() {
           // Items 3..5 are Tree Leaves
           // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
           // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
-          node_flags.value |= ImGuiTreeNodeFlagBits.Leaf |
+          node_flags |= ImGuiTreeNodeFlagBits.Leaf |
             ImGuiTreeNodeFlagBits.NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-          imgui.treeNodeEx(`Selectable Leaf ${i}`, node_flags.value);
+          imgui.treeNodeEx(`Selectable Leaf ${i}`, node_flags);
           if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
-            node_clicked = i;
+            tree.node_clicked = i;
           }
-          if (test_drag_and_drop && imgui.beginDragDropSource()) {
+          if (tree.test_drag_and_drop && imgui.beginDragDropSource()) {
             imgui.setDragDropPayload("_TREENODE", null, 0);
             imgui.text("This is a drag and drop source");
             imgui.endDragDropSource();
           }
         }
       }
-      if (node_clicked != -1) {
+      if (tree.node_clicked != -1) {
         // Update selection state
         // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
-        if (imgui.getIO().KeyCtrl) {
-          selection_mask ^= 1 << node_clicked; // CTRL+click to toggle
+        if (imgui.isKeyPressed(ImGuiKey.LeftCtrl)) {
+          tree.selection_mask ^= 1 << tree.node_clicked; // CTRL+click to toggle
         } //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
         else {
-          selection_mask = 1 << node_clicked; // Click to single-select
+          tree.selection_mask = 1 << tree.node_clicked; // Click to single-select
         }
       }
-      if (align_label_with_current_x_position) {
+      if (tree.align_label_with_current_x_position.value) {
         imgui.indent(imgui.getTreeNodeToLabelSpacing());
       }
       imgui.treePop();
