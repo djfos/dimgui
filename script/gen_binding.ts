@@ -21,8 +21,8 @@ const C_TYPES = {
   "bool": "boolean",
 
   "char*": "string",
-  "void*": "ArrayBuffer",
-  "ImWchar*": "string",
+  "void*": "BufferSource",
+  "ImWchar*": "StringSource",
   // "ImGuiCol": "number",
   // "ImGuiCond": "number",
   // "ImGuiDataType": "number",
@@ -79,6 +79,8 @@ const C_TYPES_FFI = {
   "ImVec4*": "buffer",
   "ImRect*": "buffer",
   "ImWchar*": "buffer",
+  "ImS64*": "buffer",
+  "ImU64*": "buffer",
 
   "ImGuiCol": "i32",
   "ImGuiCond": "i32",
@@ -346,6 +348,7 @@ interface Paramter {
   name: string;
   type: string;
   asArgument?: string;
+  optional?: boolean;
 }
 
 function transformParamter(type: string, name: string): Paramter {
@@ -363,14 +366,15 @@ function transformParamter(type: string, name: string): Paramter {
     case "bool*": {
       return {
         name: cleanName,
-        type: "CBool | null = null",
-        asArgument: `${cleanName} ? ${cleanName}[BUFFER] : null`,
+        type: "Uint8Array",
+        optional: true,
+        asArgument: `${cleanName} ?? null`,
       };
     }
     case "char*": {
       return {
         name: cleanName,
-        type: "string",
+        type: "StringSource",
         asArgument: `cString(${cleanName})`,
       };
     }
@@ -431,7 +435,7 @@ function makeDraft(
   }
 
   const outerParamters = parameterInofs.map((info) =>
-    `${info.name}: ${info.type}`
+    `${info.name}${info.optional ? "?" : ""}: ${info.type}`
   ).join(", ");
   const innerArguments = parameterInofs.map((info) =>
     info.asArgument ?? info.name

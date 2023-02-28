@@ -7,7 +7,7 @@ import {
 } from "https://deno.land/x/dwm@0.3.0/mod.ts";
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "../mod.ts";
-import { CBool, ImGuiConfigFlagBits } from "../mod.ts";
+import { Bool, ImGuiConfigFlagBits } from "../mod.ts";
 import { showDemoWindowWidgets } from "./test_demo.ts";
 
 function queryWindowSizeAndFontSize() {
@@ -56,40 +56,40 @@ if (Deno.build.os == "windows") {
   }
 }
 
-const showDemoWindow = new CBool(true);
-const showMetricsWindow = new CBool(false);
-const showDebugLogWindow = new CBool(false);
-const showStackToolWindow = new CBool(false);
-const showAboutWindow = new CBool(false);
+const showDemoWindow = Bool.of(true);
+const showMetricsWindow = Bool.of(false);
+const showDebugLogWindow = Bool.of(false);
+const showStackToolWindow = Bool.of(false);
+const showAboutWindow = Bool.of(false);
 
 function showControllWindow() {
   imgui.begin("deno, debug, info windows control");
-  imgui.checkbox("demo", showDemoWindow);
-  imgui.checkbox("metrics", showMetricsWindow);
-  imgui.checkbox("debug info", showDebugLogWindow);
-  imgui.checkbox("stack tool", showStackToolWindow);
-  imgui.checkbox("about", showAboutWindow);
+  imgui.checkbox("demo", showDemoWindow.buffer);
+  imgui.checkbox("metrics", showMetricsWindow.buffer);
+  imgui.checkbox("debug info", showDebugLogWindow.buffer);
+  imgui.checkbox("stack tool", showStackToolWindow.buffer);
+  imgui.checkbox("about", showAboutWindow.buffer);
   imgui.showStyleSelector("style selector");
   imgui.showFontSelector("font selector");
   imgui.end();
 
   if (showDemoWindow.value) {
-    imgui.showDemoWindow(showDemoWindow);
+    imgui.showDemoWindow(showDemoWindow.buffer);
   }
   if (showDebugLogWindow.value) {
-    imgui.showDebugLogWindow(showDebugLogWindow);
+    imgui.showDebugLogWindow(showDebugLogWindow.buffer);
   }
   if (showMetricsWindow.value) {
-    imgui.showMetricsWindow(showMetricsWindow);
+    imgui.showMetricsWindow(showMetricsWindow.buffer);
   }
   if (showDebugLogWindow.value) {
-    imgui.showDebugLogWindow(showDebugLogWindow);
+    imgui.showDebugLogWindow(showDebugLogWindow.buffer);
   }
   if (showStackToolWindow.value) {
-    imgui.showStackToolWindow(showStackToolWindow);
+    imgui.showStackToolWindow(showStackToolWindow.buffer);
   }
   if (showAboutWindow.value) {
-    imgui.showAboutWindow(showAboutWindow);
+    imgui.showAboutWindow(showAboutWindow.buffer);
   }
 }
 

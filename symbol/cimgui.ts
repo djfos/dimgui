@@ -7265,13 +7265,13 @@ const cimguiSymbols = {
     } as const satisfies Deno.ForeignFunction,
     igCheckboxFlags_S64Ptr:{
         // signature: "char* label,ImS64* flags,ImS64 flags_value",
-        parameters: ["buffer","pointer","i64"],
+        parameters: ["buffer","buffer","i64"],
         // resultType: "bool",
         result: "bool",
     } as const satisfies Deno.ForeignFunction,
     igCheckboxFlags_U64Ptr:{
         // signature: "char* label,ImU64* flags,ImU64 flags_value",
-        parameters: ["buffer","pointer","u64"],
+        parameters: ["buffer","buffer","u64"],
         // resultType: "bool",
         result: "bool",
     } as const satisfies Deno.ForeignFunction,
@@ -7295,7 +7295,7 @@ const cimguiSymbols = {
     } as const satisfies Deno.ForeignFunction,
     igScrollbarEx:{
         // signature: "ImRect bb,ImGuiID id,ImGuiAxis axis,ImS64* p_scroll_v,ImS64 avail_v,ImS64 contents_v,ImDrawFlags flags",
-        parameters: [{struct:ImRect},"u32","i32","pointer","i64","i64","i32"],
+        parameters: [{struct:ImRect},"u32","i32","buffer","i64","i64","i32"],
         // resultType: "bool",
         result: "bool",
     } as const satisfies Deno.ForeignFunction,

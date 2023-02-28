@@ -1,12 +1,14 @@
 import * as imgui from "../mod.ts";
 import {
-  CBool,
+  Bool,
   Double,
   Float,
   ImGuiCol,
+  ImGuiCond,
   ImGuiDir,
   ImGuiHoveredFlagBits,
   ImGuiSliderFlagBits,
+  ImGuiTreeNodeFlagBits,
   ImVec2,
   ImVec4,
   Int32,
@@ -41,7 +43,7 @@ enum Element {
 const status = {
   basic: {
     clicked: 0,
-    check: new CBool(true),
+    check: new Bool(true),
     e: 0,
     counter: 0,
     combo: {
@@ -114,7 +116,7 @@ export function showDemoWindowWidgets() {
       imgui.text("Thanks for clicking me!");
     }
 
-    imgui.checkbox("checkbox", basic.check);
+    imgui.checkbox("checkbox", basic.check.buffer);
     imgui.radioButton("radio a", basic.e == 0, () => basic.e = 0);
     imgui.sameLine();
     imgui.radioButton("radio b", basic.e == 1, () => basic.e = 1);
@@ -359,119 +361,141 @@ export function showDemoWindowWidgets() {
     imgui.treePop();
   }
 
-  // // Testing ImGuiOnceUponAFrame helper.
-  // //static ImGuiOnceUponAFrame once;
-  // //for (int i = 0; i < 5; i++)
-  // //    if (once)
-  // //        imgui.text("This will be displayed only once.");
-
   // IMGUI_DEMO_MARKER("Widgets/Trees");
-  // if (imgui.treeNode("Trees"))
-  // {
-  //     IMGUI_DEMO_MARKER("Widgets/Trees/Basic trees");
-  //     if (imgui.treeNode("Basic trees"))
-  //     {
-  //         for (int i = 0; i < 5; i++)
-  //         {
-  //             // Use SetNextItemOpen() so set the default state of a node to be open. We could
-  //             // also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
-  //             if (i == 0)
-  //                 imgui.setNextItemOpen(true, ImGuiCond_Once);
+  if (imgui.treeNode("Trees")) {
+    if (imgui.treeNode("Basic trees")) {
+      for (let i = 0; i < 5; i++) {
+        // Use SetNextItemOpen() so set the default state of a node to be open. We could
+        // also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
+        if (i == 0) {
+          imgui.setNextItemOpen(true, ImGuiCond.Once);
+        }
 
-  //             if (imgui.treeNode((void*)(intptr_t)i, "Child %d", i))
-  //             {
-  //                 imgui.text("blah blah");
-  //                 imgui.sameLine();
-  //                 if (imgui.smallButton("button")) {}
-  //                 imgui.treePop();
-  //             }
-  //         }
-  //         imgui.treePop();
-  //     }
+        if (imgui.treeNode(`Child ${i}`)) {
+          imgui.text("blah blah");
+          imgui.sameLine();
+          if (imgui.smallButton("button")) {}
+          imgui.treePop();
+        }
+      }
+      imgui.treePop();
+    }
 
-  //     IMGUI_DEMO_MARKER("Widgets/Trees/Advanced, with Selectable nodes");
-  //     if (imgui.treeNode("Advanced, with Selectable nodes"))
-  //     {
-  //         helpMarker(
-  //             "This is a more typical looking tree with selectable nodes.\n"
-  //             "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.");
-  //         static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-  //         static bool align_label_with_current_x_position = false;
-  //         static bool test_drag_and_drop = false;
-  //         imgui.checkboxFlags("ImGuiTreeNodeFlags_OpenOnArrow",       &base_flags, ImGuiTreeNodeFlags_OpenOnArrow);
-  //         imgui.checkboxFlags("ImGuiTreeNodeFlags_OpenOnDoubleClick", &base_flags, ImGuiTreeNodeFlags_OpenOnDoubleClick);
-  //         imgui.checkboxFlags("ImGuiTreeNodeFlags_SpanAvailWidth",    &base_flags, ImGuiTreeNodeFlags_SpanAvailWidth); imgui.sameLine(); helpMarker("Extend hit area to all available width instead of allowing more items to be laid out after the node.");
-  //         imgui.checkboxFlags("ImGuiTreeNodeFlags_SpanFullWidth",     &base_flags, ImGuiTreeNodeFlags_SpanFullWidth);
-  //         imgui.checkbox("Align label with current X position", &align_label_with_current_x_position);
-  //         imgui.checkbox("Test tree node as drag source", &test_drag_and_drop);
-  //         imgui.text("Hello!");
-  //         if (align_label_with_current_x_position)
-  //             imgui.unindent(imgui.getTreeNodeToLabelSpacing());
+    if (imgui.treeNode("Advanced, with Selectable nodes")) {
+      helpMarker(
+        "This is a more typical looking tree with selectable nodes.\n" +
+          "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.",
+      );
+      const base_flags = Int32.of(
+        ImGuiTreeNodeFlagBits.OpenOnArrow |
+          ImGuiTreeNodeFlagBits.OpenOnDoubleClick |
+          ImGuiTreeNodeFlagBits.SpanAvailWidth,
+      );
+      const align_label_with_current_x_position = Bool.of(false);
+      const test_drag_and_drop = Bool.of(false);
+      imgui.checkboxFlags(
+        "ImGuiTreeNodeFlags_OpenOnArrow",
+        base_flags.buffer,
+        ImGuiTreeNodeFlagBits.OpenOnArrow,
+      );
+      imgui.checkboxFlags(
+        "ImGuiTreeNodeFlags_OpenOnDoubleClick",
+        base_flags.buffer,
+        ImGuiTreeNodeFlagBits.OpenOnDoubleClick,
+      );
+      imgui.checkboxFlags(
+        "ImGuiTreeNodeFlags_SpanAvailWidth",
+        base_flags.buffer,
+        ImGuiTreeNodeFlagBits.SpanAvailWidth,
+      );
+      imgui.sameLine();
+      helpMarker(
+        "Extend hit area to all available width instead of allowing more items to be laid out after the node.",
+      );
+      imgui.checkboxFlags(
+        "ImGuiTreeNodeFlags_SpanFullWidth",
+        base_flags.buffer,
+        ImGuiTreeNodeFlagBits.SpanFullWidth,
+      );
+      imgui.checkbox(
+        "Align label with current X position",
+        align_label_with_current_x_position.buffer,
+      );
+      imgui.checkbox(
+        "Test tree node as drag source",
+        test_drag_and_drop.buffer,
+      );
+      imgui.text("Hello!");
+      if (align_label_with_current_x_position) {
+        imgui.unindent(imgui.getTreeNodeToLabelSpacing());
+      }
 
-  //         // 'selection_mask' is dumb representation of what may be user-side selection state.
-  //         //  You may retain selection state inside or outside your objects in whatever format you see fit.
-  //         // 'node_clicked' is temporary storage of what node we have clicked to process selection at the end
-  //         /// of the loop. May be a pointer to your own node type, etc.
-  //         static int selection_mask = (1 << 2);
-  //         int node_clicked = -1;
-  //         for (int i = 0; i < 6; i++)
-  //         {
-  //             // Disable the default "open on single-click behavior" + set Selected flag according to our selection.
-  //             // To alter selection we use IsItemClicked() && !IsItemToggledOpen(), so clicking on an arrow doesn't alter selection.
-  //             ImGuiTreeNodeFlags node_flags = base_flags;
-  //             const bool is_selected = (selection_mask & (1 << i)) != 0;
-  //             if (is_selected)
-  //                 node_flags |= ImGuiTreeNodeFlags_Selected;
-  //             if (i < 3)
-  //             {
-  //                 // Items 0..2 are Tree Node
-  //                 bool node_open = imgui.treeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Node %d", i);
-  //                 if (imgui.isItemClicked() && !imgui.isItemToggledOpen())
-  //                     node_clicked = i;
-  //                 if (test_drag_and_drop && imgui.beginDragDropSource())
-  //                 {
-  //                     imgui.setDragDropPayload("_TREENODE", NULL, 0);
-  //                     imgui.text("This is a drag and drop source");
-  //                     imgui.endDragDropSource();
-  //                 }
-  //                 if (node_open)
-  //                 {
-  //                     imgui.bulletText("Blah blah\nBlah Blah");
-  //                     imgui.treePop();
-  //                 }
-  //             }
-  //             else
-  //             {
-  //                 // Items 3..5 are Tree Leaves
-  //                 // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
-  //                 // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
-  //                 node_flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
-  //                 imgui.treeNodeEx((void*)(intptr_t)i, node_flags, "Selectable Leaf %d", i);
-  //                 if (imgui.isItemClicked() && !imgui.isItemToggledOpen())
-  //                     node_clicked = i;
-  //                 if (test_drag_and_drop && imgui.beginDragDropSource())
-  //                 {
-  //                     imgui.setDragDropPayload("_TREENODE", NULL, 0);
-  //                     imgui.text("This is a drag and drop source");
-  //                     imgui.endDragDropSource();
-  //                 }
-  //             }
-  //         }
-  //         if (node_clicked != -1)
-  //         {
-  //             // Update selection state
-  //             // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
-  //             if (imgui.getIO().KeyCtrl)
-  //                 selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
-  //             else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
-  //                 selection_mask = (1 << node_clicked);           // Click to single-select
-  //         }
-  //         if (align_label_with_current_x_position)
-  //             imgui.indent(imgui.getTreeNodeToLabelSpacing());
-  //         imgui.treePop();
-  //     }
-  //     imgui.treePop();
-  // }
+      // 'selection_mask' is dumb representation of what may be user-side selection state.
+      //  You may retain selection state inside or outside your objects in whatever format you see fit.
+      // 'node_clicked' is temporary storage of what node we have clicked to process selection at the end
+      /// of the loop. May be a pointer to your own node type, etc.
+      let selection_mask = 1 << 2;
+      let node_clicked = -1;
+      for (let i = 0; i < 6; i++) {
+        // Disable the default "open on single-click behavior" + set Selected flag according to our selection.
+        // To alter selection we use IsItemClicked() && !IsItemToggledOpen(), so clicking on an arrow doesn't alter selection.
+        const node_flags = base_flags;
+        const is_selected = (selection_mask & (1 << i)) != 0;
+        if (is_selected) {
+          node_flags.value |= ImGuiTreeNodeFlagBits.Selected;
+        }
+        if (i < 3) {
+          // Items 0..2 are Tree Node
+          const node_open = imgui.treeNodeEx(
+            `Selectable Node ${i}`,
+            node_flags.value,
+          );
+          if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
+            node_clicked = i;
+          }
+          if (test_drag_and_drop && imgui.beginDragDropSource()) {
+            imgui.setDragDropPayload("_TREENODE", null, 0);
+            imgui.text("This is a drag and drop source");
+            imgui.endDragDropSource();
+          }
+          if (node_open) {
+            imgui.bulletText("Blah blah\nBlah Blah");
+            imgui.treePop();
+          }
+        } else {
+          // Items 3..5 are Tree Leaves
+          // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
+          // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
+          node_flags.value |= ImGuiTreeNodeFlagBits.Leaf |
+            ImGuiTreeNodeFlagBits.NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+          imgui.treeNodeEx(`Selectable Leaf ${i}`, node_flags.value);
+          if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
+            node_clicked = i;
+          }
+          if (test_drag_and_drop && imgui.beginDragDropSource()) {
+            imgui.setDragDropPayload("_TREENODE", null, 0);
+            imgui.text("This is a drag and drop source");
+            imgui.endDragDropSource();
+          }
+        }
+      }
+      if (node_clicked != -1) {
+        // Update selection state
+        // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
+        if (imgui.getIO().KeyCtrl) {
+          selection_mask ^= 1 << node_clicked; // CTRL+click to toggle
+        } //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
+        else {
+          selection_mask = 1 << node_clicked; // Click to single-select
+        }
+      }
+      if (align_label_with_current_x_position) {
+        imgui.indent(imgui.getTreeNodeToLabelSpacing());
+      }
+      imgui.treePop();
+    }
+    imgui.treePop();
+  }
 
   // IMGUI_DEMO_MARKER("Widgets/Collapsing Headers");
   // if (imgui.treeNode("Collapsing Headers"))

@@ -19,38 +19,38 @@ function getPointerByte() {
   }
 }
 
-export class CBool {
-  static readonly size = 1;
+export class Bool {
   #data: Uint8Array;
-  #view: DataView;
 
   get [BUFFER]() {
     return this.#data;
   }
-  get [DATAVIEW]() {
-    return this.#view;
-  }
 
-  constructor(value: boolean) {
-    this.#data = new Uint8Array(CBool.size);
-    this.#view = new DataView(
-      this.#data.buffer,
-      this.#data.byteOffset,
-      this.#data.byteLength,
-    );
+  constructor(value: boolean = false) {
+    this.#data = new Uint8Array(1);
     this.value = value;
   }
 
+  static of(value: boolean) {
+    const ret = new Bool();
+    ret.value = value;
+    return ret;
+  }
+
   get value() {
-    return !(this.#view.getUint8(0) === 0);
+    return !(this.#data[0] === 0);
   }
 
   set value(value: boolean) {
     if (value) {
-      this.#view.setUint8(0, 1);
+      this.#data[0] = 1;
     } else {
-      this.#view.setUint8(0, 0);
+      this.#data[0] = 0;
     }
+  }
+
+  get buffer() {
+    return this.#data;
   }
 }
 
