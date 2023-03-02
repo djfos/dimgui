@@ -100,7 +100,6 @@ const status = {
     align_label_with_current_x_position: Bool.of(false),
     test_drag_and_drop: Bool.of(false),
     selection_mask: 1 << 2,
-    node_clicked: -1,
   },
 };
 
@@ -385,7 +384,7 @@ export function showDemoWindowWidgets() {
         if (imgui.treeNode(`Child ${i}`)) {
           imgui.text("blah blah");
           imgui.sameLine();
-          if (imgui.smallButton("button")) {}
+          imgui.smallButton("button");
           imgui.treePop();
         }
       }
@@ -439,6 +438,7 @@ export function showDemoWindowWidgets() {
       //  You may retain selection state inside or outside your objects in whatever format you see fit.
       // 'node_clicked' is temporary storage of what node we have clicked to process selection at the end
       /// of the loop. May be a pointer to your own node type, etc.
+      let node_clicked = -1;
       for (let i = 0; i < 6; i++) {
         // Disable the default "open on single-click behavior" + set Selected flag according to our selection.
         // To alter selection we use IsItemClicked() && !IsItemToggledOpen(), so clicking on an arrow doesn't alter selection.
@@ -454,7 +454,7 @@ export function showDemoWindowWidgets() {
             node_flags,
           );
           if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
-            tree.node_clicked = i;
+            node_clicked = i;
           }
           if (tree.test_drag_and_drop && imgui.beginDragDropSource()) {
             imgui.setDragDropPayload("_TREENODE", null, 0);
@@ -473,7 +473,7 @@ export function showDemoWindowWidgets() {
             ImGuiTreeNodeFlagBits.NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
           imgui.treeNodeEx(`Selectable Leaf ${i}`, node_flags);
           if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
-            tree.node_clicked = i;
+            node_clicked = i;
           }
           if (tree.test_drag_and_drop && imgui.beginDragDropSource()) {
             imgui.setDragDropPayload("_TREENODE", null, 0);
@@ -482,14 +482,14 @@ export function showDemoWindowWidgets() {
           }
         }
       }
-      if (tree.node_clicked != -1) {
+      if (node_clicked != -1) {
         // Update selection state
         // (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
-        if (imgui.isKeyPressed(ImGuiKey.LeftCtrl)) {
-          tree.selection_mask ^= 1 << tree.node_clicked; // CTRL+click to toggle
+        if (imgui.isKeyDown(ImGuiKey.LeftCtrl)) {
+          tree.selection_mask ^= 1 << node_clicked; // CTRL+click to toggle
         } //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
         else {
-          tree.selection_mask = 1 << tree.node_clicked; // Click to single-select
+          tree.selection_mask = 1 << node_clicked; // Click to single-select
         }
       }
       if (tree.align_label_with_current_x_position.value) {
