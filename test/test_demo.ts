@@ -4,16 +4,21 @@ import {
   Double,
   Float,
   ImGuiCol,
+  ImGuiComboFlagBits,
   ImGuiCond,
   ImGuiDir,
   ImGuiHoveredFlagBits,
   ImGuiKey,
+  ImGuiSelectableFlagBits,
   ImGuiSliderFlagBits,
+  ImGuiTableFlagBits,
   ImGuiTreeNodeFlagBits,
   ImVec2,
   ImVec4,
   Int32,
+  Utf8Array,
 } from "../mod.ts";
+import { ImGuiInputTextFlagBits, ImGuiStyleVar } from "../src/enum.ts";
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
 // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
@@ -28,11 +33,9 @@ function helpMarker(desc: string) {
     imgui.endTooltip();
   }
 }
-
-/**
- * The Checkbox for that is inside the "Disabled" section at the bottom
- */
-const disable_all = false;
+function boolArrray(values: boolean[]) {
+  return values.map((v) => Bool.of(v));
+}
 
 enum Element {
   Fire,
@@ -41,84 +44,52 @@ enum Element {
   Water,
   COUNT,
 }
-const status = {
-  basic: {
-    clicked: 0,
-    check: new Bool(true),
-    e: 0,
-    counter: 0,
-    combo: {
-      items: [
-        "AAAA",
-        "BBBB",
-        "CCCC",
-        "DDDD",
-        "EEEE",
-        "FFFF",
-        "GGGG",
-        "HHHH",
-        "IIIIIII",
-        "JJJJ",
-        "KKKKKKK",
-      ],
-      item_current: new Int32Array(1),
-    },
-    textInput: {
-      str0: new Uint8Array(128),
-      str1: new Uint8Array(128),
-      i0: Int32.of(123),
-      f0: Float.of(0.001),
-      d0: Double.of(999999.00000001),
-      f1: Float.of(1.e10),
-      vec4a: new ImVec4(0.10, 0.20, 0.30, 0.44),
-    },
-    drag: {
-      i1: Int32.of(50),
-      i2: Int32.of(42),
-      f1: Float.of(1.0),
-      f2: Float.of(0.0067),
-    },
-    slider: {
-      i1: Int32.of(0),
-      f1: Float.of(0.123),
-      f2: Float.of(0.0),
-      angle: Float.of(0.0),
-      elem: Int32.of(Element.Fire),
-      elems_names: ["Fire", "Earth", "Air", "Water"],
-    },
-    color: {
-      col1: Float32Array.of(1.0, 0.0, 0.2),
-      col2: Float32Array.of(0.4, 0.7, 0.0, 0.5),
-    },
+
+const statusBasic = {
+  clicked: 0,
+  check: new Bool(true),
+  e: 0,
+  counter: 0,
+  combo: {
+    // deno-fmt-ignore
+    items: [ "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK"],
+    item_current: new Int32Array(1),
   },
-  tree: {
-    base_flags: Int32.of(
-      ImGuiTreeNodeFlagBits.OpenOnArrow |
-        ImGuiTreeNodeFlagBits.OpenOnDoubleClick |
-        ImGuiTreeNodeFlagBits.SpanAvailWidth,
-    ),
-    align_label_with_current_x_position: Bool.of(false),
-    test_drag_and_drop: Bool.of(false),
-    selection_mask: 1 << 2,
+  textInput: {
+    str0: new Uint8Array(128),
+    str1: new Uint8Array(128),
+    i0: Int32.of(123),
+    f0: Float.of(0.001),
+    d0: Double.of(999999.00000001),
+    f1: Float.of(1.e10),
+    vec4a: new ImVec4(0.10, 0.20, 0.30, 0.44),
+  },
+  drag: {
+    i1: Int32.of(50),
+    i2: Int32.of(42),
+    f1: Float.of(1.0),
+    f2: Float.of(0.0067),
+  },
+  slider: {
+    i1: Int32.of(0),
+    f1: Float.of(0.123),
+    f2: Float.of(0.0),
+    angle: Float.of(0.0),
+    elem: Int32.of(Element.Fire),
+    elems_names: ["Fire", "Earth", "Air", "Water"],
+  },
+  color: {
+    col1: Float32Array.of(1.0, 0.0, 0.2),
+    col2: Float32Array.of(0.4, 0.7, 0.0, 0.5),
+  },
+  listbox: {
+    item_current: Int32.of(1),
   },
 };
 
-export function showDemoWindowWidgets() {
-  // Most "big" widgets share a common width settings by default. See 'Demo->Layout->Widgets Width' for details.
-  // e.g. Use 2/3 of the space for widgets and 1/3 for labels (right align)
-  //ImGui::PushItemWidth(-ImGui::GetWindowWidth() * 0.35f);
-  // e.g. Leave a fixed amount of width for labels (by passing a negative value), the rest goes to widgets.
-  imgui.pushItemWidth(imgui.getFontSize() * -12);
-
-  if (!imgui.collapsingHeader("Widgets")) {
-    return;
-  }
-  if (disable_all) {
-    imgui.beginDisabled();
-  }
-
+function demoBasic() {
+  const basic = statusBasic;
   if (imgui.treeNode("Basic")) {
-    const basic = status.basic;
     if (imgui.button("Button")) {
       basic.clicked++;
     }
@@ -139,6 +110,7 @@ export function showDemoWindowWidgets() {
       if (i > 0) {
         imgui.sameLine();
       }
+
       imgui.pushID(i);
       imgui.pushStyleColor(
         ImGuiCol.Button,
@@ -183,7 +155,8 @@ export function showDemoWindowWidgets() {
     imgui.combo("combo", combo.item_current, combo.items, combo.items.length);
     imgui.sameLine();
     helpMarker(
-      'Using the simplified one-liner Combo API here.\nRefer to the "Combo" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.',
+'Using the simplified one-liner Combo API here.\nRefer to the "Combo" section below\
+      for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.',
     );
 
     // To wire InputText() with std::string or any other custom string type,
@@ -203,7 +176,7 @@ export function showDemoWindowWidgets() {
         "CTRL+Z,CTRL+Y undo/redo.\n" +
         "ESCAPE to revert.\n\n" +
         "PROGRAMMER:\n" +
-        "You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputText() " +
+        "You can use the ImGuiInputTextFlagBits.CallbackResize facility if you need to wire InputText() " +
         "to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example (this is not demonstrated " +
         "in imgui_demo.cpp).",
     );
@@ -315,22 +288,17 @@ export function showDemoWindowWidgets() {
       // Using the _simplified_ one-liner ListBox() api here
       // See "List boxes" section for examples of how to use the more flexible BeginListBox()/EndListBox() api.
       // IMGUI_DEMO_MARKER("Widgets/Basic/ListBox");
-      const items = [
-        "Apple",
-        "Banana",
-        "Cherry",
-        "Kiwi",
-        "Mango",
-        "Orange",
-        "Pineapple",
-        "Strawberry",
-        "Watermelon",
-      ];
-      const item_current = Int32.of(1);
+
+      // deno-fmt-ignore
+      const items = [ "Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon", ];
+      const item_current = basic.listbox.item_current;
       imgui.listBox("listbox", item_current.buffer, items, items.length, 4);
       imgui.sameLine();
+      // deno-fmt-ignore
       helpMarker(
-        'Using the simplified one-liner ListBox API here.\nRefer to the "List boxes" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.',
+        'Using the simplified one-liner ListBox API here.\nRefer\
+        to the "List boxes" section below for an explanation of how\
+        to use the more flexible and general BeginListBox/EndListBox API.',
       );
     }
 
@@ -359,7 +327,8 @@ export function showDemoWindowWidgets() {
 
       imgui.sameLine();
       imgui.button("Delayed");
-      if (imgui.isItemHovered(ImGuiHoveredFlagBits.DelayNormal)) { // Delay best used on items that highlight on hover, so this not a great example!
+      // Delay best used on items that highlight on hover, so this not a great example!
+      if (imgui.isItemHovered(ImGuiHoveredFlagBits.DelayNormal)) {
         imgui.setTooltip("I am a tooltip with a delay.");
       }
 
@@ -371,12 +340,25 @@ export function showDemoWindowWidgets() {
 
     imgui.treePop();
   }
+}
+const statusTree = {
+  base_flags: Int32.of(
+    ImGuiTreeNodeFlagBits.OpenOnArrow |
+      ImGuiTreeNodeFlagBits.OpenOnDoubleClick |
+      ImGuiTreeNodeFlagBits.SpanAvailWidth,
+  ),
+  align_label_with_current_x_position: Bool.of(false),
+  test_drag_and_drop: Bool.of(false),
+  selection_mask: 1 << 2,
+};
 
+function demoTree() {
+  const tree = statusTree;
   if (imgui.treeNode("Trees")) {
     if (imgui.treeNode("Basic trees")) {
       for (let i = 0; i < 5; i++) {
         // Use SetNextItemOpen() so set the default state of a node to be open. We could
-        // also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
+        // also use TreeNodeEx() with the ImGuiTreeNodeFlagBits.DefaultOpen flag to achieve the same thing!
         if (i == 0) {
           imgui.setNextItemOpen(true, ImGuiCond.Once);
         }
@@ -391,24 +373,23 @@ export function showDemoWindowWidgets() {
       imgui.treePop();
     }
 
-    const tree = status.tree;
     if (imgui.treeNode("Advanced, with Selectable nodes")) {
       helpMarker(
         "This is a more typical looking tree with selectable nodes.\n" +
           "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.",
       );
       imgui.checkboxFlags(
-        "ImGuiTreeNodeFlags_OpenOnArrow",
+        "ImGuiTreeNodeFlagBits.OpenOnArrow",
         tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.OpenOnArrow,
       );
       imgui.checkboxFlags(
-        "ImGuiTreeNodeFlags_OpenOnDoubleClick",
+        "ImGuiTreeNodeFlagBits.OpenOnDoubleClick",
         tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.OpenOnDoubleClick,
       );
       imgui.checkboxFlags(
-        "ImGuiTreeNodeFlags_SpanAvailWidth",
+        "ImGuiTreeNodeFlagBits.SpanAvailWidth",
         tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.SpanAvailWidth,
       );
@@ -417,7 +398,7 @@ export function showDemoWindowWidgets() {
         "Extend hit area to all available width instead of allowing more items to be laid out after the node.",
       );
       imgui.checkboxFlags(
-        "ImGuiTreeNodeFlags_SpanFullWidth",
+        "ImGuiTreeNodeFlagBits.SpanFullWidth",
         tree.base_flags.buffer,
         ImGuiTreeNodeFlagBits.SpanFullWidth,
       );
@@ -470,7 +451,7 @@ export function showDemoWindowWidgets() {
           // The only reason we use TreeNode at all is to allow selection of the leaf. Otherwise we can
           // use BulletText() or advance the cursor by GetTreeNodeToLabelSpacing() and call Text().
           node_flags |= ImGuiTreeNodeFlagBits.Leaf |
-            ImGuiTreeNodeFlagBits.NoTreePushOnOpen; // ImGuiTreeNodeFlags_Bullet
+            ImGuiTreeNodeFlagBits.NoTreePushOnOpen; // ImGuiTreeNodeFlagBits.Bullet
           imgui.treeNodeEx(`Selectable Leaf ${i}`, node_flags);
           if (imgui.isItemClicked() && !imgui.isItemToggledOpen()) {
             node_clicked = i;
@@ -499,128 +480,156 @@ export function showDemoWindowWidgets() {
     }
     imgui.treePop();
   }
+}
 
-  // IMGUI_DEMO_MARKER("Widgets/Collapsing Headers");
-  // if (imgui.treeNode("Collapsing Headers"))
-  // {
-  //     static bool closable_group = true;
-  //     imgui.checkbox("Show 2nd header", &closable_group);
-  //     if (imgui.collapsingHeader("Header", ImGuiTreeNodeFlags_None))
-  //     {
-  //         imgui.text("IsItemHovered: %d", imgui.isItemHovered());
-  //         for (int i = 0; i < 5; i++)
-  //             imgui.text("Some content %d", i);
-  //     }
-  //     if (imgui.collapsingHeader("Header with a close button", &closable_group))
-  //     {
-  //         imgui.text("IsItemHovered: %d", imgui.isItemHovered());
-  //         for (int i = 0; i < 5; i++)
-  //             imgui.text("More content %d", i);
-  //     }
-  //     /*
-  //     if (imgui.collapsingHeader("Header with a bullet", ImGuiTreeNodeFlags_Bullet))
-  //         imgui.text("IsItemHovered: %d", imgui.isItemHovered());
-  //     */
-  //     imgui.treePop();
-  // }
+const statusCollapsingHeaders = {
+  closable_group: Bool.of(true),
+};
+function demoClollapsingHeaders() {
+  const collapsingHeaders = statusCollapsingHeaders;
+  if (imgui.treeNode("Collapsing Headers")) {
+    // static bool closable_group = true;
+    const closable_group = collapsingHeaders.closable_group;
+    imgui.checkbox("Show 2nd header", closable_group.buffer);
+    if (
+      imgui.collapsingHeader("Header", undefined, ImGuiTreeNodeFlagBits.None)
+    ) {
+      imgui.text(`IsItemHovered: ${imgui.isItemHovered()}`);
+      for (let i = 0; i < 5; i++) {
+        imgui.text(`Some content ${i}`);
+      }
+    }
+    if (
+      imgui.collapsingHeader(
+        "Header with a close button",
+        closable_group.buffer,
+      )
+    ) {
+      imgui.text(`IsItemHovered: ${imgui.isItemHovered()}`);
+      for (let i = 0; i < 5; i++) {
+        imgui.text(`More content ${i}`);
+      }
+    }
+    imgui.treePop();
+  }
+}
 
-  // IMGUI_DEMO_MARKER("Widgets/Bullets");
-  // if (imgui.treeNode("Bullets"))
-  // {
-  //     imgui.bulletText("Bullet point 1");
-  //     imgui.bulletText("Bullet point 2\nOn multiple lines");
-  //     if (imgui.treeNode("Tree node"))
-  //     {
-  //         imgui.bulletText("Another bullet point");
-  //         imgui.treePop();
-  //     }
-  //     imgui.bullet(); imgui.text("Bullet point 3 (two calls)");
-  //     imgui.bullet(); imgui.smallButton("Button");
-  //     imgui.treePop();
-  // }
+function demoBullets() {
+  if (imgui.treeNode("Bullets")) {
+    imgui.bulletText("Bullet point 1");
+    imgui.bulletText("Bullet point 2\nOn multiple lines");
+    if (imgui.treeNode("Tree node")) {
+      imgui.bulletText("Another bullet point");
+      imgui.treePop();
+    }
+    imgui.bullet();
+    imgui.text("Bullet point 3 (two calls)");
+    imgui.bullet();
+    imgui.smallButton("Button");
+    imgui.treePop();
+  }
+}
 
-  // IMGUI_DEMO_MARKER("Widgets/Text");
-  // if (imgui.treeNode("Text"))
-  // {
-  //     IMGUI_DEMO_MARKER("Widgets/Text/Colored Text");
-  //     if (imgui.treeNode("Colorful Text"))
-  //     {
-  //         // Using shortcut. You can use PushStyleColor()/PopStyleColor() for more flexibility.
-  //         imgui.textColored(ImVec4(1.0, 0.0, 1.0, 1.0f), "Pink");
-  //         imgui.textColored(ImVec4(1.0, 1.0, 0.0, 1.0f), "Yellow");
-  //         imgui.textDisabled("Disabled");
-  //         imgui.sameLine(); helpMarker("The TextDisabled color is stored in ImGuiStyle.");
-  //         imgui.treePop();
-  //     }
+const statusText = {
+  utf8Text: {
+    buf: Utf8Array.of("\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e", 32),
+  },
+  wordWrapping: {
+    wrap_width: Float.of(200),
+  },
+};
+function demoText() {
+  const text = statusText;
+  if (imgui.treeNode("Text")) {
+    if (imgui.treeNode("Colorful Text")) {
+      // Using shortcut. You can use PushStyleColor()/PopStyleColor() for more flexibility.
+      imgui.textColored(new ImVec4(1.0, 0.0, 1.0, 1.0), "Pink");
+      imgui.textColored(new ImVec4(1.0, 1.0, 0.0, 1.0), "Yellow");
+      imgui.textDisabled("Disabled");
+      imgui.sameLine();
+      helpMarker("The TextDisabled color is stored in ImGuiStyle.");
+      imgui.treePop();
+    }
 
-  //     IMGUI_DEMO_MARKER("Widgets/Text/Word Wrapping");
-  //     if (imgui.treeNode("Word Wrapping"))
-  //     {
-  //         // Using shortcut. You can use PushTextWrapPos()/PopTextWrapPos() for more flexibility.
-  //         imgui.textWrapped(
-  //             "This text should automatically wrap on the edge of the window. The current implementation "
-  //             "for text wrapping follows simple rules suitable for English and possibly other languages.");
-  //         imgui.spacing();
+    if (imgui.treeNode("Word Wrapping")) {
+      // Using shortcut. You can use PushTextWrapPos()/PopTextWrapPos() for more flexibility.
+      imgui.textWrapped(
+        "This text should automatically wrap on the edge of the window. The current implementation " +
+          "for text wrapping follows simple rules suitable for English and possibly other languages.",
+      );
+      // imgui.spacing();
 
-  //         static float wrap_width = 200.0;
-  //         imgui.sliderFloat("Wrap width", &wrap_width, -20, 600, "%.0f");
+      // static float wrap_width = 200.0;
+      const wrap_width = text.wordWrapping.wrap_width;
+      imgui.sliderFloat("Wrap width", wrap_width.buffer, -20, 600, "%.0f");
 
-  //         ImDrawList* draw_list = imgui.getWindowDrawList();
-  //         for (int n = 0; n < 2; n++)
-  //         {
-  //             imgui.text("Test paragraph %d:", n);
-  //             ImVec2 pos = imgui.getCursorScreenPos();
-  //             ImVec2 marker_min = ImVec2(pos.x + wrap_width, pos.y);
-  //             ImVec2 marker_max = ImVec2(pos.x + wrap_width + 10, pos.y + imgui.getTextLineHeight());
-  //             imgui.pushTextWrapPos(imgui.getCursorPos().x + wrap_width);
-  //             if (n == 0)
-  //                 imgui.text("The lazy dog is a good dog. This paragraph should fit within %.0 pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.", wrap_width);
-  //             else
-  //                 imgui.text("aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh");
+      // const draw_list = imgui.getWindowDrawList();
+      for (let n = 0; n < 2; n++) {
+        imgui.text(`Test paragraph ${n}`);
+        // const pos = imgui.getCursorScreenPos();
+        // const marker_min = new ImVec2(pos.x + wrap_width.value, pos.y);
+        // const marker_max = new ImVec2(pos.x + wrap_width.value + 10, pos.y + imgui.getTextLineHeight());
+        imgui.pushTextWrapPos(imgui.getCursorPos().x + wrap_width.value);
+        if (n == 0) {
+          imgui.text(
+            `The lazy dog is a good dog. This paragraph should fit within ${
+              wrap_width.value.toFixed(1)
+            } pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.`,
+          );
+        } else {
+          imgui.text(
+            "aaaaaaaa bbbbbbbb, c cccccccc,dddddddd. d eeeeeeee   ffffffff. gggggggg!hhhhhhhh",
+          );
+        }
 
-  //             // Draw actual text bounding box, following by marker of our expected limit (should not overlap!)
-  //             draw_list->AddRect(imgui.getItemRectMin(), imgui.getItemRectMax(), IM_COL32(255, 255, 0, 255));
-  //             draw_list->AddRectFilled(marker_min, marker_max, IM_COL32(255, 0, 255, 255));
-  //             imgui.popTextWrapPos();
-  //         }
+        // Draw actual text bounding box, following by marker of our expected limit (should not overlap!)
+        // draw_list->AddRect(imgui.getItemRectMin(), imgui.getItemRectMax(), IM_COL32(255, 255, 0, 255));
+        // draw_list->AddRectFilled(marker_min, marker_max, IM_COL32(255, 0, 255, 255));
+        imgui.popTextWrapPos();
+      }
 
-  //         imgui.treePop();
-  //     }
+      imgui.treePop();
+    }
 
-  //     IMGUI_DEMO_MARKER("Widgets/Text/UTF-8 Text");
-  //     if (imgui.treeNode("UTF-8 Text"))
-  //     {
-  //         // UTF-8 test with Japanese characters
-  //         // (Needs a suitable font? Try "Google Noto" or "Arial Unicode". See docs/FONTS.md for details.)
-  //         // - From C++11 you can use the u8"my text" syntax to encode literal strings as UTF-8
-  //         // - For earlier compiler, you may be able to encode your sources as UTF-8 (e.g. in Visual Studio, you
-  //         //   can save your source files as 'UTF-8 without signature').
-  //         // - FOR THIS DEMO FILE ONLY, BECAUSE WE WANT TO SUPPORT OLD COMPILERS, WE ARE *NOT* INCLUDING RAW UTF-8
-  //         //   CHARACTERS IN THIS SOURCE FILE. Instead we are encoding a few strings with hexadecimal constants.
-  //         //   Don't do this in your application! Please use u8"text in any language" in your application!
-  //         // Note that characters values are preserved even by InputText() if the font cannot be displayed,
-  //         // so you can safely copy & paste garbled characters into another application.
-  //         imgui.textWrapped(
-  //             "CJK text will only appear if the font was loaded with the appropriate CJK character ranges. "
-  //             "Call io.Fonts->AddFontFromFileTTF() manually to load extra character ranges. "
-  //             "Read docs/FONTS.md for details.");
-  //         imgui.text("Hiragana: \xe3\x81\x8b\xe3\x81\x8d\xe3\x81\x8f\xe3\x81\x91\xe3\x81\x93 (kakikukeko)"); // Normally we would use u8"blah blah" with the proper characters directly in the string.
-  //         imgui.text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
-  //         static char buf[32] = "\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e";
-  //         //static char buf[32] = u8"NIHONGO"; // <- this is how you would write it with C++11, using real kanjis
-  //         imgui.inputText("UTF-8 input", buf, IM_ARRAYSIZE(buf));
-  //         imgui.treePop();
-  //     }
-  //     imgui.treePop();
-  // }
+    if (imgui.treeNode("UTF-8 Text")) {
+      // UTF-8 test with Japanese characters
+      // (Needs a suitable font? Try "Google Noto" or "Arial Unicode". See docs/FONTS.md for details.)
+      // - From C++11 you can use the u8"my text" syntax to encode literal strings as UTF-8
+      // - For earlier compiler, you may be able to encode your sources as UTF-8 (e.g. in Visual Studio, you
+      //   can save your source files as 'UTF-8 without signature').
+      // - FOR THIS DEMO FILE ONLY, BECAUSE WE WANT TO SUPPORT OLD COMPILERS, WE ARE *NOT* INCLUDING RAW UTF-8
+      //   CHARACTERS IN THIS SOURCE FILE. Instead we are encoding a few strings with hexadecimal constants.
+      //   Don't do this in your application! Please use u8"text in any language" in your application!
+      // Note that characters values are preserved even by InputText() if the font cannot be displayed,
+      // so you can safely copy & paste garbled characters into another application.
+      imgui.textWrapped(
+        "CJK text will only appear if the font was loaded with the appropriate CJK character ranges. " +
+          "Call io.Fonts->AddFontFromFileTTF() manually to load extra character ranges. " +
+          "Read docs/FONTS.md for details.",
+      );
+      imgui.text(
+        "Hiragana: \xe3\x81\x8b\xe3\x81\x8d\xe3\x81\x8f\xe3\x81\x91\xe3\x81\x93 (kakikukeko)",
+      ); // Normally we would use u8"blah blah" with the proper characters directly in the string.
+      imgui.text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
+      const buf = text.utf8Text.buf;
+      imgui.inputText("UTF-8 input", buf.buffer, buf.buffer.length);
+      if (imgui.button("log input to console")) {
+        console.log(buf.value);
+      }
+      imgui.treePop();
+    }
+    imgui.treePop();
+  }
+}
 
+function demoImages() {
   // IMGUI_DEMO_MARKER("Widgets/Images");
   // if (imgui.treeNode("Images"))
   // {
-  //     ImGuiIO& io = imgui.getIO();
+  //     const io = imgui.getIO();
   //     imgui.textWrapped(
-  //         "Below we are displaying the font texture (which is the only texture we have access to in this demo). "
-  //         "Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. "
+  //         "Below we are displaying the font texture (which is the only texture we have access to in this demo). " +
+  //         "Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. " +
   //         "Hover the texture for a zoomed view!");
 
   //     // Below we are displaying the font texture because it is the only texture we have access to inside the demo!
@@ -672,7 +681,7 @@ export function showDemoWindowWidgets() {
   //     IMGUI_DEMO_MARKER("Widgets/Images/Textured buttons");
   //     imgui.textWrapped("And now some textured buttons..");
   //     static int pressed_count = 0;
-  //     for (int i = 0; i < 8; i++)
+  //     for (let i = 0; i < 8; i++)
   //     {
   //         // UV coordinates are often (0.0, 0.0f) and (1.0, 1.0f) to display an entire textures.
   //         // Here are trying to display only a 32x32 pixels area of the texture, hence the UV computation.
@@ -696,427 +705,619 @@ export function showDemoWindowWidgets() {
   //     imgui.text("Pressed %d times.", pressed_count);
   //     imgui.treePop();
   // }
-
+}
+const statusCombo = {
+  flags: Int32.of(ImGuiComboFlagBits.None),
+  item_current_idx: 0,
+  item_current_2: Int32.of(0),
+  item_current_3: Int32.of(-1),
+  listBox: {
+    item_current_idx: 0,
+  },
+};
+function demoCombo() {
+  const combo = statusCombo;
   // IMGUI_DEMO_MARKER("Widgets/Combo");
-  // if (imgui.treeNode("Combo"))
-  // {
-  //     // Combo Boxes are also called "Dropdown" in other systems
-  //     // Expose flags as checkbox for the demo
-  //     static ImGuiComboFlags flags = 0;
-  //     imgui.checkboxFlags("ImGuiComboFlags_PopupAlignLeft", &flags, ImGuiComboFlags_PopupAlignLeft);
-  //     imgui.sameLine(); helpMarker("Only makes a difference if the popup is larger than the combo");
-  //     if (imgui.checkboxFlags("ImGuiComboFlags_NoArrowButton", &flags, ImGuiComboFlags_NoArrowButton))
-  //         flags &= ~ImGuiComboFlags_NoPreview;     // Clear the other flag, as we cannot combine both
-  //     if (imgui.checkboxFlags("ImGuiComboFlags_NoPreview", &flags, ImGuiComboFlags_NoPreview))
-  //         flags &= ~ImGuiComboFlags_NoArrowButton; // Clear the other flag, as we cannot combine both
+  if (imgui.treeNode("Combo")) {
+    // Combo Boxes are also called "Dropdown" in other systems
+    // Expose flags as checkbox for the demo
+    const flags = combo.flags;
+    imgui.checkboxFlags(
+      "ImGuiComboFlagBits.PopupAlignLeft",
+      flags.buffer,
+      ImGuiComboFlagBits.PopupAlignLeft,
+    );
+    imgui.sameLine();
+    helpMarker("Only makes a difference if the popup is larger than the combo");
+    if (
+      imgui.checkboxFlags(
+        "ImGuiComboFlagBits.NoArrowButton",
+        flags.buffer,
+        ImGuiComboFlagBits.NoArrowButton,
+      )
+    ) {
+      flags.value &= ~ImGuiComboFlagBits.NoPreview; // Clear the other flag, as we cannot combine both
+    }
+    if (
+      imgui.checkboxFlags(
+        "ImGuiComboFlagBits.NoPreview",
+        flags.buffer,
+        ImGuiComboFlagBits.NoPreview,
+      )
+    ) {
+      flags.value &= ~ImGuiComboFlagBits.NoArrowButton; // Clear the other flag, as we cannot combine both
+    }
 
-  //     // Using the generic BeginCombo() API, you have full control over how to display the combo contents.
-  //     // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
-  //     // stored in the object itself, etc.)
-  //     const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
-  //     static int item_current_idx = 0; // Here we store our selection data as an index.
-  //     const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
-  //     if (imgui.beginCombo("combo 1", combo_preview_value, flags))
-  //     {
-  //         for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-  //         {
-  //             const bool is_selected = (item_current_idx == n);
-  //             if (imgui.selectable(items[n], is_selected))
-  //                 item_current_idx = n;
+    // Using the generic BeginCombo() API, you have full control over how to display the combo contents.
+    // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
+    // stored in the object itself, etc.)
+    const items = [
+      "AAAA",
+      "BBBB",
+      "CCCC",
+      "DDDD",
+      "EEEE",
+      "FFFF",
+      "GGGG",
+      "HHHH",
+      "IIII",
+      "JJJJ",
+      "KKKK",
+      "LLLLLLL",
+      "MMMM",
+      "OOOOOOO",
+    ];
+    const combo_preview_value = items[combo.item_current_idx]; // Pass in the preview value visible before opening the combo (it could be anything)
+    if (imgui.beginCombo("combo 1", combo_preview_value, flags.value)) {
+      for (let n = 0; n < items.length; n++) {
+        const is_selected = combo.item_current_idx == n;
+        if (imgui.selectable(items[n], is_selected)) {
+          combo.item_current_idx = n;
+        }
 
-  //             // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-  //             if (is_selected)
-  //                 imgui.setItemDefaultFocus();
-  //         }
-  //         imgui.endCombo();
-  //     }
+        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+        if (is_selected) {
+          imgui.setItemDefaultFocus();
+        }
+      }
+      imgui.endCombo();
+    }
 
-  //     // Simplified one-liner Combo() API, using values packed in a single constant string
-  //     // This is a convenience for when the selection set is small and known at compile-time.
-  //     static int item_current_2 = 0;
-  //     imgui.combo("combo 2 (one-liner)", &item_current_2, "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0");
+    // Simplified one-liner Combo() API, using values packed in a single constant string
+    // This is a convenience for when the selection set is small and known at compile-time.
+    const item_current_2 = combo.item_current_2;
+    imgui.combo(
+      "combo 2 (one-liner)",
+      item_current_2.buffer,
+      ["aaaa", "bbb", "cccc", "dddd", "eee"],
+    );
 
-  //     // Simplified one-liner Combo() using an array of const char*
-  //     // This is not very useful (may obsolete): prefer using BeginCombo()/EndCombo() for full control.
-  //     static int item_current_3 = -1; // If the selection isn't within 0..count, Combo won't display a preview
-  //     imgui.combo("combo 3 (array)", &item_current_3, items, IM_ARRAYSIZE(items));
+    // Simplified one-liner Combo() using an array of const char*
+    // This is not very useful (may obsolete): prefer using BeginCombo()/EndCombo() for full control.
 
-  //     // Simplified one-liner Combo() using an accessor function
-  //     struct Funcs { static bool ItemGetter(void* data, int n, const char** out_str) { *out_str = ((const char**)data)[n]; return true; } };
-  //     static int item_current_4 = 0;
-  //     imgui.combo("combo 4 (function)", &item_current_4, &Funcs::itemGetter, items, IM_ARRAYSIZE(items));
+    const item_current_3 = combo.item_current_3; // If the selection isn't within 0..count, Combo won't display a preview
+    imgui.combo("combo 3 (array)", item_current_3.buffer, items, items.length);
 
-  //     imgui.treePop();
-  // }
+    imgui.treePop();
+  }
 
   // IMGUI_DEMO_MARKER("Widgets/List Boxes");
-  // if (imgui.treeNode("List boxes"))
-  // {
-  //     // Using the generic BeginListBox() API, you have full control over how to display the combo contents.
-  //     // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
-  //     // stored in the object itself, etc.)
-  //     const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
-  //     static int item_current_idx = 0; // Here we store our selection data as an index.
-  //     if (imgui.beginListBox("listbox 1"))
-  //     {
-  //         for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-  //         {
-  //             const bool is_selected = (item_current_idx == n);
-  //             if (imgui.selectable(items[n], is_selected))
-  //                 item_current_idx = n;
+  if (imgui.treeNode("List boxes")) {
+    // Using the generic BeginListBox() API, you have full control over how to display the combo contents.
+    // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
+    // stored in the object itself, etc.)
 
-  //             // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-  //             if (is_selected)
-  //                 imgui.setItemDefaultFocus();
-  //         }
-  //         imgui.endListBox();
-  //     }
+    // deno-fmt-ignore
+    const items = [ "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"];
+    const listBox = combo.listBox;
+    if (imgui.beginListBox("listbox 1")) {
+      for (let n = 0; n < items.length; n++) {
+        const is_selected = listBox.item_current_idx == n;
+        if (imgui.selectable(items[n], is_selected)) {
+          listBox.item_current_idx = n;
+        }
 
-  //     // Custom size: use all width, 5 items tall
-  //     imgui.text("Full-width:");
-  //     if (imgui.beginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * imgui.getTextLineHeightWithSpacing())))
-  //     {
-  //         for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-  //         {
-  //             const bool is_selected = (item_current_idx == n);
-  //             if (imgui.selectable(items[n], is_selected))
-  //                 item_current_idx = n;
+        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+        if (is_selected) {
+          imgui.setItemDefaultFocus();
+        }
+      }
+      imgui.endListBox();
+    }
 
-  //             // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-  //             if (is_selected)
-  //                 imgui.setItemDefaultFocus();
-  //         }
-  //         imgui.endListBox();
-  //     }
+    // Custom size: use all width, 5 items tall
+    imgui.text("Full-width:");
+    const fullWidth = new ImVec2(
+      -imgui.floatMin(),
+      5 * imgui.getTextLineHeightWithSpacing(),
+    );
+    if (imgui.beginListBox("##listbox 2", fullWidth)) {
+      for (let n = 0; n < items.length; n++) {
+        const is_selected = listBox.item_current_idx == n;
+        if (imgui.selectable(items[n], is_selected)) {
+          listBox.item_current_idx = n;
+        }
 
-  //     imgui.treePop();
-  // }
+        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+        if (is_selected) {
+          imgui.setItemDefaultFocus();
+        }
+      }
+      imgui.endListBox();
+    }
 
+    imgui.treePop();
+  }
+}
+
+const statusSelectables = {
+  basic: {
+    selection: boolArrray([false, true, false, false, false]),
+  },
+  singleSlection: {
+    selected: -1,
+  },
+  multiSlection: {
+    selection: boolArrray([false, false, false, false, false]),
+  },
+  moreTextSameLine: {
+    selected: boolArrray([false, false, false]),
+  },
+  inColumns: {
+    selected: boolArrray([...Array(10).keys()].map((_) => false)),
+  },
+  grid: {
+    selected: [
+      boolArrray([true, false, false, false]),
+      boolArrray([false, true, false, false]),
+      boolArrray([false, false, true, false]),
+      boolArrray([false, false, false, true]),
+    ],
+  },
+  alignment: {
+    // deno-fmt-ignore
+    selected: boolArrray([ true, false, true, false, true, false, true, false, true ]),
+  },
+};
+
+function demoSelectables() {
   // IMGUI_DEMO_MARKER("Widgets/Selectables");
-  // if (imgui.treeNode("Selectables"))
-  // {
-  //     // Selectable() has 2 overloads:
-  //     // - The one taking "bool selected" as a read-only selection information.
-  //     //   When Selectable() has been clicked it returns true and you can alter selection state accordingly.
-  //     // - The one taking "bool* p_selected" as a read-write selection information (convenient in some cases)
-  //     // The earlier is more flexible, as in real application your selection may be stored in many different ways
-  //     // and not necessarily inside a bool value (e.g. in flags within objects, as an external list, etc).
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/Basic");
-  //     if (imgui.treeNode("Basic"))
-  //     {
-  //         static bool selection[5] = { false, true, false, false, false };
-  //         imgui.selectable("1. I am selectable", &selection[0]);
-  //         imgui.selectable("2. I am selectable", &selection[1]);
-  //         imgui.text("(I am not selectable)");
-  //         imgui.selectable("4. I am selectable", &selection[3]);
-  //         if (imgui.selectable("5. I am double clickable", selection[4], ImGuiSelectableFlags_AllowDoubleClick))
-  //             if (imgui.isMouseDoubleClicked(0))
-  //                 selection[4] = !selection[4];
-  //         imgui.treePop();
-  //     }
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/Single Selection");
-  //     if (imgui.treeNode("Selection State: Single Selection"))
-  //     {
-  //         static int selected = -1;
-  //         for (int n = 0; n < 5; n++)
-  //         {
-  //             char buf[32];
-  //             sprintf(buf, "Object %d", n);
-  //             if (imgui.selectable(buf, selected == n))
-  //                 selected = n;
-  //         }
-  //         imgui.treePop();
-  //     }
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/Multiple Selection");
-  //     if (imgui.treeNode("Selection State: Multiple Selection"))
-  //     {
-  //         helpMarker("Hold CTRL and click to select multiple items.");
-  //         static bool selection[5] = { false, false, false, false, false };
-  //         for (int n = 0; n < 5; n++)
-  //         {
-  //             char buf[32];
-  //             sprintf(buf, "Object %d", n);
-  //             if (imgui.selectable(buf, selection[n]))
-  //             {
-  //                 if (!imgui.getIO().KeyCtrl)    // Clear selection when CTRL is not held
-  //                     memset(selection, 0, sizeof(selection));
-  //                 selection[n] ^= 1;
-  //             }
-  //         }
-  //         imgui.treePop();
-  //     }
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/Rendering more text into the same line");
-  //     if (imgui.treeNode("Rendering more text into the same line"))
-  //     {
-  //         // Using the Selectable() override that takes "bool* p_selected" parameter,
-  //         // this function toggle your bool value automatically.
-  //         static bool selected[3] = { false, false, false };
-  //         imgui.selectable("main.c",    &selected[0]); imgui.sameLine(300); imgui.text(" 2,345 bytes");
-  //         imgui.selectable("Hello.cpp", &selected[1]); imgui.sameLine(300); imgui.text("12,345 bytes");
-  //         imgui.selectable("Hello.h",   &selected[2]); imgui.sameLine(300); imgui.text(" 2,345 bytes");
-  //         imgui.treePop();
-  //     }
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/In columns");
-  //     if (imgui.treeNode("In columns"))
-  //     {
-  //         static bool selected[10] = {};
+  if (imgui.treeNode("Selectables")) {
+    // Selectable() has 2 overloads:
+    // - The one taking "bool selected" as a read-only selection information.
+    //   When Selectable() has been clicked it returns true and you can alter selection state accordingly.
+    // - The one taking "bool* p_selected" as a read-write selection information (convenient in some cases)
+    // The earlier is more flexible, as in real application your selection may be stored in many different ways
+    // and not necessarily inside a bool value (e.g. in flags within objects, as an external list, etc).
+    // IMGUI_DEMO_MARKER("Widgets/Selectables/Basic");
+    if (imgui.treeNode("Basic")) {
+      const basic = statusSelectables.basic;
 
-  //         if (imgui.beginTable("split1", 3, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
-  //         {
-  //             for (int i = 0; i < 10; i++)
-  //             {
-  //                 char label[32];
-  //                 sprintf(label, "Item %d", i);
-  //                 imgui.tableNextColumn();
-  //                 imgui.selectable(label, &selected[i]); // FIXME-TABLE: Selection overlap
-  //             }
-  //             imgui.endTable();
-  //         }
-  //         imgui.spacing();
-  //         if (imgui.beginTable("split2", 3, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
-  //         {
-  //             for (int i = 0; i < 10; i++)
-  //             {
-  //                 char label[32];
-  //                 sprintf(label, "Item %d", i);
-  //                 imgui.tableNextRow();
-  //                 imgui.tableNextColumn();
-  //                 imgui.selectable(label, &selected[i], ImGuiSelectableFlags_SpanAllColumns);
-  //                 imgui.tableNextColumn();
-  //                 imgui.text("Some other contents");
-  //                 imgui.tableNextColumn();
-  //                 imgui.text("123456");
-  //             }
-  //             imgui.endTable();
-  //         }
-  //         imgui.treePop();
-  //     }
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/Grid");
-  //     if (imgui.treeNode("Grid"))
-  //     {
-  //         static char selected[4][4] = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+      // static bool selection[5] = { false, true, false, false, false };
+      const selection = basic.selection;
+      imgui.selectable("1. I am selectable", selection[0]);
+      imgui.selectable("2. I am selectable", selection[1]);
+      imgui.text("(I am not selectable)");
+      imgui.selectable("4. I am selectable", selection[3]);
+      if (
+        imgui.selectable(
+          "5. I am double clickable",
+          selection[4],
+          ImGuiSelectableFlagBits.AllowDoubleClick,
+        )
+      ) {
+        if (imgui.isMouseDoubleClicked(0)) {
+          selection[4].value = !selection[4].value;
+        }
+      }
+      imgui.treePop();
+    }
+    // IMGUI_DEMO_MARKER("Widgets/Selectables/Single Selection");
+    if (imgui.treeNode("Selection State: Single Selection")) {
+      const singleSlection = statusSelectables.singleSlection;
+      // static int selected = -1;
+      // let selected = -1;
+      for (let n = 0; n < 5; n++) {
+        if (imgui.selectable(`Object ${n}`, singleSlection.selected == n)) {
+          singleSlection.selected = n;
+        }
+      }
+      imgui.treePop();
+    }
+    // // IMGUI_DEMO_MARKER("Widgets/Selectables/Multiple Selection");
+    if (imgui.treeNode("Selection State: Multiple Selection")) {
+      helpMarker("Hold CTRL and click to select multiple items.");
+      // static bool selection[5] = { false, false, false, false, false };
+      // const selection = boolArrray([ false, false, false, false, false ])
+      const selection = statusSelectables.multiSlection.selection;
+      for (let n = 0; n < 5; n++) {
+        if (imgui.selectable(`Object ${n}`, selection[n])) {
+          if (!imgui.isKeyDown(ImGuiKey.LeftAlt)) { // Clear selection when CTRL is not held
+            selection.forEach((v) => v.value = false);
+          }
+          selection[n].value = !selection[n].value;
+        }
+      }
+      imgui.treePop();
+    }
+    // // IMGUI_DEMO_MARKER("Widgets/Selectables/Rendering more text into the same line");
+    if (imgui.treeNode("Rendering more text into the same line")) {
+      // Using the Selectable() override that takes "bool* p_selected" parameter,
+      // this function toggle your bool value automatically.
+      // static bool selected[3] = { false, false, false };
+      const selected = statusSelectables.moreTextSameLine.selected;
+      // const selected = boolArrray([ false,false, false ])
+      imgui.selectable("main.c", selected[0]);
+      imgui.sameLine(300);
+      imgui.text(" 2,345 bytes");
+      imgui.selectable("Hello.cpp", selected[1]);
+      imgui.sameLine(300);
+      imgui.text("12,345 bytes");
+      imgui.selectable("Hello.h", selected[2]);
+      imgui.sameLine(300);
+      imgui.text(" 2,345 bytes");
+      imgui.treePop();
+    }
+    // // IMGUI_DEMO_MARKER("Widgets/Selectables/In columns");
+    if (imgui.treeNode("In columns")) {
+      // static bool selected[10] = {};
 
-  //         // Add in a bit of silly fun...
-  //         const float time = (float)imgui.getTime();
-  //         const bool winning_state = memchr(selected, 0, sizeof(selected)) == NULL; // If all cells are selected...
-  //         if (winning_state)
-  //             imgui.pushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5 + 0.5 * cosf(time * 2.0f), 0.5 + 0.5 * sinf(time * 3.0f)));
+      // const selected = boolArrray([...Array(10).keys()].map(_ => false))
+      const selected = statusSelectables.inColumns.selected;
+      const flags = ImGuiTableFlagBits.Resizable |
+        ImGuiTableFlagBits.NoSavedSettings | ImGuiTableFlagBits.Borders;
+      if (imgui.beginTable("split1", 3, flags)) {
+        for (let i = 0; i < 10; i++) {
+          imgui.tableNextColumn();
+          imgui.selectable(`item ${i}`, selected[i]); // FIXME-TABLE: Selection overlap
+        }
+        imgui.endTable();
+      }
+      imgui.spacing();
+      if (imgui.beginTable("split2", 3, flags)) {
+        for (let i = 0; i < 10; i++) {
+          imgui.tableNextRow();
+          imgui.tableNextColumn();
+          imgui.selectable(
+            `item ${i}`,
+            selected[i],
+            ImGuiSelectableFlagBits.SpanAllColumns,
+          );
+          imgui.tableNextColumn();
+          imgui.text("Some other contents");
+          imgui.tableNextColumn();
+          imgui.text("123456");
+        }
+        imgui.endTable();
+      }
+      imgui.treePop();
+    }
+    // // IMGUI_DEMO_MARKER("Widgets/Selectables/Grid");
+    if (imgui.treeNode("Grid")) {
+      // const selected[4][4] = { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+      // const selected= [
+      //   boolArrray([ true, false, false, false ]),
+      //   boolArrray([ false, true, false, false ]),
+      //   boolArrray([ false, false, true, false ]),
+      //   boolArrray([ false, false, false, true ]) ];
+      const selected = statusSelectables.grid.selected;
+      // const selected= [ [ Bool.of(true), Bool.of(false), Bool.of(false), Bool.of(false) ], [ Bool.of(false), Bool.of(true), Bool.of(false), Bool.of(false) ], [ Bool.of(false), Bool.of(false), Bool.of(true), Bool.of(false) ], [ Bool.of(false), Bool.of(false), Bool.of(false), Bool.of(true) ] ] as const;
 
-  //         for (int y = 0; y < 4; y++)
-  //             for (int x = 0; x < 4; x++)
-  //             {
-  //                 if (x > 0)
-  //                     imgui.sameLine();
-  //                 imgui.pushID(y * 4 + x);
-  //                 if (imgui.selectable("Sailor", selected[y][x] != 0, 0, ImVec2(50, 50)))
-  //                 {
-  //                     // Toggle clicked cell + toggle neighbors
-  //                     selected[y][x] ^= 1;
-  //                     if (x > 0) { selected[y][x - 1] ^= 1; }
-  //                     if (x < 3) { selected[y][x + 1] ^= 1; }
-  //                     if (y > 0) { selected[y - 1][x] ^= 1; }
-  //                     if (y < 3) { selected[y + 1][x] ^= 1; }
-  //                 }
-  //                 imgui.popID();
-  //             }
+      // Add in a bit of silly fun...
+      const time = Date.now();
+      const winning_state = selected.every((arr) => arr.every((v) => v.value)); // If all cells are selected...
+      if (winning_state) {
+        const size = new ImVec2(
+          0.5 + 0.5 * Math.cos(time * 2.0),
+          0.5 + 0.5 * Math.sin(time * 3.0),
+        );
+        imgui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, size);
+      }
 
-  //         if (winning_state)
-  //             imgui.popStyleVar();
-  //         imgui.treePop();
-  //     }
-  //     IMGUI_DEMO_MARKER("Widgets/Selectables/Alignment");
-  //     if (imgui.treeNode("Alignment"))
-  //     {
-  //         helpMarker(
-  //             "By default, Selectables uses style.SelectableTextAlign but it can be overridden on a per-item "
-  //             "basis using PushStyleVar(). You'll probably want to always keep your default situation to "
-  //             "left-align otherwise it becomes difficult to layout multiple items on a same line");
-  //         static bool selected[3 * 3] = { true, false, true, false, true, false, true, false, true };
-  //         for (int y = 0; y < 3; y++)
-  //         {
-  //             for (int x = 0; x < 3; x++)
-  //             {
-  //                 ImVec2 alignment = ImVec2((float)x / 2.0, (float)y / 2.0f);
-  //                 char name[32];
-  //                 sprintf(name, "(%.1,%.1f)", alignment.x, alignment.y);
-  //                 if (x > 0) imgui.sameLine();
-  //                 imgui.pushStyleVar(ImGuiStyleVar_SelectableTextAlign, alignment);
-  //                 imgui.selectable(name, &selected[3 * y + x], ImGuiSelectableFlags_None, ImVec2(80, 80));
-  //                 imgui.popStyleVar();
-  //             }
-  //         }
-  //         imgui.treePop();
-  //     }
-  //     imgui.treePop();
-  // }
+      for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+          if (x > 0) {
+            imgui.sameLine();
+          }
+          imgui.pushID(y * 4 + x);
+          if (
+            imgui.selectable(
+              "Sailor",
+              selected[y][x].value,
+              0,
+              new ImVec2(50, 50),
+            )
+          ) {
+            // Toggle clicked cell + toggle neighbors
+            selected[y][x].toggle();
+            if (x > 0) selected[y][x - 1].toggle();
+            if (x < 3) selected[y][x + 1].toggle();
+            if (y > 0) selected[y - 1][x].toggle();
+            if (y < 3) selected[y + 1][x].toggle();
+          }
+          imgui.popID();
+        }
+      }
 
-  // // To wire InputText() with std::string or any other custom string type,
-  // // see the "Text Input > Resize Callback" section of this demo, and the misc/cpp/imgui_stdlib.h file.
+      if (winning_state) {
+        imgui.popStyleVar();
+      }
+      imgui.treePop();
+    }
+    // // IMGUI_DEMO_MARKER("Widgets/Selectables/Alignment");
+    if (imgui.treeNode("Alignment")) {
+      helpMarker(
+        "By default, Selectables uses style.SelectableTextAlign but it can be overridden on a per-item " +
+          "basis using PushStyleVar(). You'll probably want to always keep your default situation to " +
+          "left-align otherwise it becomes difficult to layout multiple items on a same line",
+      );
+      // static bool selected[3 * 3] = { true, false, true, false, true, false, true, false, true };
+      // const selected = boolArrray([ true, false, true, false, true, false, true, false, true ]);
+      const selected = statusSelectables.alignment.selected;
+      for (let y = 0; y < 3; y++) {
+        for (let x = 0; x < 3; x++) {
+          const alignment = new ImVec2(x / 2.0, y / 2.0);
+          // char name[32];
+          const name = `(${alignment.x.toFixed(1)},${alignment.y.toFixed(1)})`;
+          // sprintf(name, "(%.1,%.1f)", alignment.x, alignment.y);
+          if (x > 0) imgui.sameLine();
+          imgui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, alignment);
+          imgui.selectable(
+            name,
+            selected[3 * y + x],
+            ImGuiSelectableFlagBits.None,
+            new ImVec2(80, 80),
+          );
+          imgui.popStyleVar();
+        }
+      }
+      imgui.treePop();
+    }
+    imgui.treePop();
+  }
+}
+
+function demoTextInput() {
+  // To wire InputText() with std::string or any other custom string type,
+  // see the "Text Input > Resize Callback" section of this demo, and the misc/cpp/imgui_stdlib.h file.
+
   // IMGUI_DEMO_MARKER("Widgets/Text Input");
-  // if (imgui.treeNode("Text Input"))
-  // {
-  //     IMGUI_DEMO_MARKER("Widgets/Text Input/Multi-line Text Input");
-  //     if (imgui.treeNode("Multi-line Text Input"))
-  //     {
-  //         // Note: we are using a fixed-sized buffer for simplicity here. See ImGuiInputTextFlags_CallbackResize
-  //         // and the code in misc/cpp/imgui_stdlib.h for how to setup InputText() for dynamically resizing strings.
-  //         static char text[1024 * 16] =
-  //             "/*\n"
-  //             " The Pentium F00 bug, shorthand for F0 0 C7 C8,\n"
-  //             " the hexadecimal encoding of one offending instruction,\n"
-  //             " more formally, the invalid operand with locked CMPXCHG8B\n"
-  //             " instruction bug, is a design flaw in the majority of\n"
-  //             " Intel Pentium, Pentium MMX, and Pentium OverDrive\n"
-  //             " processors (all in the P5 microarchitecture).\n"
-  //             "*/\n\n"
-  //             "label:\n"
-  //             "\tlock cmpxchg8b eax\n";
+  if (imgui.treeNode("Text Input")) {
+    // IMGUI_DEMO_MARKER("Widgets/Text Input/Multi-line Text Input");
+    if (imgui.treeNode("Multi-line Text Input")) {
+      // Note: we are using a fixed-sized buffer for simplicity here. See ImGuiInputTextFlagBits.CallbackResize
+      // and the code in misc/cpp/imgui_stdlib.h for how to setup InputText() for dynamically resizing strings.
 
-  //         static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-  //         helpMarker("You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in imgui_demo.cpp because we don't want to include <string> in here)");
-  //         imgui.checkboxFlags("ImGuiInputTextFlags_ReadOnly", &flags, ImGuiInputTextFlags_ReadOnly);
-  //         imgui.checkboxFlags("ImGuiInputTextFlags_AllowTabInput", &flags, ImGuiInputTextFlags_AllowTabInput);
-  //         imgui.checkboxFlags("ImGuiInputTextFlags_CtrlEnterForNewLine", &flags, ImGuiInputTextFlags_CtrlEnterForNewLine);
-  //         imgui.inputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, imgui.getTextLineHeight() * 16), flags);
-  //         imgui.treePop();
-  //     }
+      const multiline = {
+        text: Utf8Array.of(
+          "/*\n" +
+            " The Pentium F00 bug, shorthand for F0 0 C7 C8,\n" +
+            " the hexadecimal encoding of one offending instruction,\n" +
+            " more formally, the invalid operand with locked CMPXCHG8B\n" +
+            " instruction bug, is a design flaw in the majority of\n" +
+            " Intel Pentium, Pentium MMX, and Pentium OverDrive\n" +
+            " processors (all in the P5 microarchitecture).\n" +
+            "*/\n\n" +
+            "label:\n" +
+            "\tlock cmpxchg8b eax\n",
+          1024 * 16,
+        ),
+        flags: Int32.of(ImGuiInputTextFlagBits.AllowTabInput),
+      };
+      const text = multiline.text;
+      const flags = multiline.flags;
+      const fullWidth = new ImVec2(
+        -imgui.floatMin(),
+        imgui.getTextLineHeight() * 16,
+      );
+      helpMarker(
+        "You can use the ImGuiInputTextFlagBits.CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in imgui_demo.cpp because we don't want to include <string> in here)",
+      );
+      imgui.checkboxFlags(
+        "ImGuiInputTextFlagBits.ReadOnly",
+        flags.buffer,
+        ImGuiInputTextFlagBits.ReadOnly,
+      );
+      imgui.checkboxFlags(
+        "ImGuiInputTextFlagBits.AllowTabInput",
+        flags.buffer,
+        ImGuiInputTextFlagBits.AllowTabInput,
+      );
+      imgui.checkboxFlags(
+        "ImGuiInputTextFlagBits.CtrlEnterForNewLine",
+        flags.buffer,
+        ImGuiInputTextFlagBits.CtrlEnterForNewLine,
+      );
+      imgui.inputTextMultiline(
+        "##source",
+        text.buffer,
+        text.buffer.length,
+        fullWidth,
+        flags.value,
+      );
+      imgui.treePop();
+    }
 
-  //     IMGUI_DEMO_MARKER("Widgets/Text Input/Filtered Text Input");
-  //     if (imgui.treeNode("Filtered Text Input"))
-  //     {
-  //         struct TextFilters
-  //         {
-  //             // Return 0 (pass) if the character is 'i' or 'm' or 'g' or 'u' or 'i'
-  //             static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
-  //             {
-  //                 if (data->EventChar < 256 && strchr("imgui", (char)data->EventChar))
-  //                     return 0;
-  //                 return 1;
-  //             }
-  //         };
+    // IMGUI_DEMO_MARKER("Widgets/Text Input/Filtered Text Input");
+    if (imgui.treeNode("Filtered Text Input")) {
+      // struct TextFilters
+      // {
+      //     // Return 0 (pass) if the character is 'i' or 'm' or 'g' or 'u' or 'i'
+      //     static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
+      //     {
+      //         if (data->EventChar < 256 && strchr("imgui", (char)data->EventChar))
+      //             return 0;
+      //         return 1;
+      //     }
+      // };
 
-  //         static char buf1[64] = ""; imgui.inputText("default",     buf1, 64);
-  //         static char buf2[64] = ""; imgui.inputText("decimal",     buf2, 64, ImGuiInputTextFlags_CharsDecimal);
-  //         static char buf3[64] = ""; imgui.inputText("hexadecimal", buf3, 64, ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase);
-  //         static char buf4[64] = ""; imgui.inputText("uppercase",   buf4, 64, ImGuiInputTextFlags_CharsUppercase);
-  //         static char buf5[64] = ""; imgui.inputText("no blank",    buf5, 64, ImGuiInputTextFlags_CharsNoBlank);
-  //         static char buf6[64] = ""; imgui.inputText("\"imgui\" letters", buf6, 64, ImGuiInputTextFlags_CallbackCharFilter, TextFilters::filterImGuiLetters);
-  //         imgui.treePop();
-  //     }
+      const filtered = {
+        buf1: Utf8Array.empty(64),
+        buf2: Utf8Array.empty(64),
+        buf3: Utf8Array.empty(64),
+        buf4: Utf8Array.empty(64),
+        buf5: Utf8Array.empty(64),
+        buf6: Utf8Array.empty(64),
+      };
 
-  //     IMGUI_DEMO_MARKER("Widgets/Text Input/Password input");
-  //     if (imgui.treeNode("Password Input"))
-  //     {
-  //         static char password[64] = "password123";
-  //         imgui.inputText("password", password, IM_ARRAYSIZE(password), ImGuiInputTextFlags_Password);
-  //         imgui.sameLine(); helpMarker("Display all characters as '*'.\nDisable clipboard cut and copy.\nDisable logging.\n");
-  //         imgui.inputTextWithHint("password (w/ hint)", "<password>", password, IM_ARRAYSIZE(password), ImGuiInputTextFlags_Password);
-  //         imgui.inputText("password (clear)", password, IM_ARRAYSIZE(password));
-  //         imgui.treePop();
-  //     }
+      const buf1 = filtered.buf1;
+      const buf2 = filtered.buf2;
+      const buf3 = filtered.buf3;
+      const buf4 = filtered.buf4;
+      const buf5 = filtered.buf5;
+      const buf6 = filtered.buf6;
 
-  //     if (imgui.treeNode("Completion, History, Edit Callbacks"))
-  //     {
-  //         struct Funcs
-  //         {
-  //             static int MyCallback(ImGuiInputTextCallbackData* data)
-  //             {
-  //                 if (data->EventFlag == ImGuiInputTextFlags_CallbackCompletion)
-  //                 {
-  //                     data->InsertChars(data->CursorPos, "..");
-  //                 }
-  //                 else if (data->EventFlag == ImGuiInputTextFlags_CallbackHistory)
-  //                 {
-  //                     if (data->EventKey == ImGuiKey_UpArrow)
-  //                     {
-  //                         data->DeleteChars(0, data->BufTextLen);
-  //                         data->InsertChars(0, "Pressed Up!");
-  //                         data->SelectAll();
-  //                     }
-  //                     else if (data->EventKey == ImGuiKey_DownArrow)
-  //                     {
-  //                         data->DeleteChars(0, data->BufTextLen);
-  //                         data->InsertChars(0, "Pressed Down!");
-  //                         data->SelectAll();
-  //                     }
-  //                 }
-  //                 else if (data->EventFlag == ImGuiInputTextFlags_CallbackEdit)
-  //                 {
-  //                     // Toggle casing of first character
-  //                     char c = data->Buf[0];
-  //                     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) data->Buf[0] ^= 32;
-  //                     data->BufDirty = true;
+      imgui.inputText("default", buf1.buffer, buf1.buffer.length);
+      imgui.inputText(
+        "decimal",
+        buf2.buffer,
+        buf2.buffer.length,
+        ImGuiInputTextFlagBits.CharsDecimal,
+      );
+      imgui.inputText(
+        "hexadecimal",
+        buf3.buffer,
+        buf3.buffer.length,
+        ImGuiInputTextFlagBits.CharsHexadecimal |
+          ImGuiInputTextFlagBits.CharsUppercase,
+      );
+      imgui.inputText(
+        "uppercase",
+        buf4.buffer,
+        buf4.buffer.length,
+        ImGuiInputTextFlagBits.CharsUppercase,
+      );
+      imgui.inputText(
+        "no blank",
+        buf5.buffer,
+        buf5.buffer.length,
+        ImGuiInputTextFlagBits.CharsNoBlank,
+      );
+      imgui.inputText(
+        '"imgui" letters',
+        buf6.buffer,
+        buf6.buffer.length,
+        ImGuiInputTextFlagBits.CallbackCharFilter,
+        undefined,
+      );
+      imgui.treePop();
+    }
 
-  //                     // Increment a counter
-  //                     int* p_int = (int*)data->UserData;
-  //                     *p_int = *p_int + 1;
-  //                 }
-  //                 return 0;
-  //             }
-  //         };
-  //         static char buf1[64];
-  //         imgui.inputText("Completion", buf1, 64, ImGuiInputTextFlags_CallbackCompletion, Funcs::myCallback);
-  //         imgui.sameLine(); helpMarker("Here we append \"..\" each time Tab is pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.");
+    // IMGUI_DEMO_MARKER("Widgets/Text Input/Password input");
+    // if (imgui.treeNode("Password Input"))
+    // {
+    //     static char password[64] = "password123";
+    //     imgui.inputText("password", password, IM_ARRAYSIZE(password), ImGuiInputTextFlagBits.Password);
+    //     imgui.sameLine(); helpMarker("Display all characters as '*'.\nDisable clipboard cut and copy.\nDisable logging.\n");
+    //     imgui.inputTextWithHint("password (w/ hint)", "<password>", password, IM_ARRAYSIZE(password), ImGuiInputTextFlagBits.Password);
+    //     imgui.inputText("password (clear)", password, IM_ARRAYSIZE(password));
+    //     imgui.treePop();
+    // }
 
-  //         static char buf2[64];
-  //         imgui.inputText("History", buf2, 64, ImGuiInputTextFlags_CallbackHistory, Funcs::myCallback);
-  //         imgui.sameLine(); helpMarker("Here we replace and select text each time Up/Down are pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.");
+    // if (imgui.treeNode("Completion, History, Edit Callbacks"))
+    // {
+    //     struct Funcs
+    //     {
+    //         static int MyCallback(ImGuiInputTextCallbackData* data)
+    //         {
+    //             if (data->EventFlag == ImGuiInputTextFlagBits.CallbackCompletion)
+    //             {
+    //                 data->InsertChars(data->CursorPos, "..");
+    //             }
+    //             else if (data->EventFlag == ImGuiInputTextFlagBits.CallbackHistory)
+    //             {
+    //                 if (data->EventKey == ImGuiKey_UpArrow)
+    //                 {
+    //                     data->DeleteChars(0, data->BufTextLen);
+    //                     data->InsertChars(0, "Pressed Up!");
+    //                     data->SelectAll();
+    //                 }
+    //                 else if (data->EventKey == ImGuiKey_DownArrow)
+    //                 {
+    //                     data->DeleteChars(0, data->BufTextLen);
+    //                     data->InsertChars(0, "Pressed Down!");
+    //                     data->SelectAll();
+    //                 }
+    //             }
+    //             else if (data->EventFlag == ImGuiInputTextFlagBits.CallbackEdit)
+    //             {
+    //                 // Toggle casing of first character
+    //                 char c = data->Buf[0];
+    //                 if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) data->Buf[0] ^= 32;
+    //                 data->BufDirty = true;
 
-  //         static char buf3[64];
-  //         static int edit_count = 0;
-  //         imgui.inputText("Edit", buf3, 64, ImGuiInputTextFlags_CallbackEdit, Funcs::myCallback, (void*)&edit_count);
-  //         imgui.sameLine(); helpMarker("Here we toggle the casing of the first character on every edit + count edits.");
-  //         imgui.sameLine(); imgui.text("(%d)", edit_count);
+    //                 // Increment a counter
+    //                 int* p_int = (int*)data->UserData;
+    //                 *p_int = *p_int + 1;
+    //             }
+    //             return 0;
+    //         }
+    //     };
+    //     static char buf1[64];
+    //     imgui.inputText("Completion", buf1, 64, ImGuiInputTextFlagBits.CallbackCompletion, Funcs::myCallback);
+    //     imgui.sameLine(); helpMarker("Here we append \"..\" each time Tab is pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.");
 
-  //         imgui.treePop();
-  //     }
+    //     static char buf2[64];
+    //     imgui.inputText("History", buf2, 64, ImGuiInputTextFlagBits.CallbackHistory, Funcs::myCallback);
+    //     imgui.sameLine(); helpMarker("Here we replace and select text each time Up/Down are pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.");
 
-  //     IMGUI_DEMO_MARKER("Widgets/Text Input/Resize Callback");
-  //     if (imgui.treeNode("Resize Callback"))
-  //     {
-  //         // To wire InputText() with std::string or any other custom string type,
-  //         // you can use the ImGuiInputTextFlags_CallbackResize flag + create a custom imgui.inputText() wrapper
-  //         // using your preferred type. See misc/cpp/imgui_stdlib.h for an implementation of this using std::string.
-  //         helpMarker(
-  //             "Using ImGuiInputTextFlags_CallbackResize to wire your custom string type to InputText().\n\n"
-  //             "See misc/cpp/imgui_stdlib.h for an implementation of this for std::string.");
-  //         struct Funcs
-  //         {
-  //             static int MyResizeCallback(ImGuiInputTextCallbackData* data)
-  //             {
-  //                 if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
-  //                 {
-  //                     ImVector<char>* my_str = (ImVector<char>*)data->UserData;
-  //                     IM_ASSERT(my_str->begin() == data->Buf);
-  //                     my_str->resize(data->BufSize); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
-  //                     data->Buf = my_str->begin();
-  //                 }
-  //                 return 0;
-  //             }
+    //     static char buf3[64];
+    //     static int edit_count = 0;
+    //     imgui.inputText("Edit", buf3, 64, ImGuiInputTextFlagBits.CallbackEdit, Funcs::myCallback, (void*)&edit_count);
+    //     imgui.sameLine(); helpMarker("Here we toggle the casing of the first character on every edit + count edits.");
+    //     imgui.sameLine(); imgui.text("(%d)", edit_count);
 
-  //             // Note: Because imgui. is a namespace you would typically add your own function into the namespace.
-  //             // For example, you code may declare a function 'imgui.inputText(const char* label, MyString* my_str)'
-  //             static bool MyInputTextMultiline(const char* label, ImVector<char>* my_str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
-  //             {
-  //                 IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
-  //                 return imgui.inputTextMultiline(label, my_str->begin(), (size_t)my_str->size(), size, flags | ImGuiInputTextFlags_CallbackResize, Funcs::myResizeCallback, (void*)my_str);
-  //             }
-  //         };
+    //     imgui.treePop();
+    // }
 
-  //         // For this demo we are using ImVector as a string container.
-  //         // Note that because we need to store a terminating zero character, our size/capacity are 1 more
-  //         // than usually reported by a typical string class.
-  //         static ImVector<char> my_str;
-  //         if (my_str.empty())
-  //             my_str.push_back(0);
-  //         Funcs::myInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, imgui.getTextLineHeight() * 16));
-  //         imgui.text("Data: %p\nSize: %d\nCapacity: %d", (void*)my_str.begin(), my_str.size(), my_str.capacity());
-  //         imgui.treePop();
-  //     }
+    // IMGUI_DEMO_MARKER("Widgets/Text Input/Resize Callback");
+    // if (imgui.treeNode("Resize Callback"))
+    // {
+    //     // To wire InputText() with std::string or any other custom string type,
+    //     // you can use the ImGuiInputTextFlagBits.CallbackResize flag + create a custom imgui.inputText() wrapper
+    //     // using your preferred type. See misc/cpp/imgui_stdlib.h for an implementation of this using std::string.
+    //     helpMarker(
+    //         "Using ImGuiInputTextFlagBits.CallbackResize to wire your custom string type to InputText().\n\n"
+    //         "See misc/cpp/imgui_stdlib.h for an implementation of this for std::string.");
+    //     struct Funcs
+    //     {
+    //         static int MyResizeCallback(ImGuiInputTextCallbackData* data)
+    //         {
+    //             if (data->EventFlag == ImGuiInputTextFlagBits.CallbackResize)
+    //             {
+    //                 ImVector<char>* my_str = (ImVector<char>*)data->UserData;
+    //                 IM_ASSERT(my_str->begin() == data->Buf);
+    //                 my_str->resize(data->BufSize); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
+    //                 data->Buf = my_str->begin();
+    //             }
+    //             return 0;
+    //         }
 
-  //     imgui.treePop();
-  // }
+    //         // Note: Because imgui. is a namespace you would typically add your own function into the namespace.
+    //         // For example, you code may declare a function 'imgui.inputText(const char* label, MyString* my_str)'
+    //         static bool MyInputTextMultiline(const char* label, ImVector<char>* my_str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
+    //         {
+    //             IM_ASSERT((flags & ImGuiInputTextFlagBits.CallbackResize) == 0);
+    //             return imgui.inputTextMultiline(label, my_str->begin(), (size_t)my_str->size(), size, flags | ImGuiInputTextFlagBits.CallbackResize, Funcs::myResizeCallback, (void*)my_str);
+    //         }
+    //     };
 
+    //     // For this demo we are using ImVector as a string container.
+    //     // Note that because we need to store a terminating zero character, our size/capacity are 1 more
+    //     // than usually reported by a typical string class.
+    //     static ImVector<char> my_str;
+    //     if (my_str.empty())
+    //         my_str.push_back(0);
+    //     Funcs::myInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, imgui.getTextLineHeight() * 16));
+    //     imgui.text("Data: %p\nSize: %d\nCapacity: %d", (void*)my_str.begin(), my_str.size(), my_str.capacity());
+    //     imgui.treePop();
+    // }
+
+    imgui.treePop();
+  }
+}
+
+function demoTabs() {
   // // Tabs
   // IMGUI_DEMO_MARKER("Widgets/Tabs");
   // if (imgui.treeNode("Tabs"))
@@ -1124,7 +1325,7 @@ export function showDemoWindowWidgets() {
   //     IMGUI_DEMO_MARKER("Widgets/Tabs/Basic");
   //     if (imgui.treeNode("Basic"))
   //     {
-  //         ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+  //         ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlagBits.None;
   //         if (imgui.beginTabBar("MyTabBar", tab_bar_flags))
   //         {
   //             if (imgui.beginTabItem("Avocado"))
@@ -1152,17 +1353,17 @@ export function showDemoWindowWidgets() {
   //     if (imgui.treeNode("Advanced & Close Button"))
   //     {
   //         // Expose a couple of the available flags. In most cases you may just call BeginTabBar() with no flags (0).
-  //         static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_Reorderable;
-  //         imgui.checkboxFlags("ImGuiTabBarFlags_Reorderable", &tab_bar_flags, ImGuiTabBarFlags_Reorderable);
-  //         imgui.checkboxFlags("ImGuiTabBarFlags_AutoSelectNewTabs", &tab_bar_flags, ImGuiTabBarFlags_AutoSelectNewTabs);
-  //         imgui.checkboxFlags("ImGuiTabBarFlags_TabListPopupButton", &tab_bar_flags, ImGuiTabBarFlags_TabListPopupButton);
-  //         imgui.checkboxFlags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", &tab_bar_flags, ImGuiTabBarFlags_NoCloseWithMiddleMouseButton);
-  //         if ((tab_bar_flags & ImGuiTabBarFlags_FittingPolicyMask_) == 0)
-  //             tab_bar_flags |= ImGuiTabBarFlags_FittingPolicyDefault_;
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlags_FittingPolicyResizeDown", &tab_bar_flags, ImGuiTabBarFlags_FittingPolicyResizeDown))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlags_FittingPolicyMask_ ^ ImGuiTabBarFlags_FittingPolicyResizeDown);
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlags_FittingPolicyScroll", &tab_bar_flags, ImGuiTabBarFlags_FittingPolicyScroll))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlags_FittingPolicyMask_ ^ ImGuiTabBarFlags_FittingPolicyScroll);
+  //         static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlagBits.Reorderable;
+  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.Reorderable", &tab_bar_flags, ImGuiTabBarFlagBits.Reorderable);
+  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.AutoSelectNewTabs", &tab_bar_flags, ImGuiTabBarFlagBits.AutoSelectNewTabs);
+  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.TabListPopupButton", &tab_bar_flags, ImGuiTabBarFlagBits.TabListPopupButton);
+  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.NoCloseWithMiddleMouseButton", &tab_bar_flags, ImGuiTabBarFlagBits.NoCloseWithMiddleMouseButton);
+  //         if ((tab_bar_flags & ImGuiTabBarFlagBits.FittingPolicyMask_) == 0)
+  //             tab_bar_flags |= ImGuiTabBarFlagBits.FittingPolicyDefault_;
+  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyResizeDown", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyResizeDown))
+  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyResizeDown);
+  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyScroll", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyScroll))
+  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyScroll);
 
   //         // Tab Bar
   //         const char* names[4] = { "Artichoke", "Beetroot", "Celery", "Daikon" };
@@ -1178,7 +1379,7 @@ export function showDemoWindowWidgets() {
   //         if (imgui.beginTabBar("MyTabBar", tab_bar_flags))
   //         {
   //             for (int n = 0; n < IM_ARRAYSIZE(opened); n++)
-  //                 if (opened[n] && imgui.beginTabItem(names[n], &opened[n], ImGuiTabItemFlags_None))
+  //                 if (opened[n] && imgui.beginTabItem(names[n], &opened[n], ImGuiTabItemFlagBits.None))
   //                 {
   //                     imgui.text("This is the %s tab!", names[n]);
   //                     if (n & 1)
@@ -1197,7 +1398,7 @@ export function showDemoWindowWidgets() {
   //         static ImVector<int> active_tabs;
   //         static int next_tab_id = 0;
   //         if (next_tab_id == 0) // Initialize with some default tabs
-  //             for (int i = 0; i < 3; i++)
+  //             for (let i = 0; i < 3; i++)
   //                 active_tabs.push_back(next_tab_id++);
 
   //         // TabItemButton() and Leading/Trailing flags are distinct features which we will demo together.
@@ -1209,18 +1410,18 @@ export function showDemoWindowWidgets() {
   //         imgui.checkbox("Show Trailing TabItemButton()", &show_trailing_button);
 
   //         // Expose some other flags which are useful to showcase how they interact with Leading/Trailing tabs
-  //         static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyResizeDown;
-  //         imgui.checkboxFlags("ImGuiTabBarFlags_TabListPopupButton", &tab_bar_flags, ImGuiTabBarFlags_TabListPopupButton);
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlags_FittingPolicyResizeDown", &tab_bar_flags, ImGuiTabBarFlags_FittingPolicyResizeDown))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlags_FittingPolicyMask_ ^ ImGuiTabBarFlags_FittingPolicyResizeDown);
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlags_FittingPolicyScroll", &tab_bar_flags, ImGuiTabBarFlags_FittingPolicyScroll))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlags_FittingPolicyMask_ ^ ImGuiTabBarFlags_FittingPolicyScroll);
+  //         static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlagBits.AutoSelectNewTabs | ImGuiTabBarFlagBits.Reorderable | ImGuiTabBarFlagBits.FittingPolicyResizeDown;
+  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.TabListPopupButton", &tab_bar_flags, ImGuiTabBarFlagBits.TabListPopupButton);
+  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyResizeDown", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyResizeDown))
+  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyResizeDown);
+  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyScroll", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyScroll))
+  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyScroll);
 
   //         if (imgui.beginTabBar("MyTabBar", tab_bar_flags))
   //         {
   //             // Demo a Leading TabItemButton(): click the "?" button to open a menu
   //             if (show_leading_button)
-  //                 if (imgui.tabItemButton("?", ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip))
+  //                 if (imgui.tabItemButton("?", ImGuiTabItemFlagBits.Leading | ImGuiTabItemFlagBits.NoTooltip))
   //                     imgui.openPopup("MyHelpMenu");
   //             if (imgui.beginPopup("MyHelpMenu"))
   //             {
@@ -1229,9 +1430,9 @@ export function showDemoWindowWidgets() {
   //             }
 
   //             // Demo Trailing Tabs: click the "+" button to add a new tab (in your app you may want to use a font icon instead of the "+")
-  //             // Note that we submit it before the regular tabs, but because of the ImGuiTabItemFlags_Trailing flag it will always appear at the end.
+  //             // Note that we submit it before the regular tabs, but because of the ImGuiTabItemFlagBits.Trailing flag it will always appear at the end.
   //             if (show_trailing_button)
-  //                 if (imgui.tabItemButton("+", ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoTooltip))
+  //                 if (imgui.tabItemButton("+", ImGuiTabItemFlagBits.Trailing | ImGuiTabItemFlagBits.NoTooltip))
   //                     active_tabs.push_back(next_tab_id++); // Add new tab
 
   //             // Submit our regular tabs
@@ -1240,7 +1441,7 @@ export function showDemoWindowWidgets() {
   //                 bool open = true;
   //                 char name[16];
   //                 snprintf(name, IM_ARRAYSIZE(name), "%04d", active_tabs[n]);
-  //                 if (imgui.beginTabItem(name, &open, ImGuiTabItemFlags_None))
+  //                 if (imgui.beginTabItem(name, &open, ImGuiTabItemFlagBits.None))
   //                 {
   //                     imgui.text("This is the %s tab!", name);
   //                     imgui.endTabItem();
@@ -1259,7 +1460,8 @@ export function showDemoWindowWidgets() {
   //     }
   //     imgui.treePop();
   // }
-
+}
+function demoPloting() {
   // // Plot/Graph widgets are not very good.
   // // Consider using a third-party library such as ImPlot: https://github.com/epezent/implot
   // // (see others https://github.com/ocornut/imgui/wiki/Useful-Extensions)
@@ -1345,7 +1547,8 @@ export function showDemoWindowWidgets() {
   //     imgui.progressBar(progress, ImVec2(0.f, 0.f), buf);
   //     imgui.treePop();
   // }
-
+}
+function demoColor() {
   // IMGUI_DEMO_MARKER("Widgets/Color");
   // if (imgui.treeNode("Color/Picker Widgets"))
   // {
@@ -1361,7 +1564,7 @@ export function showDemoWindowWidgets() {
   //     imgui.checkbox("With Drag and Drop", &drag_and_drop);
   //     imgui.checkbox("With Options Menu", &options_menu); imgui.sameLine(); helpMarker("Right-click on the individual color widget to show options.");
   //     imgui.checkbox("With HDR", &hdr); imgui.sameLine(); helpMarker("Currently all this does is to lift the 0..1 limits on dragging widgets.");
-  //     ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+  //     ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlagBits.HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlagBits.NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlagBits.AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlagBits.AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlagBits.NoOptions);
 
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit");
   //     imgui.text("Color widget:");
@@ -1372,19 +1575,19 @@ export function showDemoWindowWidgets() {
 
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (HSV, with Alpha)");
   //     imgui.text("Color widget HSV with Alpha:");
-  //     imgui.colorEdit4("MyColor##2", (float*)&color, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+  //     imgui.colorEdit4("MyColor##2", (float*)&color, ImGuiColorEditFlagBits.DisplayHSV | misc_flags);
 
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (float display)");
   //     imgui.text("Color widget with Float Display:");
-  //     imgui.colorEdit4("MyColor##2f", (float*)&color, ImGuiColorEditFlags_Float | misc_flags);
+  //     imgui.colorEdit4("MyColor##2f", (float*)&color, ImGuiColorEditFlagBits.Float | misc_flags);
 
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorButton (with Picker)");
   //     imgui.text("Color button with Picker:");
   //     imgui.sameLine(); helpMarker(
-  //         "With the ImGuiColorEditFlags_NoInputs flag you can hide all the slider/text inputs.\n"
-  //         "With the ImGuiColorEditFlags_NoLabel flag you can pass a non-empty label which will only "
+  //         "With the ImGuiColorEditFlagBits.NoInputs flag you can hide all the slider/text inputs.\n"
+  //         "With the ImGuiColorEditFlagBits.NoLabel flag you can pass a non-empty label which will only "
   //         "be used for the tooltip and picker popup.");
-  //     imgui.colorEdit4("MyColor##3", (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | misc_flags);
+  //     imgui.colorEdit4("MyColor##3", (float*)&color, ImGuiColorEditFlagBits.NoInputs | ImGuiColorEditFlagBits.NoLabel | misc_flags);
 
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorButton (with custom Picker popup)");
   //     imgui.text("Color button with Custom Picker Popup:");
@@ -1416,14 +1619,14 @@ export function showDemoWindowWidgets() {
   //     {
   //         imgui.text("MY CUSTOM COLOR PICKER WITH AN AMAZING PALETTE!");
   //         imgui.separator();
-  //         imgui.colorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview);
+  //         imgui.colorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlagBits.NoSidePreview | ImGuiColorEditFlagBits.NoSmallPreview);
   //         imgui.sameLine();
 
   //         imgui.beginGroup(); // Lock X position
   //         imgui.text("Current");
-  //         imgui.colorButton("##current", color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
+  //         imgui.colorButton("##current", color, ImGuiColorEditFlagBits.NoPicker | ImGuiColorEditFlagBits.AlphaPreviewHalf, ImVec2(60, 40));
   //         imgui.text("Previous");
-  //         if (imgui.colorButton("##previous", backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
+  //         if (imgui.colorButton("##previous", backup_color, ImGuiColorEditFlagBits.NoPicker | ImGuiColorEditFlagBits.AlphaPreviewHalf, ImVec2(60, 40)))
   //             color = backup_color;
   //         imgui.separator();
   //         imgui.text("Palette");
@@ -1433,12 +1636,12 @@ export function showDemoWindowWidgets() {
   //             if ((n % 8) != 0)
   //                 imgui.sameLine(0.0, imgui.getStyle().ItemSpacing.y);
 
-  //             ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoTooltip;
+  //             ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlagBits.NoAlpha | ImGuiColorEditFlagBits.NoPicker | ImGuiColorEditFlagBits.NoTooltip;
   //             if (imgui.colorButton("##palette", saved_palette[n], palette_button_flags, ImVec2(20, 20)))
   //                 color = ImVec4(saved_palette[n].x, saved_palette[n].y, saved_palette[n].z, color.w); // Preserve alpha!
 
   //             // Allow user to drop colors into each palette entry. Note that ColorButton() is already a
-  //             // drag source by default, unless specifying the ImGuiColorEditFlags_NoDragDrop flag.
+  //             // drag source by default, unless specifying the ImGuiColorEditFlagBits.NoDragDrop flag.
   //             if (imgui.beginDragDropTarget())
   //             {
   //                 if (const ImGuiPayload* payload = imgui.acceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
@@ -1457,8 +1660,8 @@ export function showDemoWindowWidgets() {
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorButton (simple)");
   //     imgui.text("Color button only:");
   //     static bool no_border = false;
-  //     imgui.checkbox("ImGuiColorEditFlags_NoBorder", &no_border);
-  //     imgui.colorButton("MyColor##3c", *(ImVec4*)&color, misc_flags | (no_border ? ImGuiColorEditFlags_NoBorder : 0), ImVec2(80, 80));
+  //     imgui.checkbox("ImGuiColorEditFlagBits.NoBorder", &no_border);
+  //     imgui.colorButton("MyColor##3c", *(ImVec4*)&color, misc_flags | (no_border ? ImGuiColorEditFlagBits.NoBorder : 0), ImVec2(80, 80));
 
   //     IMGUI_DEMO_MARKER("Widgets/Color/ColorPicker");
   //     imgui.text("Color picker:");
@@ -1479,7 +1682,7 @@ export function showDemoWindowWidgets() {
   //         if (ref_color)
   //         {
   //             imgui.sameLine();
-  //             imgui.colorEdit4("##RefColor", &ref_color_v.x, ImGuiColorEditFlags_NoInputs | misc_flags);
+  //             imgui.colorEdit4("##RefColor", &ref_color_v.x, ImGuiColorEditFlagBits.NoInputs | misc_flags);
   //         }
   //     }
   //     imgui.combo("Display Mode", &display_mode, "Auto/Current\0None\0RGB Only\0HSV Only\0Hex Only\0");
@@ -1489,15 +1692,15 @@ export function showDemoWindowWidgets() {
   //         "if you don't specify a display mode.\n\nYou can change the defaults using SetColorEditOptions().");
   //     imgui.sameLine(); helpMarker("When not specified explicitly (Auto/Current mode), user can right-click the picker to change mode.");
   //     ImGuiColorEditFlags flags = misc_flags;
-  //     if (!alpha)            flags |= ImGuiColorEditFlags_NoAlpha;        // This is by default if you call ColorPicker3() instead of ColorPicker4()
-  //     if (alpha_bar)         flags |= ImGuiColorEditFlags_AlphaBar;
-  //     if (!side_preview)     flags |= ImGuiColorEditFlags_NoSidePreview;
-  //     if (picker_mode == 1)  flags |= ImGuiColorEditFlags_PickerHueBar;
-  //     if (picker_mode == 2)  flags |= ImGuiColorEditFlags_PickerHueWheel;
-  //     if (display_mode == 1) flags |= ImGuiColorEditFlags_NoInputs;       // Disable all RGB/HSV/Hex displays
-  //     if (display_mode == 2) flags |= ImGuiColorEditFlags_DisplayRGB;     // Override display mode
-  //     if (display_mode == 3) flags |= ImGuiColorEditFlags_DisplayHSV;
-  //     if (display_mode == 4) flags |= ImGuiColorEditFlags_DisplayHex;
+  //     if (!alpha)            flags |= ImGuiColorEditFlagBits.NoAlpha;        // This is by default if you call ColorPicker3() instead of ColorPicker4()
+  //     if (alpha_bar)         flags |= ImGuiColorEditFlagBits.AlphaBar;
+  //     if (!side_preview)     flags |= ImGuiColorEditFlagBits.NoSidePreview;
+  //     if (picker_mode == 1)  flags |= ImGuiColorEditFlagBits.PickerHueBar;
+  //     if (picker_mode == 2)  flags |= ImGuiColorEditFlagBits.PickerHueWheel;
+  //     if (display_mode == 1) flags |= ImGuiColorEditFlagBits.NoInputs;       // Disable all RGB/HSV/Hex displays
+  //     if (display_mode == 2) flags |= ImGuiColorEditFlagBits.DisplayRGB;     // Override display mode
+  //     if (display_mode == 3) flags |= ImGuiColorEditFlagBits.DisplayHSV;
+  //     if (display_mode == 4) flags |= ImGuiColorEditFlagBits.DisplayHex;
   //     imgui.colorPicker4("MyColor##4", (float*)&color, flags, ref_color ? &ref_color_v.x : NULL);
 
   //     imgui.text("Set defaults in code:");
@@ -1507,47 +1710,48 @@ export function showDemoWindowWidgets() {
   //         "and the user can change non-forced ones with the options menu.\nWe don't have a getter to avoid"
   //         "encouraging you to persistently save values that aren't forward-compatible.");
   //     if (imgui.button("Default: Uint8 + HSV + Hue Bar"))
-  //         imgui.setColorEditOptions(ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayHSV | ImGuiColorEditFlags_PickerHueBar);
+  //         imgui.setColorEditOptions(ImGuiColorEditFlagBits.Uint8 | ImGuiColorEditFlagBits.DisplayHSV | ImGuiColorEditFlagBits.PickerHueBar);
   //     if (imgui.button("Default: Float + HDR + Hue Wheel"))
-  //         imgui.setColorEditOptions(ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_PickerHueWheel);
+  //         imgui.setColorEditOptions(ImGuiColorEditFlagBits.Float | ImGuiColorEditFlagBits.HDR | ImGuiColorEditFlagBits.PickerHueWheel);
 
   //     // Always both a small version of both types of pickers (to make it more visible in the demo to people who are skimming quickly through it)
   //     imgui.text("Both types:");
   //     float w = (imgui.getContentRegionAvail().x - imgui.getStyle().ItemSpacing.y) * 0.40;
   //     imgui.setNextItemWidth(w);
-  //     imgui.colorPicker3("##MyColor##5", (float*)&color, ImGuiColorEditFlags_PickerHueBar | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
+  //     imgui.colorPicker3("##MyColor##5", (float*)&color, ImGuiColorEditFlagBits.PickerHueBar | ImGuiColorEditFlagBits.NoSidePreview | ImGuiColorEditFlagBits.NoInputs | ImGuiColorEditFlagBits.NoAlpha);
   //     imgui.sameLine();
   //     imgui.setNextItemWidth(w);
-  //     imgui.colorPicker3("##MyColor##6", (float*)&color, ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
+  //     imgui.colorPicker3("##MyColor##6", (float*)&color, ImGuiColorEditFlagBits.PickerHueWheel | ImGuiColorEditFlagBits.NoSidePreview | ImGuiColorEditFlagBits.NoInputs | ImGuiColorEditFlagBits.NoAlpha);
 
   //     // HSV encoded support (to avoid RGB<>HSV round trips and singularities when S==0 or V==0)
   //     static ImVec4 color_hsv(0.23, 1.0, 1.0, 1.0f); // Stored as HSV!
   //     imgui.spacing();
   //     imgui.text("HSV encoded colors");
   //     imgui.sameLine(); helpMarker(
-  //         "By default, colors are given to ColorEdit and ColorPicker in RGB, but ImGuiColorEditFlags_InputHSV"
+  //         "By default, colors are given to ColorEdit and ColorPicker in RGB, but ImGuiColorEditFlagBits.InputHSV"
   //         "allows you to store colors as HSV and pass them to ColorEdit and ColorPicker as HSV. This comes with the"
   //         "added benefit that you can manipulate hue values with the picker even when saturation or value are zero.");
   //     imgui.text("Color widget with InputHSV:");
-  //     imgui.colorEdit4("HSV shown as RGB##1", (float*)&color_hsv, ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputHSV | ImGuiColorEditFlags_Float);
-  //     imgui.colorEdit4("HSV shown as HSV##1", (float*)&color_hsv, ImGuiColorEditFlags_DisplayHSV | ImGuiColorEditFlags_InputHSV | ImGuiColorEditFlags_Float);
+  //     imgui.colorEdit4("HSV shown as RGB##1", (float*)&color_hsv, ImGuiColorEditFlagBits.DisplayRGB | ImGuiColorEditFlagBits.InputHSV | ImGuiColorEditFlagBits.Float);
+  //     imgui.colorEdit4("HSV shown as HSV##1", (float*)&color_hsv, ImGuiColorEditFlagBits.DisplayHSV | ImGuiColorEditFlagBits.InputHSV | ImGuiColorEditFlagBits.Float);
   //     imgui.dragFloat4("Raw HSV values", (float*)&color_hsv, 0.01, 0.0, 1.0f);
 
   //     imgui.treePop();
   // }
-
+}
+function demoDragAndSlderFlags() {
   // IMGUI_DEMO_MARKER("Widgets/Drag and Slider Flags");
   // if (imgui.treeNode("Drag/Slider Flags"))
   // {
   //     // Demonstrate using advanced flags for DragXXX and SliderXXX functions. Note that the flags are the same!
-  //     static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-  //     imgui.checkboxFlags("ImGuiSliderFlags_AlwaysClamp", &flags, ImGuiSliderFlags_AlwaysClamp);
+  //     static ImGuiSliderFlags flags = ImGuiSliderFlagBits.None;
+  //     imgui.checkboxFlags("ImGuiSliderFlagBits.AlwaysClamp", &flags, ImGuiSliderFlagBits.AlwaysClamp);
   //     imgui.sameLine(); helpMarker("Always clamp value to min/max bounds (if any) when input manually with CTRL+Click.");
-  //     imgui.checkboxFlags("ImGuiSliderFlags_Logarithmic", &flags, ImGuiSliderFlags_Logarithmic);
+  //     imgui.checkboxFlags("ImGuiSliderFlagBits.Logarithmic", &flags, ImGuiSliderFlagBits.Logarithmic);
   //     imgui.sameLine(); helpMarker("Enable logarithmic editing (more precision for small values).");
-  //     imgui.checkboxFlags("ImGuiSliderFlags_NoRoundToFormat", &flags, ImGuiSliderFlags_NoRoundToFormat);
+  //     imgui.checkboxFlags("ImGuiSliderFlagBits.NoRoundToFormat", &flags, ImGuiSliderFlagBits.NoRoundToFormat);
   //     imgui.sameLine(); helpMarker("Disable rounding underlying value to match precision of the format string (e.g. %.3 values are rounded to those 3 digits).");
-  //     imgui.checkboxFlags("ImGuiSliderFlags_NoInput", &flags, ImGuiSliderFlags_NoInput);
+  //     imgui.checkboxFlags("ImGuiSliderFlagBits.NoInput", &flags, ImGuiSliderFlagBits.NoInput);
   //     imgui.sameLine(); helpMarker("Disable CTRL+Click or Enter key allowing to input text directly into the widget.");
 
   //     // Drags
@@ -1569,18 +1773,21 @@ export function showDemoWindowWidgets() {
 
   //     imgui.treePop();
   // }
-
+}
+function demoRange() {
   // IMGUI_DEMO_MARKER("Widgets/Range Widgets");
   // if (imgui.treeNode("Range Widgets"))
   // {
   //     static float begin = 10, end = 90;
   //     static int begin_i = 100, end_i = 1000;
-  //     imgui.dragFloatRange2("range float", &begin, &end, 0.25, 0.0, 100.0, "Min: %.1 %%", "Max: %.1 %%", ImGuiSliderFlags_AlwaysClamp);
+  //     imgui.dragFloatRange2("range float", &begin, &end, 0.25, 0.0, 100.0, "Min: %.1 %%", "Max: %.1 %%", ImGuiSliderFlagBits.AlwaysClamp);
   //     imgui.dragIntRange2("range int", &begin_i, &end_i, 5, 0, 1000, "Min: %d units", "Max: %d units");
   //     imgui.dragIntRange2("range int (no bounds)", &begin_i, &end_i, 5, 0, 0, "Min: %d units", "Max: %d units");
   //     imgui.treePop();
   // }
+}
 
+function demoDataTypes() {
   // IMGUI_DEMO_MARKER("Widgets/Data Types");
   // if (imgui.treeNode("Data Types"))
   // {
@@ -1647,9 +1854,9 @@ export function showDemoWindowWidgets() {
   //     imgui.dragScalar("drag s64",       ImGuiDataType_S64,    &s64_v, drag_speed, drag_clamp ? &s64_zero : NULL, drag_clamp ? &s64_fifty : NULL);
   //     imgui.dragScalar("drag u64",       ImGuiDataType_U64,    &u64_v, drag_speed, drag_clamp ? &u64_zero : NULL, drag_clamp ? &u64_fifty : NULL);
   //     imgui.dragScalar("drag float",     ImGuiDataType_Float,  &f32_v, 0.005,  &f32_zero, &f32_one, "%f");
-  //     imgui.dragScalar("drag float log", ImGuiDataType_Float,  &f32_v, 0.005,  &f32_zero, &f32_one, "%f", ImGuiSliderFlags_Logarithmic);
+  //     imgui.dragScalar("drag float log", ImGuiDataType_Float,  &f32_v, 0.005,  &f32_zero, &f32_one, "%f", ImGuiSliderFlagBits.Logarithmic);
   //     imgui.dragScalar("drag double",    ImGuiDataType_Double, &f64_v, 0.0005, &f64_zero, NULL,     "%.10 grams");
-  //     imgui.dragScalar("drag double log",ImGuiDataType_Double, &f64_v, 0.0005, &f64_zero, &f64_one, "0 < %.10 < 1", ImGuiSliderFlags_Logarithmic);
+  //     imgui.dragScalar("drag double log",ImGuiDataType_Double, &f64_v, 0.0005, &f64_zero, &f64_one, "0 < %.10 < 1", ImGuiSliderFlagBits.Logarithmic);
 
   //     IMGUI_DEMO_MARKER("Widgets/Data Types/Sliders");
   //     imgui.text("Sliders");
@@ -1671,10 +1878,10 @@ export function showDemoWindowWidgets() {
   //     imgui.sliderScalar("slider u64 high",      ImGuiDataType_U64,    &u64_v, &u64_hi_a, &u64_hi_b, "%" IM_PRIu64 " ms");
   //     imgui.sliderScalar("slider u64 full",      ImGuiDataType_U64,    &u64_v, &u64_min,  &u64_max,  "%" IM_PRIu64 " ms");
   //     imgui.sliderScalar("slider float low",     ImGuiDataType_Float,  &f32_v, &f32_zero, &f32_one);
-  //     imgui.sliderScalar("slider float low log", ImGuiDataType_Float,  &f32_v, &f32_zero, &f32_one,  "%.10f", ImGuiSliderFlags_Logarithmic);
+  //     imgui.sliderScalar("slider float low log", ImGuiDataType_Float,  &f32_v, &f32_zero, &f32_one,  "%.10f", ImGuiSliderFlagBits.Logarithmic);
   //     imgui.sliderScalar("slider float high",    ImGuiDataType_Float,  &f32_v, &f32_lo_a, &f32_hi_a, "%e");
   //     imgui.sliderScalar("slider double low",    ImGuiDataType_Double, &f64_v, &f64_zero, &f64_one,  "%.10 grams");
-  //     imgui.sliderScalar("slider double low log",ImGuiDataType_Double, &f64_v, &f64_zero, &f64_one,  "%.10f", ImGuiSliderFlags_Logarithmic);
+  //     imgui.sliderScalar("slider double low log",ImGuiDataType_Double, &f64_v, &f64_zero, &f64_one,  "%.10f", ImGuiSliderFlagBits.Logarithmic);
   //     imgui.sliderScalar("slider double high",   ImGuiDataType_Double, &f64_v, &f64_lo_a, &f64_hi_a, "%e grams");
 
   //     imgui.text("Sliders (reverse)");
@@ -1704,7 +1911,8 @@ export function showDemoWindowWidgets() {
 
   //     imgui.treePop();
   // }
-
+}
+function demoMultiCompnent() {
   // IMGUI_DEMO_MARKER("Widgets/Multi-component Widgets");
   // if (imgui.treeNode("Multi-component Widgets"))
   // {
@@ -1736,20 +1944,21 @@ export function showDemoWindowWidgets() {
 
   //     imgui.treePop();
   // }
-
+}
+function demoVerticalSlider() {
   // IMGUI_DEMO_MARKER("Widgets/Vertical Sliders");
   // if (imgui.treeNode("Vertical Sliders"))
   // {
   //     const float spacing = 4;
   //     imgui.pushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(spacing, spacing));
 
-  //     static int int_value = 0;
+  //     static let int_value = 0;
   //     imgui.vSliderInt("##int", ImVec2(18, 160), &int_value, 0, 5);
   //     imgui.sameLine();
 
   //     static float values[7] = { 0.0, 0.60, 0.35, 0.9, 0.70, 0.20, 0.0 };
   //     imgui.pushID("set1");
-  //     for (int i = 0; i < 7; i++)
+  //     for (let i = 0; i < 7; i++)
   //     {
   //         if (i > 0) imgui.sameLine();
   //         imgui.pushID(i);
@@ -1788,7 +1997,7 @@ export function showDemoWindowWidgets() {
 
   //     imgui.sameLine();
   //     imgui.pushID("set3");
-  //     for (int i = 0; i < 4; i++)
+  //     for (let i = 0; i < 4; i++)
   //     {
   //         if (i > 0) imgui.sameLine();
   //         imgui.pushID(i);
@@ -1801,7 +2010,8 @@ export function showDemoWindowWidgets() {
   //     imgui.popStyleVar();
   //     imgui.treePop();
   // }
-
+}
+function demoDragAndDrop() {
   // IMGUI_DEMO_MARKER("Widgets/Drag and drop");
   // if (imgui.treeNode("Drag and Drop"))
   // {
@@ -1847,7 +2057,7 @@ export function showDemoWindowWidgets() {
   //             imgui.button(names[n], ImVec2(60, 60));
 
   //             // Our buttons are both drag sources and drag targets here!
-  //             if (imgui.beginDragDropSource(ImGuiDragDropFlags_None))
+  //             if (imgui.beginDragDropSource(ImGuiDragDropFlagBits.None))
   //             {
   //                 // Set payload to carry the index of our item (could be anything)
   //                 imgui.setDragDropPayload("DND_DEMO_CELL", &n, sizeof(int));
@@ -1917,7 +2127,9 @@ export function showDemoWindowWidgets() {
 
   //     imgui.treePop();
   // }
+}
 
+function demoQueryingItem() {
   // IMGUI_DEMO_MARKER("Widgets/Querying Item Status (Edited,Active,Hovered etc.)");
   // if (imgui.treeNode("Querying Item Status (Edited/Active/Hovered etc.)"))
   // {
@@ -1927,7 +2139,7 @@ export function showDemoWindowWidgets() {
   //         "Text", "Button", "Button (w/ repeat)", "Checkbox", "SliderFloat", "InputText", "InputTextMultiline", "InputFloat",
   //         "InputFloat3", "ColorEdit4", "Selectable", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "Combo", "ListBox"
   //     };
-  //     static int item_type = 4;
+  //     static let item_type = 4;
   //     static bool item_disabled = false;
   //     imgui.combo("Item Type", &item_type, item_names, IM_ARRAYSIZE(item_names), IM_ARRAYSIZE(item_names));
   //     imgui.sameLine();
@@ -1952,18 +2164,18 @@ export function showDemoWindowWidgets() {
   //     if (item_type == 8) { ret = imgui.inputFloat3("ITEM: InputFloat3", col4f); }                   // Testing multi-component items (IsItemXXX flags are reported merged)
   //     if (item_type == 9) { ret = imgui.colorEdit4("ITEM: ColorEdit4", col4f); }                     // Testing multi-component items (IsItemXXX flags are reported merged)
   //     if (item_type == 10){ ret = imgui.selectable("ITEM: Selectable"); }                            // Testing selectable item
-  //     if (item_type == 11){ ret = imgui.menuItem("ITEM: MenuItem"); }                                // Testing menu item (they use ImGuiButtonFlags_PressedOnRelease button policy)
+  //     if (item_type == 11){ ret = imgui.menuItem("ITEM: MenuItem"); }                                // Testing menu item (they use ImGuiButtonFlagBits.PressedOnRelease button policy)
   //     if (item_type == 12){ ret = imgui.treeNode("ITEM: TreeNode"); if (ret) imgui.treePop(); }     // Testing tree node
-  //     if (item_type == 13){ ret = imgui.treeNodeEx("ITEM: TreeNode w/ ImGuiTreeNodeFlags_OpenOnDoubleClick", ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_NoTreePushOnOpen); } // Testing tree node with ImGuiButtonFlags_PressedOnDoubleClick button policy.
+  //     if (item_type == 13){ ret = imgui.treeNodeEx("ITEM: TreeNode w/ ImGuiTreeNodeFlagBits.OpenOnDoubleClick", ImGuiTreeNodeFlagBits.OpenOnDoubleClick | ImGuiTreeNodeFlagBits.NoTreePushOnOpen); } // Testing tree node with ImGuiButtonFlagBits.PressedOnDoubleClick button policy.
   //     if (item_type == 14){ const char* items[] = { "Apple", "Banana", "Cherry", "Kiwi" }; static int current = 1; ret = imgui.combo("ITEM: Combo", &current, items, IM_ARRAYSIZE(items)); }
   //     if (item_type == 15){ const char* items[] = { "Apple", "Banana", "Cherry", "Kiwi" }; static int current = 1; ret = imgui.listBox("ITEM: ListBox", &current, items, IM_ARRAYSIZE(items), IM_ARRAYSIZE(items)); }
 
   //     bool hovered_delay_none = imgui.isItemHovered();
-  //     bool hovered_delay_short = imgui.isItemHovered(ImGuiHoveredFlags_DelayShort);
-  //     bool hovered_delay_normal = imgui.isItemHovered(ImGuiHoveredFlags_DelayNormal);
+  //     bool hovered_delay_short = imgui.isItemHovered(ImGuiHoveredFlagBits.DelayShort);
+  //     bool hovered_delay_normal = imgui.isItemHovered(ImGuiHoveredFlagBits.DelayNormal);
 
   //     // Display the values of IsItemHovered() and other common item state functions.
-  //     // Note that the ImGuiHoveredFlags_XXX flags can be combined.
+  //     // Note that the ImGuiHoveredFlagBits.XXX flags can be combined.
   //     // Because BulletText is an item itself and that would affect the output of IsItemXXX functions,
   //     // we query every state in a single call to avoid storing them and to simplify the code.
   //     imgui.bulletText(
@@ -1989,11 +2201,11 @@ export function showDemoWindowWidgets() {
   //         ret,
   //         imgui.isItemFocused(),
   //         imgui.isItemHovered(),
-  //         imgui.isItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup),
-  //         imgui.isItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem),
-  //         imgui.isItemHovered(ImGuiHoveredFlags_AllowWhenOverlapped),
-  //         imgui.isItemHovered(ImGuiHoveredFlags_AllowWhenDisabled),
-  //         imgui.isItemHovered(ImGuiHoveredFlags_RectOnly),
+  //         imgui.isItemHovered(ImGuiHoveredFlagBits.AllowWhenBlockedByPopup),
+  //         imgui.isItemHovered(ImGuiHoveredFlagBits.AllowWhenBlockedByActiveItem),
+  //         imgui.isItemHovered(ImGuiHoveredFlagBits.AllowWhenOverlapped),
+  //         imgui.isItemHovered(ImGuiHoveredFlagBits.AllowWhenDisabled),
+  //         imgui.isItemHovered(ImGuiHoveredFlagBits.RectOnly),
   //         imgui.isItemActive(),
   //         imgui.isItemEdited(),
   //         imgui.isItemActivated(),
@@ -2013,13 +2225,14 @@ export function showDemoWindowWidgets() {
   //         imgui.endDisabled();
 
   //     char buf[1] = "";
-  //     imgui.inputText("unused", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_ReadOnly);
+  //     imgui.inputText("unused", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlagBits.ReadOnly);
   //     imgui.sameLine();
   //     helpMarker("This widget is only here to be able to tab-out of the widgets above and see e.g. Deactivated() status.");
 
   //     imgui.treePop();
   // }
-
+}
+function demoQueryingWindow() {
   // IMGUI_DEMO_MARKER("Widgets/Querying Window Status (Focused,Hovered etc.)");
   // if (imgui.treeNode("Querying Window Status (Focused/Hovered etc.)"))
   // {
@@ -2042,16 +2255,16 @@ export function showDemoWindowWidgets() {
   //         "IsWindowFocused(_RootWindow|_DockHierarchy) = %d\n"
   //         "IsWindowFocused(_AnyWindow) = %d\n",
   //         imgui.isWindowFocused(),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_ChildWindows),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_DockHierarchy),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootWindow),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_NoPopupHierarchy),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_DockHierarchy),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_RootWindow),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_NoPopupHierarchy),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_DockHierarchy),
-  //         imgui.isWindowFocused(ImGuiFocusedFlags_AnyWindow));
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.ChildWindows),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.ChildWindows | ImGuiFocusedFlagBits.NoPopupHierarchy),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.ChildWindows | ImGuiFocusedFlagBits.DockHierarchy),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.ChildWindows | ImGuiFocusedFlagBits.RootWindow),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.ChildWindows | ImGuiFocusedFlagBits.RootWindow | ImGuiFocusedFlagBits.NoPopupHierarchy),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.ChildWindows | ImGuiFocusedFlagBits.RootWindow | ImGuiFocusedFlagBits.DockHierarchy),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.RootWindow),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.RootWindow | ImGuiFocusedFlagBits.NoPopupHierarchy),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.RootWindow | ImGuiFocusedFlagBits.DockHierarchy),
+  //         imgui.isWindowFocused(ImGuiFocusedFlagBits.AnyWindow));
 
   //     // Testing IsWindowHovered() function with its various flags.
   //     imgui.bulletText(
@@ -2070,19 +2283,19 @@ export function showDemoWindowWidgets() {
   //         "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n"
   //         "IsWindowHovered(_AnyWindow) = %d\n",
   //         imgui.isWindowHovered(),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_NoPopupHierarchy),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_DockHierarchy),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_RootWindow),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_NoPopupHierarchy),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_DockHierarchy),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_RootWindow),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_NoPopupHierarchy),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_DockHierarchy),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup),
-  //         imgui.isWindowHovered(ImGuiHoveredFlags_AnyWindow));
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.AllowWhenBlockedByPopup),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.AllowWhenBlockedByActiveItem),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows | ImGuiHoveredFlagBits.NoPopupHierarchy),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows | ImGuiHoveredFlagBits.DockHierarchy),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows | ImGuiHoveredFlagBits.RootWindow),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows | ImGuiHoveredFlagBits.RootWindow | ImGuiHoveredFlagBits.NoPopupHierarchy),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows | ImGuiHoveredFlagBits.RootWindow | ImGuiHoveredFlagBits.DockHierarchy),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.RootWindow),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.RootWindow | ImGuiHoveredFlagBits.NoPopupHierarchy),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.RootWindow | ImGuiHoveredFlagBits.DockHierarchy),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.ChildWindows | ImGuiHoveredFlagBits.AllowWhenBlockedByPopup),
+  //         imgui.isWindowHovered(ImGuiHoveredFlagBits.AnyWindow));
 
   //     imgui.beginChild("child", ImVec2(0, 50), true);
   //     imgui.text("This is another child window for testing the _ChildWindows flag.");
@@ -2114,6 +2327,46 @@ export function showDemoWindowWidgets() {
 
   //     imgui.treePop();
   // }
+}
+
+/**
+ * The Checkbox for that is inside the "Disabled" section at the bottom
+ */
+const disable_all = false;
+export function showDemoWindowWidgets() {
+  // Most "big" widgets share a common width settings by default. See 'Demo->Layout->Widgets Width' for details.
+  // e.g. Use 2/3 of the space for widgets and 1/3 for labels (right align)
+  //ImGui::PushItemWidth(-ImGui::GetWindowWidth() * 0.35f);
+  // e.g. Leave a fixed amount of width for labels (by passing a negative value), the rest goes to widgets.
+  imgui.pushItemWidth(imgui.getFontSize() * -12);
+
+  if (!imgui.collapsingHeader("Widgets")) {
+    return;
+  }
+  if (disable_all) {
+    imgui.beginDisabled();
+  }
+
+  demoBasic();
+  demoTree();
+  demoClollapsingHeaders();
+  demoBullets();
+  demoText();
+  demoImages();
+  demoCombo();
+  demoSelectables();
+  demoTextInput();
+  demoTabs();
+  demoPloting();
+  demoColor();
+  demoDragAndSlderFlags();
+  demoRange();
+  demoDataTypes();
+  demoMultiCompnent();
+  demoVerticalSlider();
+  demoDragAndDrop();
+  demoQueryingItem();
+  demoQueryingWindow();
 
   // // Demonstrate BeginDisabled/EndDisabled using a checkbox located at the bottom of the section (which is a bit odd:
   // // logically we'd have this checkbox at the top of the section, but we don't want this feature to steal that space)
@@ -2142,7 +2395,7 @@ export function showDemoWindowWidgets() {
   //         "  \"-xxx\"     hide lines containing \"xxx\"");
   //     filter.Draw();
   //     const char* lines[] = { "aaa1.c", "bbb1.c", "ccc1.c", "aaa2.cpp", "bbb2.cpp", "ccc2.cpp", "abc.h", "hello, world" };
-  //     for (int i = 0; i < IM_ARRAYSIZE(lines); i++)
+  //     for (let i = 0; i < IM_ARRAYSIZE(lines); i++)
   //         if (filter.PassFilter(lines[i]))
   //             imgui.bulletText("%s", lines[i]);
   //     imgui.treePop();

@@ -49,6 +49,10 @@ export class Bool {
     }
   }
 
+  toggle(): void {
+    this.value = !this.value;
+  }
+
   get buffer() {
     return this.#data;
   }
@@ -124,6 +128,50 @@ export class Int32 {
 
   set value(value: number) {
     this.#buffer[0] = value;
+  }
+
+  get buffer() {
+    return this.#buffer;
+  }
+}
+
+export class Utf8Array {
+  #buffer: Uint8Array;
+
+  constructor(capacity: number) {
+    this.#buffer = new Uint8Array(capacity);
+  }
+
+  static empty(capacity: number) {
+    const ret = new Utf8Array(capacity);
+    return ret;
+  }
+
+  static of(initValue: string, capacity?: number) {
+    const _capacity = capacity ?? initValue.length + 1;
+    const ret = new Utf8Array(_capacity);
+    ret.value = initValue;
+    return ret;
+  }
+
+  private getEndingIndex() {
+    for (let i = 0; i < this.#buffer.length; i++) {
+      const c = this.#buffer[i];
+      if (c == 0) {
+        return i;
+      }
+    }
+    return this.#buffer.length;
+  }
+
+  get value() {
+    const ending = this.getEndingIndex();
+    return new TextDecoder().decode(this.#buffer.slice(0, ending));
+  }
+
+  set value(value: string) {
+    assert(value.length + 1 <= this.#buffer.length);
+    new TextEncoder().encodeInto(value + "\0", this.#buffer);
   }
 
   get buffer() {

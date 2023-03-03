@@ -78,6 +78,13 @@ const Zero2 = new ImVec2(0, 0);
 // );
 // imgui.dimguiSetErrorCallback(errorCallback.pointer);
 
+export function floatMax(): number {
+  return imgui.igGET_FLT_MAX();
+}
+
+export function floatMin(): number {
+  return imgui.igGET_FLT_MIN();
+}
 //  // Context creation and access
 //   // - Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between contexts.
 //   // - DLL users: heaps and globals are not shared across DLL boundaries! You will need to call SetCurrentContext() + SetAllocatorFunctions()
@@ -1097,6 +1104,12 @@ export function getID(id: StringSource): ImGuiID {
 export function text(text: StringSource): void {
   imgui.igText(cString(text));
 }
+export function textColored(col: ImVec4, fmt: StringSource): void {
+  imgui.igTextColored(col[BUFFER], cString(fmt));
+}
+export function textWrapped(fmt: StringSource): void {
+  imgui.igTextWrapped(cString(fmt));
+}
 export function textDisabled(text: StringSource): void {
   imgui.igTextDisabled(cString(text));
 }
@@ -1771,7 +1784,7 @@ export function inputText(
   buf_size: Deno.PointerValue,
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
-  user_data?: BufferSource,
+  // user_data?: BufferSource,
 ): boolean {
   return imgui.igInputText(
     cString(label),
@@ -1779,7 +1792,7 @@ export function inputText(
     buf_size,
     flags,
     callback?.pointer ?? null,
-    user_data ?? null,
+    null,
   );
 }
 export function inputTextMultiline(
@@ -1789,7 +1802,7 @@ export function inputTextMultiline(
   size: ImVec2,
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
-  user_data?: BufferSource,
+  // user_data?: BufferSource,
 ): boolean {
   return imgui.igInputTextMultiline(
     cString(label),
@@ -1798,7 +1811,7 @@ export function inputTextMultiline(
     size[BUFFER],
     flags,
     callback?.pointer ?? null,
-    user_data ?? null,
+    null,
   );
 }
 export function inputTextWithHint(
@@ -1808,7 +1821,7 @@ export function inputTextWithHint(
   buf_size: Deno.PointerValue,
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
-  user_data?: BufferSource,
+  // user_data?: BufferSource,
 ): boolean {
   return imgui.igInputTextWithHint(
     cString(label),
@@ -1817,7 +1830,7 @@ export function inputTextWithHint(
     buf_size,
     flags,
     callback?.pointer ?? null,
-    user_data ?? null,
+    null,
   );
 }
 export function inputFloat(
@@ -2183,8 +2196,8 @@ export function plotLines(
   values_count: number,
   values_offset = 0,
   overlay_text?: StringSource,
-  scale_min = imgui.igGET_FLT_MAX(),
-  scale_max = imgui.igGET_FLT_MAX(),
+  scale_min = floatMin(),
+  scale_max = floatMax(),
   graph_size = new ImVec2(0, 0),
   stride = 8,
 ) {
@@ -2440,8 +2453,8 @@ export function beginTable(
   str_id: StringSource,
   column: number,
   flags: ImGuiTableFlags = 0,
-  outer_size: ImVec2,
-  inner_width: number,
+  outer_size: ImVec2 = new ImVec2(0, 0),
+  inner_width: number = 0.0,
 ): boolean {
   return imgui.igBeginTable(
     cString(str_id),
@@ -2456,7 +2469,7 @@ export function endTable(): void {
 }
 export function tableNextRow(
   row_flags: ImGuiTableRowFlags = 0,
-  min_row_height: number,
+  min_row_height: number = 0.0,
 ): void {
   imgui.igTableNextRow(row_flags, min_row_height);
 }
