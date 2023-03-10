@@ -3,6 +3,7 @@ import cimguiSymbols from "../symbol/cimgui.ts";
 import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
 import dimguiStyleSymbols from "../symbol/dimgui_style.ts";
+import dimguiInputTextCallbackDataSymbols from "../symbol/dimgui_input_text_callback_data.ts";
 import { DIMGUI_VERSION } from "../script/version.ts";
 
 const dImGuiCustomFunctions = {
@@ -55,6 +56,7 @@ async function loadLibrary() {
       ...imguiBackendSymbols,
       ...dImGuiCustomFunctions,
       ...dimguiStyleSymbols,
+      ...dimguiInputTextCallbackDataSymbols,
     } as const,
   );
 }

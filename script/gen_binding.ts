@@ -1,20 +1,21 @@
 import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import * as path from "https://deno.land/std@0.177.0/path/mod.ts";
 
 const apiExport = "CIMGUI_API";
 const C_TYPES = {
   "uint8_t": "number",
   "uint16_t": "number",
   "uint32_t": "number",
-  "uint64_t": "Deno.PointerValue",
+  "uint64_t": "number | bigint",
   "int8_t": "number",
   "int16_t": "number",
   "int32_t": "number",
-  "int64_t": "Deno.PointerValue",
+  "int64_t": "number | bigint",
   "float": "number",
   "double": "number",
   "char": "number",
-  "size_t": "Deno.PointerValue",
-  "ssize_t": "Deno.PointerValue",
+  "size_t": "number | bigint",
+  "ssize_t": "number | bigint",
   "int": "number",
   "unsigned int": "number",
   "unsigned char": "number",
@@ -269,7 +270,7 @@ function writeSymboleFile(lines: string[]) {
 }
 
 function writeDraftFile(lines: string[]) {
-  const outFile = "symbol/call_draft.ts";
+  const outFile = "draft/call_draft.txt";
   const encoder = new TextEncoder();
   const source = lines.join("\n");
   Deno.writeFileSync(outFile, encoder.encode(source));
@@ -470,17 +471,37 @@ function parseFunction(func: string) {
   return { symbol, draft };
 }
 
-function makeStyleDraft() {
-  const file = Deno.readTextFileSync("draft/style.txt");
-  const lines = file.split("\n");
+function makeStructMembersDraft(filePath: string, structName: string) {
+  const pathObject = path.parse(filePath);
+  const outFilePath = path.format({
+    dir: pathObject.dir,
+    name: pathObject.name + "-draft",
+    ext: pathObject.ext,
+  });
+
+  const file = Deno.readTextFileSync(filePath);
+  const lines = file.split("\n").filter((line) => {
+    const _line = line.trim();
+    // remove comments
+    if (_line.startsWith("//")) {
+      return false;
+    }
+    // remove empty line
+    if (line.match(/^\s*$/)) {
+      return false;
+    }
+    return true
+  });
   interface DeclareInfo {
     name: string;
     type: string;
     comment: string;
   }
   function parseLine(line: string) {
-    const [declare, comment] = line.split("//");
-    const match = declare.trim().match(/(\w+) +(\w+)/);
+    const parts = line.split("//");
+    const declare = parts[0];
+    const comment = parts.slice(1).join("//");
+    const match = declare.trim().match(/([\w*]+) +(\w+)/);
     assert(match && match.length > 2);
     const type = match[1];
     const name = match[2];
@@ -513,11 +534,11 @@ function makeStyleDraft() {
   }
   function makeCPPGetter(info: DeclareInfo): string {
     // deno-fmt-ignore
-    return `DIMGUI_EXPORT ${info.type} ${ getterName(info) } (ImGuiStyle* style){ return style->${info.name};}`;
+    return `DIMGUI_EXPORT ${info.type} ${ getterName(info) } (${structName}* s){ return s->${info.name};}`;
   }
   function makeCPPSetter(info: DeclareInfo): string {
     // deno-fmt-ignore
-    return `DIMGUI_EXPORT void ${ setterName(info) } (ImGuiStyle* style, ${info.type} value){ style->${info.name}=value;}`;
+    return `DIMGUI_EXPORT void ${ setterName(info) } (${structName}* s, ${info.type} value){ s->${info.name}=value;}`;
   }
 
   function makeJsCall(info: DeclareInfo): string[] {
@@ -581,7 +602,7 @@ function makeStyleDraft() {
     output.push(...makeJsCall(info));
   }
 
-  Deno.writeTextFileSync("draft/style-draft.txt", output.join("\n"));
+  Deno.writeTextFileSync(outFilePath, output.join("\n"));
 }
 
 function gen() {
@@ -598,7 +619,11 @@ function gen() {
   writeDraftFile(draftLines);
   writeSymboleFile(symbolLines);
 
-  makeStyleDraft();
+  makeStructMembersDraft("./draft/style.txt", "ImGuiStyle");
+  makeStructMembersDraft(
+    "./draft/input_text_callback_data.txt",
+    "ImGuiInputTextCallbackData",
+  );
 }
 
 gen();

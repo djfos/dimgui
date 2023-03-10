@@ -568,13 +568,13 @@
 // export function vSliderScalar(label: StringSource, size: ImVec2, data_type: ImGuiDataType, data: BufferSource, min: BufferSource, max: BufferSource, format: StringSource, flags: ImGuiSliderFlags): boolean {
 //   return imgui.igVSliderScalar(cString(label), size[BUFFER], data_type, data, min, max, cString(format), flags);
 // }
-// export function inputText(label: StringSource, buf: StringSource, buf_size: Deno.PointerValue, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
+// export function inputText(label: StringSource, buf: StringSource, buf_size: number | bigint, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
 //   return imgui.igInputText(cString(label), cString(buf), buf_size, flags, callback.pointer, user_data);
 // }
-// export function inputTextMultiline(label: StringSource, buf: StringSource, buf_size: Deno.PointerValue, size: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
+// export function inputTextMultiline(label: StringSource, buf: StringSource, buf_size: number | bigint, size: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
 //   return imgui.igInputTextMultiline(cString(label), cString(buf), buf_size, size[BUFFER], flags, callback.pointer, user_data);
 // }
-// export function inputTextWithHint(label: StringSource, hint: StringSource, buf: StringSource, buf_size: Deno.PointerValue, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
+// export function inputTextWithHint(label: StringSource, hint: StringSource, buf: StringSource, buf_size: number | bigint, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
 //   return imgui.igInputTextWithHint(cString(label), cString(hint), cString(buf), buf_size, flags, callback.pointer, user_data);
 // }
 // export function inputFloat(label: StringSource, v: Float32Array, step: number, step_fast: number, format: StringSource, flags: ImGuiInputTextFlags): boolean {
@@ -919,7 +919,7 @@
 // export function beginDragDropSource(flags: ImGuiDragDropFlags): boolean {
 //   return imgui.igBeginDragDropSource(flags);
 // }
-// export function setDragDropPayload(type: StringSource, data: BufferSource, sz: Deno.PointerValue, cond: ImGuiCond): boolean {
+// export function setDragDropPayload(type: StringSource, data: BufferSource, sz: number | bigint, cond: ImGuiCond): boolean {
 //   return imgui.igSetDragDropPayload(cString(type), data, sz, cond);
 // }
 // export function endDragDropSource(): void {
@@ -1144,7 +1144,7 @@
 // export function loadIniSettingsFromDisk(ini_filename: StringSource): void {
 //    imgui.igLoadIniSettingsFromDisk(cString(ini_filename));
 // }
-// export function loadIniSettingsFromMemory(ini_data: StringSource, ini_size: Deno.PointerValue): void {
+// export function loadIniSettingsFromMemory(ini_data: StringSource, ini_size: number | bigint): void {
 //    imgui.igLoadIniSettingsFromMemory(cString(ini_data), ini_size);
 // }
 // export function saveIniSettingsToDisk(ini_filename: StringSource): void {
@@ -1156,10 +1156,10 @@
 // export function debugTextEncoding(text: StringSource): void {
 //    imgui.igDebugTextEncoding(cString(text));
 // }
-// export function debugCheckVersionAndDataLayout(version_str: StringSource, sz_io: Deno.PointerValue, sz_style: Deno.PointerValue, sz_vec2: Deno.PointerValue, sz_vec4: Deno.PointerValue, sz_drawvert: Deno.PointerValue, sz_drawidx: Deno.PointerValue): boolean {
+// export function debugCheckVersionAndDataLayout(version_str: StringSource, sz_io: number | bigint, sz_style: number | bigint, sz_vec2: number | bigint, sz_vec4: number | bigint, sz_drawvert: number | bigint, sz_drawidx: number | bigint): boolean {
 //   return imgui.igDebugCheckVersionAndDataLayout(cString(version_str), sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx);
 // }
-// export function memAlloc(size: Deno.PointerValue): BufferSource {
+// export function memAlloc(size: number | bigint): BufferSource {
 //   return imgui.igMemAlloc(size);
 // }
 // export function memFree(ptr: BufferSource): void {
@@ -1723,10 +1723,10 @@
 // export function imFontGlyphRangesBuilder_Clear(self: ImFontGlyphRangesBuilder): void {
 //    imgui.ImFontGlyphRangesBuilder_Clear(self);
 // }
-// export function imFontGlyphRangesBuilder_GetBit(self: ImFontGlyphRangesBuilder, n: Deno.PointerValue): boolean {
+// export function imFontGlyphRangesBuilder_GetBit(self: ImFontGlyphRangesBuilder, n: number | bigint): boolean {
 //   return imgui.ImFontGlyphRangesBuilder_GetBit(self, n);
 // }
-// export function imFontGlyphRangesBuilder_SetBit(self: ImFontGlyphRangesBuilder, n: Deno.PointerValue): void {
+// export function imFontGlyphRangesBuilder_SetBit(self: ImFontGlyphRangesBuilder, n: number | bigint): void {
 //    imgui.ImFontGlyphRangesBuilder_SetBit(self, n);
 // }
 // export function imFontGlyphRangesBuilder_AddChar(self: ImFontGlyphRangesBuilder, c: ImWchar): void {
@@ -1927,10 +1927,10 @@
 // export function getKeyIndex(key: ImGuiKey): ImGuiKey {
 //   return imgui.igGetKeyIndex(key);
 // }
-// export function imHashData(data: BufferSource, data_size: Deno.PointerValue, seed: ImU32): ImGuiID {
+// export function imHashData(data: BufferSource, data_size: number | bigint, seed: ImU32): ImGuiID {
 //   return imgui.igImHashData(data, data_size, seed);
 // }
-// export function imHashStr(data: StringSource, data_size: Deno.PointerValue, seed: ImU32): ImGuiID {
+// export function imHashStr(data: StringSource, data_size: number | bigint, seed: ImU32): ImGuiID {
 //   return imgui.igImHashStr(cString(data), data_size, seed);
 // }
 // export function imAlphaBlendColors(col_a: ImU32, col_b: ImU32): ImU32 {
@@ -1948,10 +1948,10 @@
 // export function imStricmp(str1: StringSource, str2: StringSource): number {
 //   return imgui.igImStricmp(cString(str1), cString(str2));
 // }
-// export function imStrnicmp(str1: StringSource, str2: StringSource, count: Deno.PointerValue): number {
+// export function imStrnicmp(str1: StringSource, str2: StringSource, count: number | bigint): number {
 //   return imgui.igImStrnicmp(cString(str1), cString(str2), count);
 // }
-// export function imStrncpy(dst: StringSource, src: StringSource, count: Deno.PointerValue): void {
+// export function imStrncpy(dst: StringSource, src: StringSource, count: number | bigint): void {
 //    imgui.igImStrncpy(cString(dst), cString(src), count);
 // }
 // export function imStrdup(str: StringSource): string {
@@ -1990,10 +1990,10 @@
 // export function imCharIsBlankW(c: number): boolean {
 //   return imgui.igImCharIsBlankW(c);
 // }
-// export function imFormatString(buf: StringSource, buf_size: Deno.PointerValue, fmt: StringSource): number {
+// export function imFormatString(buf: StringSource, buf_size: number | bigint, fmt: StringSource): number {
 //   return imgui.igImFormatString(cString(buf), buf_size, cString(fmt));
 // }
-// export function imFormatStringV(buf: StringSource, buf_size: Deno.PointerValue, fmt: StringSource): number {
+// export function imFormatStringV(buf: StringSource, buf_size: number | bigint, fmt: StringSource): number {
 //   return imgui.igImFormatStringV(cString(buf), buf_size, cString(fmt));
 // }
 // export function imFormatStringToTempBuffer(out_buf: Deno.UnsafeCallback, out_buf_end: Deno.UnsafeCallback, fmt: StringSource): void {
@@ -2008,13 +2008,13 @@
 // export function imParseFormatFindEnd(format: StringSource): string {
 //   return imgui.igImParseFormatFindEnd(cString(format));
 // }
-// export function imParseFormatTrimDecorations(format: StringSource, buf: StringSource, buf_size: Deno.PointerValue): string {
+// export function imParseFormatTrimDecorations(format: StringSource, buf: StringSource, buf_size: number | bigint): string {
 //   return imgui.igImParseFormatTrimDecorations(cString(format), cString(buf), buf_size);
 // }
-// export function imParseFormatSanitizeForPrinting(fmt_in: StringSource, fmt_out: StringSource, fmt_out_size: Deno.PointerValue): void {
+// export function imParseFormatSanitizeForPrinting(fmt_in: StringSource, fmt_out: StringSource, fmt_out_size: number | bigint): void {
 //    imgui.igImParseFormatSanitizeForPrinting(cString(fmt_in), cString(fmt_out), fmt_out_size);
 // }
-// export function imParseFormatSanitizeForScanning(fmt_in: StringSource, fmt_out: StringSource, fmt_out_size: Deno.PointerValue): string {
+// export function imParseFormatSanitizeForScanning(fmt_in: StringSource, fmt_out: StringSource, fmt_out_size: number | bigint): string {
 //   return imgui.igImParseFormatSanitizeForScanning(cString(fmt_in), cString(fmt_out), fmt_out_size);
 // }
 // export function imParseFormatPrecision(format: StringSource, default_value: number): number {

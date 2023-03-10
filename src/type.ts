@@ -3,8 +3,7 @@ import { cString, ffi as imgui } from "./ffi.ts";
 
 export const BUFFER = Symbol("vkStructBuffer");
 export const DATAVIEW = Symbol("vkStructDataView");
-export const LE =
-  new Uint8Array(new Uint32Array([0x12345678]).buffer)[0] === 0x78;
+export const LE = new Uint8Array(new Uint32Array([0x12345678]).buffer)[0] === 0x78;
 
 function getPointerByte() {
   switch (Deno.build.arch) {
@@ -138,8 +137,14 @@ export class Int32 {
 export class Utf8Array {
   #buffer: Uint8Array;
 
-  constructor(capacity: number) {
-    this.#buffer = new Uint8Array(capacity);
+  constructor(capacity: number);
+  constructor(array: Uint8Array);
+  constructor(x: number | Uint8Array) {
+    if (x instanceof Uint8Array) {
+      this.#buffer = x;
+    } else {
+      this.#buffer = new Uint8Array(x);
+    }
   }
 
   static empty(capacity: number) {
@@ -331,7 +336,7 @@ export class ImGuiIO {
  * Shared state of InputText() when using
  * custom ImGuiInputTextCallback (rare/advanced use)
  */
-export type ImGuiInputTextCallbackData = Deno.PointerValue;
+import { ImGuiInputTextCallbackData } from "./imgui_input_text_callback_data.ts";
 /**
  * Storage for ImGuiIO and IsKeyDown(), IsKeyPressed() etc functions.
  */
@@ -646,10 +651,12 @@ export type ImWchar = number;
 // Callback and functions types
 /**
  * Callback function for ImGui::InputText()
+ * return false to discard char
  */
-export type ImGuiInputTextCallback = Deno.UnsafeFnPointer<
-  Deno.ForeignFunction<["buffer"], "i32">
->;
+export type ImGuiInputTextCallback = (
+  data: ImGuiInputTextCallbackData,
+  buf: Uint8Array,
+) => boolean;
 /**
  * Callback function for ImGui::SetNextWindowSizeConstraints()
  */

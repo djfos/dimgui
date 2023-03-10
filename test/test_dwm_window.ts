@@ -4,7 +4,7 @@ import {
   getProcAddress,
   mainloop,
   pollEvents,
-} from "https://deno.land/x/dwm@0.3.0/mod.ts";
+} from "https://deno.land/x/dwm@0.3.2/mod.ts";
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "../mod.ts";
 import { Bool, ImGuiConfigFlagBits } from "../mod.ts";

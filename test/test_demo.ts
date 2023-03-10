@@ -1,3 +1,4 @@
+import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 import * as imgui from "../mod.ts";
 import {
   Bool,
@@ -18,7 +19,8 @@ import {
   Int32,
   Utf8Array,
 } from "../mod.ts";
-import { ImGuiInputTextFlagBits, ImGuiStyleVar } from "../src/enum.ts";
+import { ImGuiInputTextFlagBits, ImGuiStyleVar, ImGuiTabBarFlagBits, ImGuiTabItemFlagBits } from "../src/enum.ts";
+import { ImGuiInputTextCallbackData } from "../src/imgui_input_text_callback_data.ts";
 
 // Helper to display a little (?) mark which shows a tooltip when hovered.
 // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
@@ -112,18 +114,9 @@ function demoBasic() {
       }
 
       imgui.pushID(i);
-      imgui.pushStyleColor(
-        ImGuiCol.Button,
-        imgui.createHSVColor(i / 7.0, 0.6, 0.6),
-      );
-      imgui.pushStyleColor(
-        ImGuiCol.ButtonHovered,
-        imgui.createHSVColor(i / 7.0, 0.7, 0.7),
-      );
-      imgui.pushStyleColor(
-        ImGuiCol.ButtonActive,
-        imgui.createHSVColor(i / 7.0, 0.8, 0.8),
-      );
+      imgui.pushStyleColor(ImGuiCol.Button, imgui.createHSVColor(i / 7.0, 0.6, 0.6));
+      imgui.pushStyleColor(ImGuiCol.ButtonHovered, imgui.createHSVColor(i / 7.0, 0.7, 0.7));
+      imgui.pushStyleColor(ImGuiCol.ButtonActive, imgui.createHSVColor(i / 7.0, 0.8, 0.8));
       imgui.button("Click");
       imgui.popStyleColor(3);
       imgui.popID();
@@ -155,8 +148,9 @@ function demoBasic() {
     imgui.combo("combo", combo.item_current, combo.items, combo.items.length);
     imgui.sameLine();
     helpMarker(
-'Using the simplified one-liner Combo API here.\nRefer to the "Combo" section below\
-      for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.',
+      "Using the simplified one-liner Combo API here.\n " +
+        "Refer to the 'Combo' section below for an explanation " +
+        "of how to use the more flexible and general BeginCombo/EndCombo API.",
     );
 
     // To wire InputText() with std::string or any other custom string type,
@@ -207,63 +201,27 @@ function demoBasic() {
         "Double-click or CTRL+click to input value.",
     );
 
-    imgui.dragInt(
-      "drag int 0..100",
-      drag.i2.buffer,
-      1,
-      0,
-      100,
-      "%d%%",
-      ImGuiSliderFlagBits.AlwaysClamp,
-    );
+    imgui.dragInt("drag int 0..100", drag.i2.buffer, 1, 0, 100, "%d%%", ImGuiSliderFlagBits.AlwaysClamp);
 
     imgui.dragFloat("drag float", drag.f1.buffer, 0.005);
-    imgui.dragFloat(
-      "drag small float",
-      drag.f2.buffer,
-      0.0001,
-      0.0,
-      0.0,
-      "%.06 ns",
-    );
+    imgui.dragFloat("drag small float", drag.f2.buffer, 0.0001, 0.0, 0.0, "%.06 ns");
 
     const slider = basic.slider;
     imgui.sliderInt("slider int", slider.i1.buffer, -1, 3);
     imgui.sameLine();
     helpMarker("CTRL+click to input value.");
 
-    imgui.sliderFloat(
-      "slider float",
-      slider.f1.buffer,
-      0.0,
-      1.0,
-      "ratio = %.3f",
-    );
-    imgui.sliderFloat(
-      "slider float (log)",
-      slider.f2.buffer,
-      -10.0,
-      10.0,
-      "%.4f",
-      ImGuiSliderFlagBits.Logarithmic,
-    );
-
+    imgui.sliderFloat("slider float", slider.f1.buffer, 0.0, 1.0, "ratio = %.3f");
+    imgui.sliderFloat("slider float (log)", slider.f2.buffer, -10.0, 10.0, "%.4f", ImGuiSliderFlagBits.Logarithmic);
     imgui.sliderAngle("slider angle", slider.angle.buffer);
 
     // Using the format string to display a name instead of an integer.
     // Here we completely omit '%d' from the format string, so it'll only display a name.
     // This technique can also be used with DragInt().
-    const elem_name =
-      (slider.elem.value >= 0 && slider.elem.value < Element.COUNT)
-        ? slider.elems_names[slider.elem.value]
-        : "Unknown";
-    imgui.sliderInt(
-      "slider enum",
-      slider.elem.buffer,
-      0,
-      Element.COUNT - 1,
-      elem_name,
-    );
+    const elem_name = (slider.elem.value >= 0 && slider.elem.value < Element.COUNT)
+      ? slider.elems_names[slider.elem.value]
+      : "Unknown";
+    imgui.sliderInt("slider enum", slider.elem.buffer, 0, Element.COUNT - 1, elem_name);
     imgui.sameLine();
     helpMarker(
       "Using the format string parameter to display a name instead of the underlying integer.",
@@ -378,38 +336,16 @@ function demoTree() {
         "This is a more typical looking tree with selectable nodes.\n" +
           "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.",
       );
-      imgui.checkboxFlags(
-        "ImGuiTreeNodeFlagBits.OpenOnArrow",
-        tree.base_flags.buffer,
-        ImGuiTreeNodeFlagBits.OpenOnArrow,
-      );
-      imgui.checkboxFlags(
-        "ImGuiTreeNodeFlagBits.OpenOnDoubleClick",
-        tree.base_flags.buffer,
-        ImGuiTreeNodeFlagBits.OpenOnDoubleClick,
-      );
-      imgui.checkboxFlags(
-        "ImGuiTreeNodeFlagBits.SpanAvailWidth",
-        tree.base_flags.buffer,
-        ImGuiTreeNodeFlagBits.SpanAvailWidth,
-      );
+      imgui.checkboxFlags("OpenOnArrow", tree.base_flags.buffer, ImGuiTreeNodeFlagBits.OpenOnArrow);
+      imgui.checkboxFlags("OpenOnDoubleClick", tree.base_flags.buffer, ImGuiTreeNodeFlagBits.OpenOnDoubleClick);
+      imgui.checkboxFlags("SpanAvailWidth", tree.base_flags.buffer, ImGuiTreeNodeFlagBits.SpanAvailWidth);
       imgui.sameLine();
       helpMarker(
         "Extend hit area to all available width instead of allowing more items to be laid out after the node.",
       );
-      imgui.checkboxFlags(
-        "ImGuiTreeNodeFlagBits.SpanFullWidth",
-        tree.base_flags.buffer,
-        ImGuiTreeNodeFlagBits.SpanFullWidth,
-      );
-      imgui.checkbox(
-        "Align label with current X position",
-        tree.align_label_with_current_x_position.buffer,
-      );
-      imgui.checkbox(
-        "Test tree node as drag source",
-        tree.test_drag_and_drop.buffer,
-      );
+      imgui.checkboxFlags("SpanFullWidth", tree.base_flags.buffer, ImGuiTreeNodeFlagBits.SpanFullWidth);
+      imgui.checkbox("Align label with current X position", tree.align_label_with_current_x_position.buffer);
+      imgui.checkbox("Test tree node as drag source", tree.test_drag_and_drop.buffer);
       imgui.text("Hello!");
       if (tree.align_label_with_current_x_position.value) {
         imgui.unindent(imgui.getTreeNodeToLabelSpacing());
@@ -491,20 +427,13 @@ function demoClollapsingHeaders() {
     // static bool closable_group = true;
     const closable_group = collapsingHeaders.closable_group;
     imgui.checkbox("Show 2nd header", closable_group.buffer);
-    if (
-      imgui.collapsingHeader("Header", undefined, ImGuiTreeNodeFlagBits.None)
-    ) {
+    if (imgui.collapsingHeader("Header", undefined, ImGuiTreeNodeFlagBits.None)) {
       imgui.text(`IsItemHovered: ${imgui.isItemHovered()}`);
       for (let i = 0; i < 5; i++) {
         imgui.text(`Some content ${i}`);
       }
     }
-    if (
-      imgui.collapsingHeader(
-        "Header with a close button",
-        closable_group.buffer,
-      )
-    ) {
+    if (imgui.collapsingHeader("Header with a close button", closable_group.buffer)) {
       imgui.text(`IsItemHovered: ${imgui.isItemHovered()}`);
       for (let i = 0; i < 5; i++) {
         imgui.text(`More content ${i}`);
@@ -722,51 +651,22 @@ function demoCombo() {
     // Combo Boxes are also called "Dropdown" in other systems
     // Expose flags as checkbox for the demo
     const flags = combo.flags;
-    imgui.checkboxFlags(
-      "ImGuiComboFlagBits.PopupAlignLeft",
-      flags.buffer,
-      ImGuiComboFlagBits.PopupAlignLeft,
-    );
+    imgui.checkboxFlags("ImGuiComboFlagBits.PopupAlignLeft", flags.buffer, ImGuiComboFlagBits.PopupAlignLeft);
     imgui.sameLine();
     helpMarker("Only makes a difference if the popup is larger than the combo");
-    if (
-      imgui.checkboxFlags(
-        "ImGuiComboFlagBits.NoArrowButton",
-        flags.buffer,
-        ImGuiComboFlagBits.NoArrowButton,
-      )
-    ) {
+    if (imgui.checkboxFlags("ImGuiComboFlagBits.NoArrowButton", flags.buffer, ImGuiComboFlagBits.NoArrowButton)) {
       flags.value &= ~ImGuiComboFlagBits.NoPreview; // Clear the other flag, as we cannot combine both
     }
-    if (
-      imgui.checkboxFlags(
-        "ImGuiComboFlagBits.NoPreview",
-        flags.buffer,
-        ImGuiComboFlagBits.NoPreview,
-      )
-    ) {
+    if (imgui.checkboxFlags("ImGuiComboFlagBits.NoPreview", flags.buffer, ImGuiComboFlagBits.NoPreview)) {
       flags.value &= ~ImGuiComboFlagBits.NoArrowButton; // Clear the other flag, as we cannot combine both
     }
 
     // Using the generic BeginCombo() API, you have full control over how to display the combo contents.
     // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
     // stored in the object itself, etc.)
-    const items = [
-      "AAAA",
-      "BBBB",
-      "CCCC",
-      "DDDD",
-      "EEEE",
-      "FFFF",
-      "GGGG",
-      "HHHH",
-      "IIII",
-      "JJJJ",
-      "KKKK",
-      "LLLLLLL",
-      "MMMM",
-      "OOOOOOO",
-    ];
+
+    // deno-fmt-ignore
+    const items = [ "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO", ];
     const combo_preview_value = items[combo.item_current_idx]; // Pass in the preview value visible before opening the combo (it could be anything)
     if (imgui.beginCombo("combo 1", combo_preview_value, flags.value)) {
       for (let n = 0; n < items.length; n++) {
@@ -786,11 +686,7 @@ function demoCombo() {
     // Simplified one-liner Combo() API, using values packed in a single constant string
     // This is a convenience for when the selection set is small and known at compile-time.
     const item_current_2 = combo.item_current_2;
-    imgui.combo(
-      "combo 2 (one-liner)",
-      item_current_2.buffer,
-      ["aaaa", "bbb", "cccc", "dddd", "eee"],
-    );
+    imgui.combo("combo 2 (one-liner)", item_current_2.buffer, ["aaaa", "bbb", "cccc", "dddd", "eee"]);
 
     // Simplified one-liner Combo() using an array of const char*
     // This is not very useful (may obsolete): prefer using BeginCombo()/EndCombo() for full control.
@@ -827,10 +723,7 @@ function demoCombo() {
 
     // Custom size: use all width, 5 items tall
     imgui.text("Full-width:");
-    const fullWidth = new ImVec2(
-      -imgui.floatMin(),
-      5 * imgui.getTextLineHeightWithSpacing(),
-    );
+    const fullWidth = new ImVec2(-imgui.floatMin(), 5 * imgui.getTextLineHeightWithSpacing());
     if (imgui.beginListBox("##listbox 2", fullWidth)) {
       for (let n = 0; n < items.length; n++) {
         const is_selected = listBox.item_current_idx == n;
@@ -899,13 +792,7 @@ function demoSelectables() {
       imgui.selectable("2. I am selectable", selection[1]);
       imgui.text("(I am not selectable)");
       imgui.selectable("4. I am selectable", selection[3]);
-      if (
-        imgui.selectable(
-          "5. I am double clickable",
-          selection[4],
-          ImGuiSelectableFlagBits.AllowDoubleClick,
-        )
-      ) {
+      if (imgui.selectable("5. I am double clickable", selection[4], ImGuiSelectableFlagBits.AllowDoubleClick)) {
         if (imgui.isMouseDoubleClicked(0)) {
           selection[4].value = !selection[4].value;
         }
@@ -1077,390 +964,316 @@ function demoSelectables() {
   }
 }
 
+const statusTextInput = {
+  multiline: {
+    text: Utf8Array.of(
+      "/*\n" +
+        " The Pentium F00 bug, shorthand for F0 0 C7 C8,\n" +
+        " the hexadecimal encoding of one offending instruction,\n" +
+        " more formally, the invalid operand with locked CMPXCHG8B\n" +
+        " instruction bug, is a design flaw in the majority of\n" +
+        " Intel Pentium, Pentium MMX, and Pentium OverDrive\n" +
+        " processors (all in the P5 microarchitecture).\n" +
+        "*/\n\n" +
+        "label:\n" +
+        "\tlock cmpxchg8b eax\n",
+      1024 * 16,
+    ),
+    flags: Int32.of(ImGuiInputTextFlagBits.AllowTabInput),
+  },
+  filtered: {
+    buf1: Utf8Array.empty(64),
+    buf2: Utf8Array.empty(64),
+    buf3: Utf8Array.empty(64),
+    buf4: Utf8Array.empty(64),
+    buf5: Utf8Array.empty(64),
+    buf6: Utf8Array.empty(64),
+  },
+  status: {
+    edit_count: 0,
+    buf1: Utf8Array.empty(64),
+    buf2: Utf8Array.empty(64),
+    buf3: Utf8Array.empty(64),
+  },
+};
+
 function demoTextInput() {
-  // To wire InputText() with std::string or any other custom string type,
-  // see the "Text Input > Resize Callback" section of this demo, and the misc/cpp/imgui_stdlib.h file.
-
-  // IMGUI_DEMO_MARKER("Widgets/Text Input");
   if (imgui.treeNode("Text Input")) {
-    // IMGUI_DEMO_MARKER("Widgets/Text Input/Multi-line Text Input");
     if (imgui.treeNode("Multi-line Text Input")) {
-      // Note: we are using a fixed-sized buffer for simplicity here. See ImGuiInputTextFlagBits.CallbackResize
-      // and the code in misc/cpp/imgui_stdlib.h for how to setup InputText() for dynamically resizing strings.
-
-      const multiline = {
-        text: Utf8Array.of(
-          "/*\n" +
-            " The Pentium F00 bug, shorthand for F0 0 C7 C8,\n" +
-            " the hexadecimal encoding of one offending instruction,\n" +
-            " more formally, the invalid operand with locked CMPXCHG8B\n" +
-            " instruction bug, is a design flaw in the majority of\n" +
-            " Intel Pentium, Pentium MMX, and Pentium OverDrive\n" +
-            " processors (all in the P5 microarchitecture).\n" +
-            "*/\n\n" +
-            "label:\n" +
-            "\tlock cmpxchg8b eax\n",
-          1024 * 16,
-        ),
-        flags: Int32.of(ImGuiInputTextFlagBits.AllowTabInput),
-      };
+      const multiline = statusTextInput.multiline;
       const text = multiline.text;
       const flags = multiline.flags;
-      const fullWidth = new ImVec2(
-        -imgui.floatMin(),
-        imgui.getTextLineHeight() * 16,
-      );
-      helpMarker(
-        "You can use the ImGuiInputTextFlagBits.CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in imgui_demo.cpp because we don't want to include <string> in here)",
-      );
-      imgui.checkboxFlags(
-        "ImGuiInputTextFlagBits.ReadOnly",
-        flags.buffer,
-        ImGuiInputTextFlagBits.ReadOnly,
-      );
-      imgui.checkboxFlags(
-        "ImGuiInputTextFlagBits.AllowTabInput",
-        flags.buffer,
-        ImGuiInputTextFlagBits.AllowTabInput,
-      );
+      const fullWidth = new ImVec2(-imgui.floatMin(), imgui.getTextLineHeight() * 16);
+      imgui.checkboxFlags("ImGuiInputTextFlagBits.ReadOnly", flags.buffer, ImGuiInputTextFlagBits.ReadOnly);
+      imgui.checkboxFlags("ImGuiInputTextFlagBits.AllowTabInput", flags.buffer, ImGuiInputTextFlagBits.AllowTabInput);
       imgui.checkboxFlags(
         "ImGuiInputTextFlagBits.CtrlEnterForNewLine",
         flags.buffer,
         ImGuiInputTextFlagBits.CtrlEnterForNewLine,
       );
-      imgui.inputTextMultiline(
-        "##source",
-        text.buffer,
-        text.buffer.length,
-        fullWidth,
-        flags.value,
-      );
+      imgui.inputTextMultiline("##source", text.buffer, fullWidth, flags.value);
       imgui.treePop();
     }
 
     // IMGUI_DEMO_MARKER("Widgets/Text Input/Filtered Text Input");
     if (imgui.treeNode("Filtered Text Input")) {
-      // struct TextFilters
-      // {
-      //     // Return 0 (pass) if the character is 'i' or 'm' or 'g' or 'u' or 'i'
-      //     static int FilterImGuiLetters(ImGuiInputTextCallbackData* data)
-      //     {
-      //         if (data->EventChar < 256 && strchr("imgui", (char)data->EventChar))
-      //             return 0;
-      //         return 1;
-      //     }
-      // };
+      const filtered = statusTextInput.filtered;
 
-      const filtered = {
-        buf1: Utf8Array.empty(64),
-        buf2: Utf8Array.empty(64),
-        buf3: Utf8Array.empty(64),
-        buf4: Utf8Array.empty(64),
-        buf5: Utf8Array.empty(64),
-        buf6: Utf8Array.empty(64),
+      imgui.inputText("default", filtered.buf1.buffer);
+      imgui.inputText("decimal", filtered.buf2.buffer, ImGuiInputTextFlagBits.CharsDecimal);
+      const flags = ImGuiInputTextFlagBits.CharsHexadecimal | ImGuiInputTextFlagBits.CharsUppercase;
+      imgui.inputText("hexadecimal", filtered.buf3.buffer, flags);
+      imgui.inputText("uppercase", filtered.buf4.buffer, ImGuiInputTextFlagBits.CharsUppercase);
+      imgui.inputText("no blank", filtered.buf5.buffer, ImGuiInputTextFlagBits.CharsNoBlank);
+      // different form array.filter
+      const filter = (data: ImGuiInputTextCallbackData) => {
+        if ("imgui".includes(String.fromCharCode(data.EventChar))) {
+          return false; // accept
+        }
+        return true; // discard
       };
-
-      const buf1 = filtered.buf1;
-      const buf2 = filtered.buf2;
-      const buf3 = filtered.buf3;
-      const buf4 = filtered.buf4;
-      const buf5 = filtered.buf5;
-      const buf6 = filtered.buf6;
-
-      imgui.inputText("default", buf1.buffer, buf1.buffer.length);
-      imgui.inputText(
-        "decimal",
-        buf2.buffer,
-        buf2.buffer.length,
-        ImGuiInputTextFlagBits.CharsDecimal,
-      );
-      imgui.inputText(
-        "hexadecimal",
-        buf3.buffer,
-        buf3.buffer.length,
-        ImGuiInputTextFlagBits.CharsHexadecimal |
-          ImGuiInputTextFlagBits.CharsUppercase,
-      );
-      imgui.inputText(
-        "uppercase",
-        buf4.buffer,
-        buf4.buffer.length,
-        ImGuiInputTextFlagBits.CharsUppercase,
-      );
-      imgui.inputText(
-        "no blank",
-        buf5.buffer,
-        buf5.buffer.length,
-        ImGuiInputTextFlagBits.CharsNoBlank,
-      );
-      imgui.inputText(
-        '"imgui" letters',
-        buf6.buffer,
-        buf6.buffer.length,
-        ImGuiInputTextFlagBits.CallbackCharFilter,
-        undefined,
-      );
+      imgui.inputText('"imgui" letters', filtered.buf6.buffer, ImGuiInputTextFlagBits.CallbackCharFilter, filter);
       imgui.treePop();
     }
 
     // IMGUI_DEMO_MARKER("Widgets/Text Input/Password input");
-    // if (imgui.treeNode("Password Input"))
-    // {
-    //     static char password[64] = "password123";
-    //     imgui.inputText("password", password, IM_ARRAYSIZE(password), ImGuiInputTextFlagBits.Password);
-    //     imgui.sameLine(); helpMarker("Display all characters as '*'.\nDisable clipboard cut and copy.\nDisable logging.\n");
-    //     imgui.inputTextWithHint("password (w/ hint)", "<password>", password, IM_ARRAYSIZE(password), ImGuiInputTextFlagBits.Password);
-    //     imgui.inputText("password (clear)", password, IM_ARRAYSIZE(password));
-    //     imgui.treePop();
-    // }
+    if (imgui.treeNode("Password Input")) {
+      // static char password[64] = "password123";
+      const password = Utf8Array.of("password123", 64);
+      imgui.inputText("password", password.buffer, ImGuiInputTextFlagBits.Password);
+      imgui.sameLine();
+      helpMarker("Display all characters as '*'.\nDisable clipboard cut and copy.\nDisable logging.\n");
+      imgui.inputTextWithHint("password (w/ hint)", "<password>", password.buffer, ImGuiInputTextFlagBits.Password);
+      imgui.inputText("password (clear)", password.buffer);
+      imgui.treePop();
+    }
 
-    // if (imgui.treeNode("Completion, History, Edit Callbacks"))
-    // {
-    //     struct Funcs
-    //     {
-    //         static int MyCallback(ImGuiInputTextCallbackData* data)
-    //         {
-    //             if (data->EventFlag == ImGuiInputTextFlagBits.CallbackCompletion)
-    //             {
-    //                 data->InsertChars(data->CursorPos, "..");
-    //             }
-    //             else if (data->EventFlag == ImGuiInputTextFlagBits.CallbackHistory)
-    //             {
-    //                 if (data->EventKey == ImGuiKey_UpArrow)
-    //                 {
-    //                     data->DeleteChars(0, data->BufTextLen);
-    //                     data->InsertChars(0, "Pressed Up!");
-    //                     data->SelectAll();
-    //                 }
-    //                 else if (data->EventKey == ImGuiKey_DownArrow)
-    //                 {
-    //                     data->DeleteChars(0, data->BufTextLen);
-    //                     data->InsertChars(0, "Pressed Down!");
-    //                     data->SelectAll();
-    //                 }
-    //             }
-    //             else if (data->EventFlag == ImGuiInputTextFlagBits.CallbackEdit)
-    //             {
-    //                 // Toggle casing of first character
-    //                 char c = data->Buf[0];
-    //                 if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) data->Buf[0] ^= 32;
-    //                 data->BufDirty = true;
+    if (imgui.treeNode("Completion, History, Edit Callbacks")) {
+      const status = statusTextInput.status;
+      const callback = (data: ImGuiInputTextCallbackData): boolean => {
+        if (data.EventFlag == ImGuiInputTextFlagBits.CallbackCompletion) {
+          data.insertChars(data.CursorPos, "..");
+        } else if (data.EventFlag == ImGuiInputTextFlagBits.CallbackHistory) {
+          if (data.EventKey == ImGuiKey.UpArrow) {
+            data.deleteChars(0, data.BufTextLen);
+            data.insertChars(0, "Pressed Up!");
+            data.selectAll();
+          } else if (data.EventKey == ImGuiKey.DownArrow) {
+            data.deleteChars(0, data.BufTextLen);
+            data.insertChars(0, "Pressed Down!");
+            data.selectAll();
+          }
+        } else if (data.EventFlag == ImGuiInputTextFlagBits.CallbackEdit) {
+          // // Toggle casing of first character
+          // // const char = String.fromCharCode(buf[0]);
+          // // const _toggle = status.edit_count % 2 == 0 ? char.toUpperCase() : char.toLowerCase();
+          // buf[0] = "P".charCodeAt(0);
+          // data.BufDirty = true;
+          // console.log(new Utf8Array(buf).value);
+          // assert(buf === status.buf3.buffer);
 
-    //                 // Increment a counter
-    //                 int* p_int = (int*)data->UserData;
-    //                 *p_int = *p_int + 1;
-    //             }
-    //             return 0;
-    //         }
-    //     };
-    //     static char buf1[64];
-    //     imgui.inputText("Completion", buf1, 64, ImGuiInputTextFlagBits.CallbackCompletion, Funcs::myCallback);
-    //     imgui.sameLine(); helpMarker("Here we append \"..\" each time Tab is pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.");
+          // // Increment a counter
+          // status.edit_count++;
+        }
+        return false;
+      };
 
-    //     static char buf2[64];
-    //     imgui.inputText("History", buf2, 64, ImGuiInputTextFlagBits.CallbackHistory, Funcs::myCallback);
-    //     imgui.sameLine(); helpMarker("Here we replace and select text each time Up/Down are pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.");
+      const buf1 = status.buf1;
+      const buf2 = status.buf2;
+      // const buf3 = status.buf3;
+      imgui.inputText("Completion", buf1.buffer, ImGuiInputTextFlagBits.CallbackCompletion, callback);
+      imgui.sameLine();
+      helpMarker(
+        "Here we append \"..\" each time Tab is pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.",
+      );
 
-    //     static char buf3[64];
-    //     static int edit_count = 0;
-    //     imgui.inputText("Edit", buf3, 64, ImGuiInputTextFlagBits.CallbackEdit, Funcs::myCallback, (void*)&edit_count);
-    //     imgui.sameLine(); helpMarker("Here we toggle the casing of the first character on every edit + count edits.");
-    //     imgui.sameLine(); imgui.text("(%d)", edit_count);
+      imgui.inputText("History", buf2.buffer, ImGuiInputTextFlagBits.CallbackHistory, callback);
+      imgui.sameLine();
+      helpMarker(
+        "Here we replace and select text each time Up/Down are pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.",
+      );
 
-    //     imgui.treePop();
-    // }
+      // const ret = imgui.inputText("Edit", buf3.buffer, ImGuiInputTextFlagBits.CallbackEdit, callback);
+      // imgui.sameLine();
+      // helpMarker("Here we toggle the casing of the first character on every edit + count edits.");
+      // imgui.sameLine();
+      // imgui.text(`${status.edit_count}`);
+      // if (ret) {
+      //   console.log(new Utf8Array(buf3.buffer).value);
+      // }
 
-    // IMGUI_DEMO_MARKER("Widgets/Text Input/Resize Callback");
-    // if (imgui.treeNode("Resize Callback"))
-    // {
-    //     // To wire InputText() with std::string or any other custom string type,
-    //     // you can use the ImGuiInputTextFlagBits.CallbackResize flag + create a custom imgui.inputText() wrapper
-    //     // using your preferred type. See misc/cpp/imgui_stdlib.h for an implementation of this using std::string.
-    //     helpMarker(
-    //         "Using ImGuiInputTextFlagBits.CallbackResize to wire your custom string type to InputText().\n\n"
-    //         "See misc/cpp/imgui_stdlib.h for an implementation of this for std::string.");
-    //     struct Funcs
-    //     {
-    //         static int MyResizeCallback(ImGuiInputTextCallbackData* data)
-    //         {
-    //             if (data->EventFlag == ImGuiInputTextFlagBits.CallbackResize)
-    //             {
-    //                 ImVector<char>* my_str = (ImVector<char>*)data->UserData;
-    //                 IM_ASSERT(my_str->begin() == data->Buf);
-    //                 my_str->resize(data->BufSize); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
-    //                 data->Buf = my_str->begin();
-    //             }
-    //             return 0;
-    //         }
-
-    //         // Note: Because imgui. is a namespace you would typically add your own function into the namespace.
-    //         // For example, you code may declare a function 'imgui.inputText(const char* label, MyString* my_str)'
-    //         static bool MyInputTextMultiline(const char* label, ImVector<char>* my_str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
-    //         {
-    //             IM_ASSERT((flags & ImGuiInputTextFlagBits.CallbackResize) == 0);
-    //             return imgui.inputTextMultiline(label, my_str->begin(), (size_t)my_str->size(), size, flags | ImGuiInputTextFlagBits.CallbackResize, Funcs::myResizeCallback, (void*)my_str);
-    //         }
-    //     };
-
-    //     // For this demo we are using ImVector as a string container.
-    //     // Note that because we need to store a terminating zero character, our size/capacity are 1 more
-    //     // than usually reported by a typical string class.
-    //     static ImVector<char> my_str;
-    //     if (my_str.empty())
-    //         my_str.push_back(0);
-    //     Funcs::myInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, imgui.getTextLineHeight() * 16));
-    //     imgui.text("Data: %p\nSize: %d\nCapacity: %d", (void*)my_str.begin(), my_str.size(), my_str.capacity());
-    //     imgui.treePop();
-    // }
+      imgui.treePop();
+    }
 
     imgui.treePop();
   }
 }
 
+const statusTabs = {
+  advanced: {
+    flags: Int32.of(ImGuiTabBarFlagBits.Reorderable),
+    opened: boolArrray([true, true, true, true]),
+  },
+  itemButton: {
+    active_tabs: [] as number[],
+    next_tab_id: 0,
+    flags: Int32.of(
+      ImGuiTabBarFlagBits.AutoSelectNewTabs | ImGuiTabBarFlagBits.Reorderable |
+        ImGuiTabBarFlagBits.FittingPolicyResizeDown,
+    ),
+    show_leading_button: Bool.of(true),
+    show_trailing_button: Bool.of(true),
+  },
+};
+
 function demoTabs() {
-  // // Tabs
+  // Tabs
   // IMGUI_DEMO_MARKER("Widgets/Tabs");
-  // if (imgui.treeNode("Tabs"))
-  // {
-  //     IMGUI_DEMO_MARKER("Widgets/Tabs/Basic");
-  //     if (imgui.treeNode("Basic"))
-  //     {
-  //         ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlagBits.None;
-  //         if (imgui.beginTabBar("MyTabBar", tab_bar_flags))
-  //         {
-  //             if (imgui.beginTabItem("Avocado"))
-  //             {
-  //                 imgui.text("This is the Avocado tab!\nblah blah blah blah blah");
-  //                 imgui.endTabItem();
-  //             }
-  //             if (imgui.beginTabItem("Broccoli"))
-  //             {
-  //                 imgui.text("This is the Broccoli tab!\nblah blah blah blah blah");
-  //                 imgui.endTabItem();
-  //             }
-  //             if (imgui.beginTabItem("Cucumber"))
-  //             {
-  //                 imgui.text("This is the Cucumber tab!\nblah blah blah blah blah");
-  //                 imgui.endTabItem();
-  //             }
-  //             imgui.endTabBar();
-  //         }
-  //         imgui.separator();
-  //         imgui.treePop();
-  //     }
+  if (imgui.treeNode("Tabs")) {
+    // IMGUI_DEMO_MARKER("Widgets/Tabs/Basic");
+    if (imgui.treeNode("Basic")) {
+      if (imgui.beginTabBar("MyTabBar", ImGuiTabBarFlagBits.None)) {
+        if (imgui.beginTabItem("Avocado")) {
+          imgui.text("This is the Avocado tab!\nblah blah blah blah blah");
+          imgui.endTabItem();
+        }
+        if (imgui.beginTabItem("Broccoli")) {
+          imgui.text("This is the Broccoli tab!\nblah blah blah blah blah");
+          imgui.endTabItem();
+        }
+        if (imgui.beginTabItem("Cucumber")) {
+          imgui.text("This is the Cucumber tab!\nblah blah blah blah blah");
+          imgui.endTabItem();
+        }
+        imgui.endTabBar();
+      }
+      imgui.separator();
+      imgui.treePop();
+    }
 
-  //     IMGUI_DEMO_MARKER("Widgets/Tabs/Advanced & Close Button");
-  //     if (imgui.treeNode("Advanced & Close Button"))
-  //     {
-  //         // Expose a couple of the available flags. In most cases you may just call BeginTabBar() with no flags (0).
-  //         static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlagBits.Reorderable;
-  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.Reorderable", &tab_bar_flags, ImGuiTabBarFlagBits.Reorderable);
-  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.AutoSelectNewTabs", &tab_bar_flags, ImGuiTabBarFlagBits.AutoSelectNewTabs);
-  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.TabListPopupButton", &tab_bar_flags, ImGuiTabBarFlagBits.TabListPopupButton);
-  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.NoCloseWithMiddleMouseButton", &tab_bar_flags, ImGuiTabBarFlagBits.NoCloseWithMiddleMouseButton);
-  //         if ((tab_bar_flags & ImGuiTabBarFlagBits.FittingPolicyMask_) == 0)
-  //             tab_bar_flags |= ImGuiTabBarFlagBits.FittingPolicyDefault_;
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyResizeDown", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyResizeDown))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyResizeDown);
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyScroll", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyScroll))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyScroll);
+    // IMGUI_DEMO_MARKER("Widgets/Tabs/Advanced & Close Button");
+    if (imgui.treeNode("Advanced & Close Button")) {
+      // Expose a couple of the available flags. In most cases you may just call BeginTabBar() with no flags (0).
+      const f = statusTabs.advanced.flags;
+      imgui.checkboxFlags("Reorderable", f.buffer, ImGuiTabBarFlagBits.Reorderable);
+      imgui.checkboxFlags("AutoSelectNewTabs", f.buffer, ImGuiTabBarFlagBits.AutoSelectNewTabs);
+      imgui.checkboxFlags("TabListPopupButton", f.buffer, ImGuiTabBarFlagBits.TabListPopupButton);
+      imgui.checkboxFlags("NoCloseWithMiddleMouseButton", f.buffer, ImGuiTabBarFlagBits.NoCloseWithMiddleMouseButton);
+      if ((f.value & ImGuiTabBarFlagBits.FittingPolicyMask_) == 0) {
+        f.value |= ImGuiTabBarFlagBits.FittingPolicyDefault_;
+      }
+      if (imgui.checkboxFlags("FittingPolicyResizeDown", f.buffer, ImGuiTabBarFlagBits.FittingPolicyResizeDown)) {
+        f.value &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyResizeDown);
+      }
+      if (imgui.checkboxFlags("FittingPolicyScroll", f.buffer, ImGuiTabBarFlagBits.FittingPolicyScroll)) {
+        f.value &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyScroll);
+      }
 
-  //         // Tab Bar
-  //         const char* names[4] = { "Artichoke", "Beetroot", "Celery", "Daikon" };
-  //         static bool opened[4] = { true, true, true, true }; // Persistent user state
-  //         for (int n = 0; n < IM_ARRAYSIZE(opened); n++)
-  //         {
-  //             if (n > 0) { imgui.sameLine(); }
-  //             imgui.checkbox(names[n], &opened[n]);
-  //         }
+      // Tab Bar
+      const names = ["Artichoke", "Beetroot", "Celery", "Daikon"];
+      // static bool opened[4] = { true, true, true, true }; // Persistent user state
+      const opened = statusTabs.advanced.opened;
+      for (let n = 0; n < opened.length; n++) {
+        if (n > 0) imgui.sameLine();
+        imgui.checkbox(names[n], opened[n].buffer);
+      }
 
-  //         // Passing a bool* to BeginTabItem() is similar to passing one to Begin():
-  //         // the underlying bool will be set to false when the tab is closed.
-  //         if (imgui.beginTabBar("MyTabBar", tab_bar_flags))
-  //         {
-  //             for (int n = 0; n < IM_ARRAYSIZE(opened); n++)
-  //                 if (opened[n] && imgui.beginTabItem(names[n], &opened[n], ImGuiTabItemFlagBits.None))
-  //                 {
-  //                     imgui.text("This is the %s tab!", names[n]);
-  //                     if (n & 1)
-  //                         imgui.text("I am an odd tab.");
-  //                     imgui.endTabItem();
-  //                 }
-  //             imgui.endTabBar();
-  //         }
-  //         imgui.separator();
-  //         imgui.treePop();
-  //     }
+      // Passing a bool* to BeginTabItem() is similar to passing one to Begin():
+      // the underlying bool will be set to false when the tab is closed.
+      if (imgui.beginTabBar("MyTabBar", f.value)) {
+        for (let n = 0; n < opened.length; n++) {
+          if (opened[n] && imgui.beginTabItem(names[n], opened[n].buffer, ImGuiTabItemFlagBits.None)) {
+            imgui.text(`This is the ${names[n]} tab!`);
+            if (n & 1) {
+              imgui.text("I am an odd tab.");
+            }
+            imgui.endTabItem();
+          }
+        }
+        imgui.endTabBar();
+      }
+      imgui.separator();
+      imgui.treePop();
+    }
 
-  //     IMGUI_DEMO_MARKER("Widgets/Tabs/TabItemButton & Leading-Trailing flags");
-  //     if (imgui.treeNode("TabItemButton & Leading/Trailing flags"))
-  //     {
-  //         static ImVector<int> active_tabs;
-  //         static int next_tab_id = 0;
-  //         if (next_tab_id == 0) // Initialize with some default tabs
-  //             for (let i = 0; i < 3; i++)
-  //                 active_tabs.push_back(next_tab_id++);
+    // IMGUI_DEMO_MARKER("Widgets/Tabs/TabItemButton & Leading-Trailing flags");
+    if (imgui.treeNode("TabItemButton & Leading/Trailing flags")) {
+      // static ImVector<int> active_tabs;
+      // static int next_tab_id = 0;
 
-  //         // TabItemButton() and Leading/Trailing flags are distinct features which we will demo together.
-  //         // (It is possible to submit regular tabs with Leading/Trailing flags, or TabItemButton tabs without Leading/Trailing flags...
-  //         // but they tend to make more sense together)
-  //         static bool show_leading_button = true;
-  //         static bool show_trailing_button = true;
-  //         imgui.checkbox("Show Leading TabItemButton()", &show_leading_button);
-  //         imgui.checkbox("Show Trailing TabItemButton()", &show_trailing_button);
+      const status = statusTabs.itemButton;
+      const active_tabs = status.active_tabs;
+      if (status.next_tab_id == 0) { // Initialize with some default tabs
+        for (let i = 0; i < 3; i++) {
+          active_tabs.push(status.next_tab_id++);
+        }
+      }
 
-  //         // Expose some other flags which are useful to showcase how they interact with Leading/Trailing tabs
-  //         static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlagBits.AutoSelectNewTabs | ImGuiTabBarFlagBits.Reorderable | ImGuiTabBarFlagBits.FittingPolicyResizeDown;
-  //         imgui.checkboxFlags("ImGuiTabBarFlagBits.TabListPopupButton", &tab_bar_flags, ImGuiTabBarFlagBits.TabListPopupButton);
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyResizeDown", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyResizeDown))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyResizeDown);
-  //         if (imgui.checkboxFlags("ImGuiTabBarFlagBits.FittingPolicyScroll", &tab_bar_flags, ImGuiTabBarFlagBits.FittingPolicyScroll))
-  //             tab_bar_flags &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyScroll);
+      // TabItemButton() and Leading/Trailing flags are distinct features which we will demo together.
+      // (It is possible to submit regular tabs with Leading/Trailing flags, or TabItemButton tabs without Leading/Trailing flags...
+      // but they tend to make more sense together)
+      // static bool show_leading_button = true;
+      // static bool show_trailing_button = true;
+      const show_leading_button = statusTabs.itemButton.show_leading_button;
+      const show_trailing_button = statusTabs.itemButton.show_trailing_button;
+      imgui.checkbox("Show Leading TabItemButton()", show_leading_button.buffer);
+      imgui.checkbox("Show Trailing TabItemButton()", show_trailing_button.buffer);
 
-  //         if (imgui.beginTabBar("MyTabBar", tab_bar_flags))
-  //         {
-  //             // Demo a Leading TabItemButton(): click the "?" button to open a menu
-  //             if (show_leading_button)
-  //                 if (imgui.tabItemButton("?", ImGuiTabItemFlagBits.Leading | ImGuiTabItemFlagBits.NoTooltip))
-  //                     imgui.openPopup("MyHelpMenu");
-  //             if (imgui.beginPopup("MyHelpMenu"))
-  //             {
-  //                 imgui.selectable("Hello!");
-  //                 imgui.endPopup();
-  //             }
+      // Expose some other flags which are useful to showcase how they interact with Leading/Trailing tabs
+      const flags = status.flags;
+      imgui.checkboxFlags("TabListPopupButton", flags.buffer, ImGuiTabBarFlagBits.TabListPopupButton);
+      if (imgui.checkboxFlags("FittingPolicyResizeDown", flags.buffer, ImGuiTabBarFlagBits.FittingPolicyResizeDown)) {
+        flags.value &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyResizeDown);
+      }
+      if (imgui.checkboxFlags("FittingPolicyScroll", flags.buffer, ImGuiTabBarFlagBits.FittingPolicyScroll)) {
+        flags.value &= ~(ImGuiTabBarFlagBits.FittingPolicyMask_ ^ ImGuiTabBarFlagBits.FittingPolicyScroll);
+      }
 
-  //             // Demo Trailing Tabs: click the "+" button to add a new tab (in your app you may want to use a font icon instead of the "+")
-  //             // Note that we submit it before the regular tabs, but because of the ImGuiTabItemFlagBits.Trailing flag it will always appear at the end.
-  //             if (show_trailing_button)
-  //                 if (imgui.tabItemButton("+", ImGuiTabItemFlagBits.Trailing | ImGuiTabItemFlagBits.NoTooltip))
-  //                     active_tabs.push_back(next_tab_id++); // Add new tab
+      if (imgui.beginTabBar("MyTabBar", flags.value)) {
+        // Demo a Leading TabItemButton(): click the "?" button to open a menu
+        if (show_leading_button.value) {
+          if (imgui.tabItemButton("?", ImGuiTabItemFlagBits.Leading | ImGuiTabItemFlagBits.NoTooltip)) {
+            imgui.openPopup("MyHelpMenu");
+          }
+        }
+        if (imgui.beginPopup("MyHelpMenu")) {
+          imgui.selectable("Hello!");
+          imgui.endPopup();
+        }
 
-  //             // Submit our regular tabs
-  //             for (int n = 0; n < active_tabs.Size; )
-  //             {
-  //                 bool open = true;
-  //                 char name[16];
-  //                 snprintf(name, IM_ARRAYSIZE(name), "%04d", active_tabs[n]);
-  //                 if (imgui.beginTabItem(name, &open, ImGuiTabItemFlagBits.None))
-  //                 {
-  //                     imgui.text("This is the %s tab!", name);
-  //                     imgui.endTabItem();
-  //                 }
+        // Demo Trailing Tabs: click the "+" button to add a new tab (in your app you may want to use a font icon instead of the "+")
+        // Note that we submit it before the regular tabs, but because of the ImGuiTabItemFlagBits.Trailing flag it will always appear at the end.
+        if (show_trailing_button.value) {
+          if (imgui.tabItemButton("+", ImGuiTabItemFlagBits.Trailing | ImGuiTabItemFlagBits.NoTooltip)) {
+            active_tabs.push(status.next_tab_id++); // Add new tab
+          }
+        }
 
-  //                 if (!open)
-  //                     active_tabs.erase(active_tabs.Data + n);
-  //                 else
-  //                     n++;
-  //             }
+        // Submit our regular tabs
+        for (let n = 0; n < active_tabs.length;) {
+          const open = Bool.of(true);
+          const name = active_tabs[n].toString().padStart(4, "0");
+          if (imgui.beginTabItem(name, open.buffer, ImGuiTabItemFlagBits.None)) {
+            imgui.text(`This is the ${name} tab!`);
+            imgui.endTabItem();
+          }
 
-  //             imgui.endTabBar();
-  //         }
-  //         imgui.separator();
-  //         imgui.treePop();
-  //     }
-  //     imgui.treePop();
-  // }
+          if (!open.value) {
+            active_tabs.splice(n, 1);
+          } else {
+            n++;
+          }
+        }
+
+        imgui.endTabBar();
+      }
+      imgui.separator();
+      imgui.treePop();
+    }
+    imgui.treePop();
+  }
 }
+
 function demoPloting() {
   // // Plot/Graph widgets are not very good.
   // // Consider using a third-party library such as ImPlot: https://github.com/epezent/implot

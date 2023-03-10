@@ -1,4 +1,4 @@
-#include "./dim_config.h"
+#include "../dim_config.h"
 
 // use sturcts without constructors
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS

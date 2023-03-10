@@ -53,6 +53,7 @@ import {
   ImGuiTableBgTarget,
 } from "./enum.ts";
 import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import { ImGuiInputTextCallbackData } from "./imgui_input_text_callback_data.ts";
 
 const Zero2 = new ImVec2(0, 0);
 
@@ -1176,7 +1177,7 @@ export function checkbox(label: StringSource, v?: Uint8Array): boolean {
 export function checkboxFlags(
   label: StringSource,
   flags: BufferSource,
-  flags_value: Deno.PointerValue,
+  flags_value: number | bigint,
 ): boolean {
   return imgui.igCheckboxFlags_S64Ptr(cString(label), flags, flags_value);
 }
@@ -1778,60 +1779,83 @@ export function vSliderInt(
 //   IMGUI_API bool          InputScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
 //   IMGUI_API bool          InputScalarN(const char* label, ImGuiDataType data_type, void* p_data, int components, const void* p_step = NULL, const void* p_step_fast = NULL, const char* format = NULL, ImGuiInputTextFlags flags = 0);
 
+function wrapInputTextCallback(callback: ImGuiInputTextCallback, buf: Uint8Array) {
+  return new Deno.UnsafeCallback(
+    {
+      parameters: ["pointer"],
+      result: "i32",
+    } as const,
+    (dataPointer: Deno.PointerValue) => {
+      const data = new ImGuiInputTextCallbackData(dataPointer);
+      const ret = callback(data, buf);
+      return ret ? 1 : 0;
+    },
+  );
+}
+
 export function inputText(
   label: StringSource,
   buf: Uint8Array,
-  buf_size: Deno.PointerValue,
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
-  // user_data?: BufferSource,
 ): boolean {
-  return imgui.igInputText(
-    cString(label),
-    buf,
-    buf_size,
-    flags,
-    callback?.pointer ?? null,
-    null,
-  );
+  if (callback === undefined) {
+    return imgui.igInputText(cString(label), buf, buf.byteLength, flags, null, null);
+  } else {
+    const func = wrapInputTextCallback(callback, buf);
+    const ret = imgui.igInputText(cString(label), buf, buf.byteLength, flags, func.pointer, null);
+    func.close();
+    return ret;
+  }
 }
 export function inputTextMultiline(
   label: StringSource,
-  buf: StringSource,
-  buf_size: Deno.PointerValue,
+  buf: Uint8Array,
   size: ImVec2,
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
-  // user_data?: BufferSource,
 ): boolean {
-  return imgui.igInputTextMultiline(
-    cString(label),
-    cString(buf),
-    buf_size,
-    size[BUFFER],
-    flags,
-    callback?.pointer ?? null,
-    null,
-  );
+  if (callback === undefined) {
+    return imgui.igInputTextMultiline(cString(label), cString(buf), buf.byteLength, size[BUFFER], flags, null, null);
+  } else {
+    const func = wrapInputTextCallback(callback, buf);
+    const ret = imgui.igInputTextMultiline(
+      cString(label),
+      cString(buf),
+      buf.byteLength,
+      size[BUFFER],
+      flags,
+      func.pointer,
+      null,
+    );
+    func.close();
+    return ret;
+  }
 }
 export function inputTextWithHint(
   label: StringSource,
   hint: StringSource,
-  buf: StringSource,
-  buf_size: Deno.PointerValue,
+  buf: Uint8Array,
+  buf_size: number | bigint,
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
-  // user_data?: BufferSource,
 ): boolean {
-  return imgui.igInputTextWithHint(
-    cString(label),
-    cString(hint),
-    cString(buf),
-    buf_size,
-    flags,
-    callback?.pointer ?? null,
-    null,
-  );
+  if (callback === undefined) {
+    return imgui.igInputTextWithHint(cString(label), cString(hint), cString(buf), buf_size, flags, null, null);
+  } else {
+    const func = wrapInputTextCallback(callback, buf);
+    const ret = imgui.igInputTextWithHint(
+      cString(label),
+      cString(hint),
+      cString(buf),
+      buf_size,
+      flags,
+      func.pointer,
+      null,
+    );
+    func.close();
+    return ret;
+  }
 }
 export function inputFloat(
   label: StringSource,
@@ -1920,6 +1944,7 @@ export function inputDouble(
   format: StringSource = "%.6f",
   flags: ImGuiInputTextFlags = 0,
 ): boolean {
+  assert(v.length >= 1);
   return imgui.igInputDouble(
     cString(label),
     v,
@@ -2360,14 +2385,15 @@ export function endPopup(): void {
 //   IMGUI_API void          OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);   // helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)
 //   IMGUI_API void          CloseCurrentPopup();                                                                // manually close the popup we have begin-ed into.
 
-export function openPopup_Str(
-  str_id: StringSource,
+export function openPopup(
+  id: StringSource | number,
   popup_flags: ImGuiPopupFlags = 0,
 ): void {
-  imgui.igOpenPopup_Str(cString(str_id), popup_flags);
-}
-export function openPopup_ID(id: ImGuiID, popup_flags: ImGuiPopupFlags): void {
-  imgui.igOpenPopup_ID(id, popup_flags);
+  if (typeof id == "number") {
+    imgui.igOpenPopup_ID(id, popup_flags);
+  } else {
+    imgui.igOpenPopup_Str(cString(id), popup_flags);
+  }
 }
 export function openPopupOnItemClick(
   str_id: StringSource,
@@ -2692,7 +2718,7 @@ export function beginDragDropSource(flags: ImGuiDragDropFlags = 0): boolean {
 export function setDragDropPayload(
   type: StringSource,
   data: BufferSource | null,
-  sz: Deno.PointerValue,
+  sz: number | bigint,
   cond: ImGuiCond = 0,
 ): boolean {
   return imgui.igSetDragDropPayload(cString(type), data, sz, cond);
@@ -3157,16 +3183,16 @@ export function loadIniSettingsFromDisk(ini_filename: StringSource): void {
 }
 export function loadIniSettingsFromMemory(
   ini_data: StringSource,
-  ini_size: Deno.PointerValue,
+  ini_size: number | bigint,
 ): void {
   imgui.igLoadIniSettingsFromMemory(cString(ini_data), ini_size);
 }
 export function saveIniSettingsToDisk(ini_filename: StringSource): void {
   imgui.igSaveIniSettingsToDisk(cString(ini_filename));
 }
-export function saveIniSettingsToMemory(out_ini_size: number): StringSource {
-  return jsString(imgui.igSaveIniSettingsToMemory(out_ini_size));
-}
+// export function saveIniSettingsToMemory(out_ini_size: number): StringSource {
+//   return jsString(imgui.igSaveIniSettingsToMemory(out_ini_size));
+// }
 
 //   // Debug Utilities
 //   IMGUI_API void          DebugTextEncoding(const char* text);
@@ -3177,12 +3203,12 @@ export function debugTextEncoding(text: StringSource): void {
 }
 export function debugCheckVersionAndDataLayout(
   version_str: StringSource,
-  sz_io: Deno.PointerValue,
-  sz_style: Deno.PointerValue,
-  sz_vec2: Deno.PointerValue,
-  sz_vec4: Deno.PointerValue,
-  sz_drawvert: Deno.PointerValue,
-  sz_drawidx: Deno.PointerValue,
+  sz_io: number | bigint,
+  sz_style: number | bigint,
+  sz_vec2: number | bigint,
+  sz_vec4: number | bigint,
+  sz_drawvert: number | bigint,
+  sz_drawidx: number | bigint,
 ): boolean {
   return imgui.igDebugCheckVersionAndDataLayout(
     cString(version_str),
