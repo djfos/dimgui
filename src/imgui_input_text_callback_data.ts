@@ -1,6 +1,6 @@
 import { ImGuiKey } from "./enum.ts";
 import { ImGuiInputTextFlags, ImWchar } from "./type.ts";
-import { ffi as imgui } from "./ffi.ts";
+import { cString, ffi as imgui, StringSource } from "./ffi.ts";
 
 /**
  * Shared state of InputText() when using
@@ -115,5 +115,29 @@ export class ImGuiInputTextCallbackData {
   }
   set SelectionEnd(value: number) {
     imgui.DImGuiInputTextCallbackDataSetSelectionEnd(this.#self, value);
+  }
+
+  // IMGUI_API void      DeleteChars(int pos, int bytes_count);
+  // IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);
+  // void                SelectAll()             { SelectionStart = 0; SelectionEnd = BufTextLen; }
+  // void                ClearSelection()        { SelectionStart = SelectionEnd = BufTextLen; }
+  // bool                HasSelection() const    { return SelectionStart != SelectionEnd; }
+
+  deleteChars(pos: number, bytes_count: number) {
+    imgui.ImGuiInputTextCallbackData_DeleteChars(this.#self, pos, bytes_count);
+  }
+  insertChars(pos: number, text: StringSource) {
+    imgui.ImGuiInputTextCallbackData_InsertChars(this.#self, pos, cString(text), null);
+  }
+  selectAll() {
+    this.SelectionStart = 0;
+    this.SelectionEnd = this.BufTextLen;
+  }
+  clearSelction() {
+    this.SelectionStart = this.BufTextLen;
+    this.SelectionEnd = this.BufTextLen;
+  }
+  hasSelection() {
+    return this.SelectionStart != this.SelectionEnd;
   }
 }

@@ -7,18 +7,15 @@ import {
 } from "https://deno.land/x/dwm@0.3.2/mod.ts";
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "../mod.ts";
-import { Bool, ImGuiConfigFlagBits } from "../mod.ts";
-import { showDemoWindowWidgets } from "./test_demo.ts";
+import { Bool, ImGuiConfigFlagBits, showWidgetDemoWindow } from "../mod.ts";
 
 function queryWindowSizeAndFontSize() {
   const aspectRatio = 16 / 9;
   const lines = 40;
-
   const monitor = getPrimaryMonitor();
   const height = Math.ceil(monitor.workArea.height * 0.7);
   const width = Math.ceil(height * aspectRatio);
   const fontSize = Math.min(32, Math.ceil(height / lines));
-
   return { width, height, fontSize };
 }
 const windowInfo = queryWindowSizeAndFontSize();
@@ -28,7 +25,6 @@ const window = createWindow({
   title: "IMGUI DWM",
   width: windowInfo.width,
   height: windowInfo.height,
-
   resizable: true,
   glVersion: "v3.2",
   gles: false,
@@ -98,7 +94,7 @@ await mainloop(() => {
   imgui.implGlfwNewFrame();
   imgui.newFrame();
   showControllWindow();
-  showDemoWindowWidgets();
+  showWidgetDemoWindow();
   imgui.render();
   const drawData = imgui.getDrawData();
 

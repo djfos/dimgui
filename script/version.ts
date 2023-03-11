@@ -1,1 +1,1 @@
-export const DIMGUI_VERSION = "0.1.1";
+export const DIMGUI_VERSION = "0.2.0";

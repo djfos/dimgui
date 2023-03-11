@@ -814,13 +814,6 @@ export function getColorU32_U32(col: ImU32): ImU32 {
   return imgui.igGetColorU32_U32(col);
 }
 
-// export function getStyleColorVec4(idx: ImGuiCol): ImVec4 {
-// TODO editable ImVec4
-//   const vec4 = new ImVec4();
-//   return imgui.igGetStyleColorVec4(idx);
-//   return vec4;
-// }
-
 //   // Cursor / Layout
 //   // - By "cursor" we mean the current output position.
 //   // - The typical widget behavior is to output themselves at the current cursor position, then move the cursor one line down.

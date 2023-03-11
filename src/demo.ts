@@ -1,34 +1,32 @@
-import * as imgui from "../mod.ts";
+import * as imgui from "./mod.ts";
 import {
   Bool,
   Double,
   Float,
   ImGuiCol,
+  ImGuiColorEditFlagBits,
   ImGuiComboFlagBits,
   ImGuiCond,
   ImGuiDir,
+  ImGuiDragDropFlagBits,
+  ImGuiFocusedFlagBits,
   ImGuiHoveredFlagBits,
+  ImGuiInputTextCallbackData,
+  ImGuiInputTextFlagBits,
   ImGuiKey,
+  ImGuiPayloadType,
   ImGuiSelectableFlagBits,
   ImGuiSliderFlagBits,
+  ImGuiStyleVar,
+  ImGuiTabBarFlagBits,
+  ImGuiTabItemFlagBits,
   ImGuiTableFlagBits,
   ImGuiTreeNodeFlagBits,
   ImVec2,
   ImVec4,
   Int32,
   Utf8Array,
-} from "../mod.ts";
-import {
-  ImGuiColorEditFlagBits,
-  ImGuiDragDropFlagBits,
-  ImGuiFocusedFlagBits,
-  ImGuiInputTextFlagBits,
-  ImGuiPayloadType,
-  ImGuiStyleVar,
-  ImGuiTabBarFlagBits,
-  ImGuiTabItemFlagBits,
-} from "../src/enum.ts";
-import { ImGuiInputTextCallbackData } from "../src/imgui_input_text_callback_data.ts";
+} from "./mod.ts";
 
 /**
  * Helper to display a little (?) mark which shows a tooltip when hovered.
@@ -2307,7 +2305,7 @@ function demoQueryingWindow() {
  * The Checkbox for that is inside the "Disabled" section at the bottom
  */
 const disable_all = Bool.of(false);
-export function showDemoWindowWidgets() {
+export function showWidgetDemoWindow() {
   // Most "big" widgets share a common width settings by default. See 'Demo->Layout->Widgets Width' for details.
   // e.g. Use 2/3 of the space for widgets and 1/3 for labels (right align)
   //ImGui::PushItemWidth(-ImGui::GetWindowWidth() * 0.35f);

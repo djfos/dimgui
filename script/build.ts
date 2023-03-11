@@ -22,6 +22,7 @@ function embed(): void {
   const binFile = join(binPath, getBinFileName());
   const outFile = join(distPath, getOutFileName());
 
+  // deno-lint-ignore no-explicit-any
   const encode = (Deno as any)[(Deno as any).internal]
     .core
     .ops.op_base64_encode;
