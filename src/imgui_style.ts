@@ -1,5 +1,5 @@
 import { ImGuiDir } from "./enum.ts";
-import { BUFFER, ImVec2 } from "./type.ts";
+import { ImVec2 } from "./type.ts";
 import { ffi as imgui } from "./ffi.ts";
 
 /**
@@ -20,372 +20,372 @@ export class ImGuiStyle {
    *  Global alpha applies to everything in Dear ImGui.
    */
   get Alpha(): number {
-    return imgui.DImGuiGetAlpha(this.#self);
+    return imgui.DImGuiStyleGetAlpha(this.#self);
   }
   set Alpha(value: number) {
-    imgui.DImGuiSetAlpha(this.#self, value);
+    imgui.DImGuiStyleSetAlpha(this.#self, value);
   }
   /*
    *  Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.
    */
   get DisabledAlpha(): number {
-    return imgui.DImGuiGetDisabledAlpha(this.#self);
+    return imgui.DImGuiStyleGetDisabledAlpha(this.#self);
   }
   set DisabledAlpha(value: number) {
-    imgui.DImGuiSetDisabledAlpha(this.#self, value);
+    imgui.DImGuiStyleSetDisabledAlpha(this.#self, value);
   }
   /*
    *  Padding within a window.
    */
   get WindowPadding(): ImVec2 {
-    const data = imgui.DImGuiGetWindowPadding(this.#self);
+    const data = imgui.DImGuiStyleGetWindowPadding(this.#self);
     return new ImVec2(data);
   }
   set WindowPadding(value: ImVec2) {
-    imgui.DImGuiSetWindowPadding(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetWindowPadding(this.#self, value.buffer);
   }
   /*
    *  Radius of window corners rounding. Set to 0.0f to have rectangular windows. Large values tend to lead to variety of artifacts and are not recommended.
    */
   get WindowRounding(): number {
-    return imgui.DImGuiGetWindowRounding(this.#self);
+    return imgui.DImGuiStyleGetWindowRounding(this.#self);
   }
   set WindowRounding(value: number) {
-    imgui.DImGuiSetWindowRounding(this.#self, value);
+    imgui.DImGuiStyleSetWindowRounding(this.#self, value);
   }
   /*
    *  Thickness of border around windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
    */
   get WindowBorderSize(): number {
-    return imgui.DImGuiGetWindowBorderSize(this.#self);
+    return imgui.DImGuiStyleGetWindowBorderSize(this.#self);
   }
   set WindowBorderSize(value: number) {
-    imgui.DImGuiSetWindowBorderSize(this.#self, value);
+    imgui.DImGuiStyleSetWindowBorderSize(this.#self, value);
   }
   /*
-   *  Minimum window size. This is a global setting. If you want to constrain individual windows, use SetNextWindowSizeConstraints().
+   *  Minimum window size. This is a global setting. If you want to rain individual windows, use SetNextWindowSizeConstraints().
    */
   get WindowMinSize(): ImVec2 {
-    const data = imgui.DImGuiGetWindowMinSize(this.#self);
+    const data = imgui.DImGuiStyleGetWindowMinSize(this.#self);
     return new ImVec2(data);
   }
   set WindowMinSize(value: ImVec2) {
-    imgui.DImGuiSetWindowMinSize(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetWindowMinSize(this.#self, value.buffer);
   }
   /*
    *  Alignment for title bar text. Defaults to (0.0f,0.5f) for left-aligned,vertically centered.
    */
   get WindowTitleAlign(): ImVec2 {
-    const data = imgui.DImGuiGetWindowTitleAlign(this.#self);
+    const data = imgui.DImGuiStyleGetWindowTitleAlign(this.#self);
     return new ImVec2(data);
   }
   set WindowTitleAlign(value: ImVec2) {
-    imgui.DImGuiSetWindowTitleAlign(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetWindowTitleAlign(this.#self, value.buffer);
   }
   /*
    *  Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.
    */
   get WindowMenuButtonPosition(): ImGuiDir {
-    return imgui.DImGuiGetWindowMenuButtonPosition(this.#self);
+    return imgui.DImGuiStyleGetWindowMenuButtonPosition(this.#self);
   }
   set WindowMenuButtonPosition(value: ImGuiDir) {
-    imgui.DImGuiSetWindowMenuButtonPosition(this.#self, value);
+    imgui.DImGuiStyleSetWindowMenuButtonPosition(this.#self, value);
   }
   /*
    *  Radius of child window corners rounding. Set to 0.0f to have rectangular windows.
    */
   get ChildRounding(): number {
-    return imgui.DImGuiGetChildRounding(this.#self);
+    return imgui.DImGuiStyleGetChildRounding(this.#self);
   }
   set ChildRounding(value: number) {
-    imgui.DImGuiSetChildRounding(this.#self, value);
+    imgui.DImGuiStyleSetChildRounding(this.#self, value);
   }
   /*
    *  Thickness of border around child windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
    */
   get ChildBorderSize(): number {
-    return imgui.DImGuiGetChildBorderSize(this.#self);
+    return imgui.DImGuiStyleGetChildBorderSize(this.#self);
   }
   set ChildBorderSize(value: number) {
-    imgui.DImGuiSetChildBorderSize(this.#self, value);
+    imgui.DImGuiStyleSetChildBorderSize(this.#self, value);
   }
   /*
    *  Radius of popup window corners rounding. (Note that tooltip windows use WindowRounding)
    */
   get PopupRounding(): number {
-    return imgui.DImGuiGetPopupRounding(this.#self);
+    return imgui.DImGuiStyleGetPopupRounding(this.#self);
   }
   set PopupRounding(value: number) {
-    imgui.DImGuiSetPopupRounding(this.#self, value);
+    imgui.DImGuiStyleSetPopupRounding(this.#self, value);
   }
   /*
    *  Thickness of border around popup/tooltip windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
    */
   get PopupBorderSize(): number {
-    return imgui.DImGuiGetPopupBorderSize(this.#self);
+    return imgui.DImGuiStyleGetPopupBorderSize(this.#self);
   }
   set PopupBorderSize(value: number) {
-    imgui.DImGuiSetPopupBorderSize(this.#self, value);
+    imgui.DImGuiStyleSetPopupBorderSize(this.#self, value);
   }
   /*
    *  Padding within a framed rectangle (used by most widgets).
    */
   get FramePadding(): ImVec2 {
-    const data = imgui.DImGuiGetFramePadding(this.#self);
+    const data = imgui.DImGuiStyleGetFramePadding(this.#self);
     return new ImVec2(data);
   }
   set FramePadding(value: ImVec2) {
-    imgui.DImGuiSetFramePadding(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetFramePadding(this.#self, value.buffer);
   }
   /*
    *  Radius of frame corners rounding. Set to 0.0f to have rectangular frame (used by most widgets).
    */
   get FrameRounding(): number {
-    return imgui.DImGuiGetFrameRounding(this.#self);
+    return imgui.DImGuiStyleGetFrameRounding(this.#self);
   }
   set FrameRounding(value: number) {
-    imgui.DImGuiSetFrameRounding(this.#self, value);
+    imgui.DImGuiStyleSetFrameRounding(this.#self, value);
   }
   /*
    *  Thickness of border around frames. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
    */
   get FrameBorderSize(): number {
-    return imgui.DImGuiGetFrameBorderSize(this.#self);
+    return imgui.DImGuiStyleGetFrameBorderSize(this.#self);
   }
   set FrameBorderSize(value: number) {
-    imgui.DImGuiSetFrameBorderSize(this.#self, value);
+    imgui.DImGuiStyleSetFrameBorderSize(this.#self, value);
   }
   /*
    *  Horizontal and vertical spacing between widgets/lines.
    */
   get ItemSpacing(): ImVec2 {
-    const data = imgui.DImGuiGetItemSpacing(this.#self);
+    const data = imgui.DImGuiStyleGetItemSpacing(this.#self);
     return new ImVec2(data);
   }
   set ItemSpacing(value: ImVec2) {
-    imgui.DImGuiSetItemSpacing(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetItemSpacing(this.#self, value.buffer);
   }
   /*
    *  Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label).
    */
   get ItemInnerSpacing(): ImVec2 {
-    const data = imgui.DImGuiGetItemInnerSpacing(this.#self);
+    const data = imgui.DImGuiStyleGetItemInnerSpacing(this.#self);
     return new ImVec2(data);
   }
   set ItemInnerSpacing(value: ImVec2) {
-    imgui.DImGuiSetItemInnerSpacing(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetItemInnerSpacing(this.#self, value.buffer);
   }
   /*
    *  Padding within a table cell
    */
   get CellPadding(): ImVec2 {
-    const data = imgui.DImGuiGetCellPadding(this.#self);
+    const data = imgui.DImGuiStyleGetCellPadding(this.#self);
     return new ImVec2(data);
   }
   set CellPadding(value: ImVec2) {
-    imgui.DImGuiSetCellPadding(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetCellPadding(this.#self, value.buffer);
   }
   /*
    *  Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
    */
   get TouchExtraPadding(): ImVec2 {
-    const data = imgui.DImGuiGetTouchExtraPadding(this.#self);
+    const data = imgui.DImGuiStyleGetTouchExtraPadding(this.#self);
     return new ImVec2(data);
   }
   set TouchExtraPadding(value: ImVec2) {
-    imgui.DImGuiSetTouchExtraPadding(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetTouchExtraPadding(this.#self, value.buffer);
   }
   /*
    *  Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
    */
   get IndentSpacing(): number {
-    return imgui.DImGuiGetIndentSpacing(this.#self);
+    return imgui.DImGuiStyleGetIndentSpacing(this.#self);
   }
   set IndentSpacing(value: number) {
-    imgui.DImGuiSetIndentSpacing(this.#self, value);
+    imgui.DImGuiStyleSetIndentSpacing(this.#self, value);
   }
   /*
    *  Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).
    */
   get ColumnsMinSpacing(): number {
-    return imgui.DImGuiGetColumnsMinSpacing(this.#self);
+    return imgui.DImGuiStyleGetColumnsMinSpacing(this.#self);
   }
   set ColumnsMinSpacing(value: number) {
-    imgui.DImGuiSetColumnsMinSpacing(this.#self, value);
+    imgui.DImGuiStyleSetColumnsMinSpacing(this.#self, value);
   }
   /*
    *  Width of the vertical scrollbar, Height of the horizontal scrollbar.
    */
   get ScrollbarSize(): number {
-    return imgui.DImGuiGetScrollbarSize(this.#self);
+    return imgui.DImGuiStyleGetScrollbarSize(this.#self);
   }
   set ScrollbarSize(value: number) {
-    imgui.DImGuiSetScrollbarSize(this.#self, value);
+    imgui.DImGuiStyleSetScrollbarSize(this.#self, value);
   }
   /*
    *  Radius of grab corners for scrollbar.
    */
   get ScrollbarRounding(): number {
-    return imgui.DImGuiGetScrollbarRounding(this.#self);
+    return imgui.DImGuiStyleGetScrollbarRounding(this.#self);
   }
   set ScrollbarRounding(value: number) {
-    imgui.DImGuiSetScrollbarRounding(this.#self, value);
+    imgui.DImGuiStyleSetScrollbarRounding(this.#self, value);
   }
   /*
    *  Minimum width/height of a grab box for slider/scrollbar.
    */
   get GrabMinSize(): number {
-    return imgui.DImGuiGetGrabMinSize(this.#self);
+    return imgui.DImGuiStyleGetGrabMinSize(this.#self);
   }
   set GrabMinSize(value: number) {
-    imgui.DImGuiSetGrabMinSize(this.#self, value);
+    imgui.DImGuiStyleSetGrabMinSize(this.#self, value);
   }
   /*
    *  Radius of grabs corners rounding. Set to 0.0f to have rectangular slider grabs.
    */
   get GrabRounding(): number {
-    return imgui.DImGuiGetGrabRounding(this.#self);
+    return imgui.DImGuiStyleGetGrabRounding(this.#self);
   }
   set GrabRounding(value: number) {
-    imgui.DImGuiSetGrabRounding(this.#self, value);
+    imgui.DImGuiStyleSetGrabRounding(this.#self, value);
   }
   /*
    *  The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
    */
   get LogSliderDeadzone(): number {
-    return imgui.DImGuiGetLogSliderDeadzone(this.#self);
+    return imgui.DImGuiStyleGetLogSliderDeadzone(this.#self);
   }
   set LogSliderDeadzone(value: number) {
-    imgui.DImGuiSetLogSliderDeadzone(this.#self, value);
+    imgui.DImGuiStyleSetLogSliderDeadzone(this.#self, value);
   }
   /*
    *  Radius of upper corners of a tab. Set to 0.0f to have rectangular tabs.
    */
   get TabRounding(): number {
-    return imgui.DImGuiGetTabRounding(this.#self);
+    return imgui.DImGuiStyleGetTabRounding(this.#self);
   }
   set TabRounding(value: number) {
-    imgui.DImGuiSetTabRounding(this.#self, value);
+    imgui.DImGuiStyleSetTabRounding(this.#self, value);
   }
   /*
    *  Thickness of border around tabs.
    */
   get TabBorderSize(): number {
-    return imgui.DImGuiGetTabBorderSize(this.#self);
+    return imgui.DImGuiStyleGetTabBorderSize(this.#self);
   }
   set TabBorderSize(value: number) {
-    imgui.DImGuiSetTabBorderSize(this.#self, value);
+    imgui.DImGuiStyleSetTabBorderSize(this.#self, value);
   }
   /*
    *  Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0f to always show when hovering, set to FLT_MAX to never show close button unless selected.
    */
   get TabMinWidthForCloseButton(): number {
-    return imgui.DImGuiGetTabMinWidthForCloseButton(this.#self);
+    return imgui.DImGuiStyleGetTabMinWidthForCloseButton(this.#self);
   }
   set TabMinWidthForCloseButton(value: number) {
-    imgui.DImGuiSetTabMinWidthForCloseButton(this.#self, value);
+    imgui.DImGuiStyleSetTabMinWidthForCloseButton(this.#self, value);
   }
   /*
    *  Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
    */
   get ColorButtonPosition(): ImGuiDir {
-    return imgui.DImGuiGetColorButtonPosition(this.#self);
+    return imgui.DImGuiStyleGetColorButtonPosition(this.#self);
   }
   set ColorButtonPosition(value: ImGuiDir) {
-    imgui.DImGuiSetColorButtonPosition(this.#self, value);
+    imgui.DImGuiStyleSetColorButtonPosition(this.#self, value);
   }
   /*
    *  Alignment of button text when button is larger than text. Defaults to (0.5f, 0.5f) (centered).
    */
   get ButtonTextAlign(): ImVec2 {
-    const data = imgui.DImGuiGetButtonTextAlign(this.#self);
+    const data = imgui.DImGuiStyleGetButtonTextAlign(this.#self);
     return new ImVec2(data);
   }
   set ButtonTextAlign(value: ImVec2) {
-    imgui.DImGuiSetButtonTextAlign(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetButtonTextAlign(this.#self, value.buffer);
   }
   /*
    *  Alignment of selectable text. Defaults to (0.0f, 0.0f) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.
    */
   get SelectableTextAlign(): ImVec2 {
-    const data = imgui.DImGuiGetSelectableTextAlign(this.#self);
+    const data = imgui.DImGuiStyleGetSelectableTextAlign(this.#self);
     return new ImVec2(data);
   }
   set SelectableTextAlign(value: ImVec2) {
-    imgui.DImGuiSetSelectableTextAlign(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetSelectableTextAlign(this.#self, value.buffer);
   }
   /*
    *  Window position are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.
    */
   get DisplayWindowPadding(): ImVec2 {
-    const data = imgui.DImGuiGetDisplayWindowPadding(this.#self);
+    const data = imgui.DImGuiStyleGetDisplayWindowPadding(this.#self);
     return new ImVec2(data);
   }
   set DisplayWindowPadding(value: ImVec2) {
-    imgui.DImGuiSetDisplayWindowPadding(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetDisplayWindowPadding(this.#self, value.buffer);
   }
   /*
    *  If you cannot see the edges of your screen (e.g. on a TV) increase the safe area padding. Apply to popups/tooltips as well regular windows. NB: Prefer configuring your TV sets correctly!
    */
   get DisplaySafeAreaPadding(): ImVec2 {
-    const data = imgui.DImGuiGetDisplaySafeAreaPadding(this.#self);
+    const data = imgui.DImGuiStyleGetDisplaySafeAreaPadding(this.#self);
     return new ImVec2(data);
   }
   set DisplaySafeAreaPadding(value: ImVec2) {
-    imgui.DImGuiSetDisplaySafeAreaPadding(this.#self, value[BUFFER]);
+    imgui.DImGuiStyleSetDisplaySafeAreaPadding(this.#self, value.buffer);
   }
   /*
    *  Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.
    */
   get MouseCursorScale(): number {
-    return imgui.DImGuiGetMouseCursorScale(this.#self);
+    return imgui.DImGuiStyleGetMouseCursorScale(this.#self);
   }
   set MouseCursorScale(value: number) {
-    imgui.DImGuiSetMouseCursorScale(this.#self, value);
+    imgui.DImGuiStyleSetMouseCursorScale(this.#self, value);
   }
   /*
    *  Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
    */
   get AntiAliasedLines(): boolean {
-    return imgui.DImGuiGetAntiAliasedLines(this.#self);
+    return imgui.DImGuiStyleGetAntiAliasedLines(this.#self);
   }
   set AntiAliasedLines(value: boolean) {
-    imgui.DImGuiSetAntiAliasedLines(this.#self, value);
+    imgui.DImGuiStyleSetAntiAliasedLines(this.#self, value);
   }
   /*
    *  Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).
    */
   get AntiAliasedLinesUseTex(): boolean {
-    return imgui.DImGuiGetAntiAliasedLinesUseTex(this.#self);
+    return imgui.DImGuiStyleGetAntiAliasedLinesUseTex(this.#self);
   }
   set AntiAliasedLinesUseTex(value: boolean) {
-    imgui.DImGuiSetAntiAliasedLinesUseTex(this.#self, value);
+    imgui.DImGuiStyleSetAntiAliasedLinesUseTex(this.#self, value);
   }
   /*
    *  Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
    */
   get AntiAliasedFill(): boolean {
-    return imgui.DImGuiGetAntiAliasedFill(this.#self);
+    return imgui.DImGuiStyleGetAntiAliasedFill(this.#self);
   }
   set AntiAliasedFill(value: boolean) {
-    imgui.DImGuiSetAntiAliasedFill(this.#self, value);
+    imgui.DImGuiStyleSetAntiAliasedFill(this.#self, value);
   }
   /*
    *  Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
    */
   get CurveTessellationTol(): number {
-    return imgui.DImGuiGetCurveTessellationTol(this.#self);
+    return imgui.DImGuiStyleGetCurveTessellationTol(this.#self);
   }
   set CurveTessellationTol(value: number) {
-    imgui.DImGuiSetCurveTessellationTol(this.#self, value);
+    imgui.DImGuiStyleSetCurveTessellationTol(this.#self, value);
   }
   /*
    *  Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
    */
   get CircleTessellationMaxError(): number {
-    return imgui.DImGuiGetCircleTessellationMaxError(this.#self);
+    return imgui.DImGuiStyleGetCircleTessellationMaxError(this.#self);
   }
   set CircleTessellationMaxError(value: number) {
-    imgui.DImGuiSetCircleTessellationMaxError(this.#self, value);
+    imgui.DImGuiStyleSetCircleTessellationMaxError(this.#self, value);
   }
 }

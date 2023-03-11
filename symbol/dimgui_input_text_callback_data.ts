@@ -1,94 +1,91 @@
-// deno-fmt-ignore-file
-// const ImVec2 = ["f32","f32"] as const;
-const dimguiInputTextCallbackDataSymbols = {
-    DImGuiGetEventFlag:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetEventFlag:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetFlags:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetFlags:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetEventChar:{
-        parameters: ["pointer"],
-        result: "u16",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetEventChar:{
-        parameters: ["pointer","u16"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetEventKey:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetEventKey:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetBuf:{
-        parameters: ["pointer"],
-        result: "buffer",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetBuf:{
-        parameters: ["pointer","buffer"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetBufTextLen:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetBufTextLen:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetBufSize:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetBufSize:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetBufDirty:{
-        parameters: ["pointer"],
-        result: "bool",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetBufDirty:{
-        parameters: ["pointer","bool"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetCursorPos:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetCursorPos:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetSelectionStart:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetSelectionStart:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiGetSelectionEnd:{
-        parameters: ["pointer"],
-        result: "i32",
-    } as const satisfies Deno.ForeignFunction,
-    DImGuiSetSelectionEnd:{
-        parameters: ["pointer","i32"],
-        result: "void",
-    } as const satisfies Deno.ForeignFunction,
-
+const symbols = {
+  DImGuiInputTextCallbackDataGetEventFlag: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetEventFlag: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetFlags: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetFlags: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetEventChar: {
+    parameters: ["pointer"],
+    result: "u16",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetEventChar: {
+    parameters: ["pointer", "u16"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetEventKey: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetEventKey: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetBuf: {
+    parameters: ["pointer"],
+    result: "buffer",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetBuf: {
+    parameters: ["pointer", "buffer"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetBufTextLen: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetBufTextLen: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetBufSize: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetBufSize: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetBufDirty: {
+    parameters: ["pointer"],
+    result: "bool",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetBufDirty: {
+    parameters: ["pointer", "bool"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetCursorPos: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetCursorPos: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetSelectionStart: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetSelectionStart: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataGetSelectionEnd: {
+    parameters: ["pointer"],
+    result: "i32",
+  } as const satisfies Deno.ForeignFunction,
+  DImGuiInputTextCallbackDataSetSelectionEnd: {
+    parameters: ["pointer", "i32"],
+    result: "void",
+  } as const satisfies Deno.ForeignFunction,
 } as const satisfies Deno.ForeignLibraryInterface;
-export default dimguiInputTextCallbackDataSymbols
+export default symbols;
