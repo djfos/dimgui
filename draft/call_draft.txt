@@ -92,10 +92,10 @@
 //    imgui.igEnd();
 // }
 // export function beginChild_Str(str_id: StringSource, size: ImVec2, border: boolean, flags: ImGuiWindowFlags): boolean {
-//   return imgui.igBeginChild_Str(cString(str_id), size[BUFFER], border, flags);
+//   return imgui.igBeginChild_Str(cString(str_id), size.buffer, border, flags);
 // }
 // export function beginChild_ID(id: ImGuiID, size: ImVec2, border: boolean, flags: ImGuiWindowFlags): boolean {
-//   return imgui.igBeginChild_ID(id, size[BUFFER], border, flags);
+//   return imgui.igBeginChild_ID(id, size.buffer, border, flags);
 // }
 // export function endChild(): void {
 //    imgui.igEndChild();
@@ -134,16 +134,16 @@
 //   return imgui.igGetWindowViewport();
 // }
 // export function setNextWindowPos(pos: ImVec2, cond: ImGuiCond, pivot: ImVec2): void {
-//    imgui.igSetNextWindowPos(pos[BUFFER], cond, pivot[BUFFER]);
+//    imgui.igSetNextWindowPos(pos.buffer, cond, pivot.buffer);
 // }
 // export function setNextWindowSize(size: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetNextWindowSize(size[BUFFER], cond);
+//    imgui.igSetNextWindowSize(size.buffer, cond);
 // }
 // export function setNextWindowSizeConstraints(size_min: ImVec2, size_max: ImVec2, custom_callback: ImGuiSizeCallback, custom_callback_data: BufferSource): void {
-//    imgui.igSetNextWindowSizeConstraints(size_min[BUFFER], size_max[BUFFER], custom_callback.pointer, custom_callback_data);
+//    imgui.igSetNextWindowSizeConstraints(size_min.buffer, size_max.buffer, custom_callback.pointer, custom_callback_data);
 // }
 // export function setNextWindowContentSize(size: ImVec2): void {
-//    imgui.igSetNextWindowContentSize(size[BUFFER]);
+//    imgui.igSetNextWindowContentSize(size.buffer);
 // }
 // export function setNextWindowCollapsed(collapsed: boolean, cond: ImGuiCond): void {
 //    imgui.igSetNextWindowCollapsed(collapsed, cond);
@@ -152,7 +152,7 @@
 //    imgui.igSetNextWindowFocus();
 // }
 // export function setNextWindowScroll(scroll: ImVec2): void {
-//    imgui.igSetNextWindowScroll(scroll[BUFFER]);
+//    imgui.igSetNextWindowScroll(scroll.buffer);
 // }
 // export function setNextWindowBgAlpha(alpha: number): void {
 //    imgui.igSetNextWindowBgAlpha(alpha);
@@ -161,10 +161,10 @@
 //    imgui.igSetNextWindowViewport(viewport_id);
 // }
 // export function setWindowPos_Vec2(pos: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetWindowPos_Vec2(pos[BUFFER], cond);
+//    imgui.igSetWindowPos_Vec2(pos.buffer, cond);
 // }
 // export function setWindowSize_Vec2(size: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetWindowSize_Vec2(size[BUFFER], cond);
+//    imgui.igSetWindowSize_Vec2(size.buffer, cond);
 // }
 // export function setWindowCollapsed_Bool(collapsed: boolean, cond: ImGuiCond): void {
 //    imgui.igSetWindowCollapsed_Bool(collapsed, cond);
@@ -176,10 +176,10 @@
 //    imgui.igSetWindowFontScale(scale);
 // }
 // export function setWindowPos_Str(name: StringSource, pos: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetWindowPos_Str(cString(name), pos[BUFFER], cond);
+//    imgui.igSetWindowPos_Str(cString(name), pos.buffer, cond);
 // }
 // export function setWindowSize_Str(name: StringSource, size: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetWindowSize_Str(cString(name), size[BUFFER], cond);
+//    imgui.igSetWindowSize_Str(cString(name), size.buffer, cond);
 // }
 // export function setWindowCollapsed_Str(name: StringSource, collapsed: boolean, cond: ImGuiCond): void {
 //    imgui.igSetWindowCollapsed_Str(cString(name), collapsed, cond);
@@ -239,7 +239,7 @@
 //    imgui.igPushStyleColor_U32(idx, col);
 // }
 // export function pushStyleColor_Vec4(idx: ImGuiCol, col: ImVec4): void {
-//    imgui.igPushStyleColor_Vec4(idx, col[BUFFER]);
+//    imgui.igPushStyleColor_Vec4(idx, col.buffer);
 // }
 // export function popStyleColor(count: number): void {
 //    imgui.igPopStyleColor(count);
@@ -248,7 +248,7 @@
 //    imgui.igPushStyleVar_Float(idx, val);
 // }
 // export function pushStyleVar_Vec2(idx: ImGuiStyleVar, val: ImVec2): void {
-//    imgui.igPushStyleVar_Vec2(idx, val[BUFFER]);
+//    imgui.igPushStyleVar_Vec2(idx, val.buffer);
 // }
 // export function popStyleVar(count: number): void {
 //    imgui.igPopStyleVar(count);
@@ -296,7 +296,7 @@
 //   return imgui.igGetColorU32_Col(idx, alpha_mul);
 // }
 // export function getColorU32_Vec4(col: ImVec4): ImU32 {
-//   return imgui.igGetColorU32_Vec4(col[BUFFER]);
+//   return imgui.igGetColorU32_Vec4(col.buffer);
 // }
 // export function getColorU32_U32(col: ImU32): ImU32 {
 //   return imgui.igGetColorU32_U32(col);
@@ -317,7 +317,7 @@
 //    imgui.igSpacing();
 // }
 // export function dummy(size: ImVec2): void {
-//    imgui.igDummy(size[BUFFER]);
+//    imgui.igDummy(size.buffer);
 // }
 // export function indent(indent_w: number): void {
 //    imgui.igIndent(indent_w);
@@ -341,7 +341,7 @@
 //   return imgui.igGetCursorPosY();
 // }
 // export function setCursorPos(local_pos: ImVec2): void {
-//    imgui.igSetCursorPos(local_pos[BUFFER]);
+//    imgui.igSetCursorPos(local_pos.buffer);
 // }
 // export function setCursorPosX(local_x: number): void {
 //    imgui.igSetCursorPosX(local_x);
@@ -356,7 +356,7 @@
 //    imgui.igGetCursorScreenPos(pOut);
 // }
 // export function setCursorScreenPos(pos: ImVec2): void {
-//    imgui.igSetCursorScreenPos(pos[BUFFER]);
+//    imgui.igSetCursorScreenPos(pos.buffer);
 // }
 // export function alignTextToFramePadding(): void {
 //    imgui.igAlignTextToFramePadding();
@@ -407,10 +407,10 @@
 //    imgui.igTextV(cString(fmt));
 // }
 // export function textColored(col: ImVec4, fmt: StringSource): void {
-//    imgui.igTextColored(col[BUFFER], cString(fmt));
+//    imgui.igTextColored(col.buffer, cString(fmt));
 // }
 // export function textColoredV(col: ImVec4, fmt: StringSource): void {
-//    imgui.igTextColoredV(col[BUFFER], cString(fmt));
+//    imgui.igTextColoredV(col.buffer, cString(fmt));
 // }
 // export function textDisabled(fmt: StringSource): void {
 //    imgui.igTextDisabled(cString(fmt));
@@ -437,13 +437,13 @@
 //    imgui.igBulletTextV(cString(fmt));
 // }
 // export function button(label: StringSource, size: ImVec2): boolean {
-//   return imgui.igButton(cString(label), size[BUFFER]);
+//   return imgui.igButton(cString(label), size.buffer);
 // }
 // export function smallButton(label: StringSource): boolean {
 //   return imgui.igSmallButton(cString(label));
 // }
 // export function invisibleButton(str_id: StringSource, size: ImVec2, flags: ImGuiButtonFlags): boolean {
-//   return imgui.igInvisibleButton(cString(str_id), size[BUFFER], flags);
+//   return imgui.igInvisibleButton(cString(str_id), size.buffer, flags);
 // }
 // export function arrowButton(str_id: StringSource, dir: ImGuiDir): boolean {
 //   return imgui.igArrowButton(cString(str_id), dir);
@@ -464,16 +464,16 @@
 //   return imgui.igRadioButton_IntPtr(cString(label), v, v_button);
 // }
 // export function progressBar(fraction: number, size_arg: ImVec2, overlay: StringSource): void {
-//    imgui.igProgressBar(fraction, size_arg[BUFFER], cString(overlay));
+//    imgui.igProgressBar(fraction, size_arg.buffer, cString(overlay));
 // }
 // export function bullet(): void {
 //    imgui.igBullet();
 // }
 // export function image(user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, tint_col: ImVec4, border_col: ImVec4): void {
-//    imgui.igImage(user_texture_id, size[BUFFER], uv0[BUFFER], uv1[BUFFER], tint_col[BUFFER], border_col[BUFFER]);
+//    imgui.igImage(user_texture_id, size.buffer, uv0.buffer, uv1.buffer, tint_col.buffer, border_col.buffer);
 // }
 // export function imageButton(str_id: StringSource, user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, bg_col: ImVec4, tint_col: ImVec4): boolean {
-//   return imgui.igImageButton(cString(str_id), user_texture_id, size[BUFFER], uv0[BUFFER], uv1[BUFFER], bg_col[BUFFER], tint_col[BUFFER]);
+//   return imgui.igImageButton(cString(str_id), user_texture_id, size.buffer, uv0.buffer, uv1.buffer, bg_col.buffer, tint_col.buffer);
 // }
 // export function beginCombo(label: StringSource, preview_value: StringSource, flags: ImGuiComboFlags): boolean {
 //   return imgui.igBeginCombo(cString(label), cString(preview_value), flags);
@@ -560,19 +560,19 @@
 //   return imgui.igSliderScalarN(cString(label), data_type, data, components, min, max, cString(format), flags);
 // }
 // export function vSliderFloat(label: StringSource, size: ImVec2, v: Float32Array, v_min: number, v_max: number, format: StringSource, flags: ImGuiSliderFlags): boolean {
-//   return imgui.igVSliderFloat(cString(label), size[BUFFER], v, v_min, v_max, cString(format), flags);
+//   return imgui.igVSliderFloat(cString(label), size.buffer, v, v_min, v_max, cString(format), flags);
 // }
 // export function vSliderInt(label: StringSource, size: ImVec2, v: Int32Array, v_min: number, v_max: number, format: StringSource, flags: ImGuiSliderFlags): boolean {
-//   return imgui.igVSliderInt(cString(label), size[BUFFER], v, v_min, v_max, cString(format), flags);
+//   return imgui.igVSliderInt(cString(label), size.buffer, v, v_min, v_max, cString(format), flags);
 // }
 // export function vSliderScalar(label: StringSource, size: ImVec2, data_type: ImGuiDataType, data: BufferSource, min: BufferSource, max: BufferSource, format: StringSource, flags: ImGuiSliderFlags): boolean {
-//   return imgui.igVSliderScalar(cString(label), size[BUFFER], data_type, data, min, max, cString(format), flags);
+//   return imgui.igVSliderScalar(cString(label), size.buffer, data_type, data, min, max, cString(format), flags);
 // }
 // export function inputText(label: StringSource, buf: StringSource, buf_size: number | bigint, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
 //   return imgui.igInputText(cString(label), cString(buf), buf_size, flags, callback.pointer, user_data);
 // }
 // export function inputTextMultiline(label: StringSource, buf: StringSource, buf_size: number | bigint, size: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
-//   return imgui.igInputTextMultiline(cString(label), cString(buf), buf_size, size[BUFFER], flags, callback.pointer, user_data);
+//   return imgui.igInputTextMultiline(cString(label), cString(buf), buf_size, size.buffer, flags, callback.pointer, user_data);
 // }
 // export function inputTextWithHint(label: StringSource, hint: StringSource, buf: StringSource, buf_size: number | bigint, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
 //   return imgui.igInputTextWithHint(cString(label), cString(hint), cString(buf), buf_size, flags, callback.pointer, user_data);
@@ -623,7 +623,7 @@
 //   return imgui.igColorPicker4(cString(label), col, flags, ref_col);
 // }
 // export function colorButton(desc_id: StringSource, col: ImVec4, flags: ImGuiColorEditFlags, size: ImVec2): boolean {
-//   return imgui.igColorButton(cString(desc_id), col[BUFFER], flags, size[BUFFER]);
+//   return imgui.igColorButton(cString(desc_id), col.buffer, flags, size.buffer);
 // }
 // export function setColorEditOptions(flags: ImGuiColorEditFlags): void {
 //    imgui.igSetColorEditOptions(flags);
@@ -680,13 +680,13 @@
 //    imgui.igSetNextItemOpen(is_open, cond);
 // }
 // export function selectable_Bool(label: StringSource, selected: boolean, flags: ImGuiSelectableFlags, size: ImVec2): boolean {
-//   return imgui.igSelectable_Bool(cString(label), selected, flags, size[BUFFER]);
+//   return imgui.igSelectable_Bool(cString(label), selected, flags, size.buffer);
 // }
 // export function selectable_BoolPtr(label: StringSource, selected?: Uint8Array, flags: ImGuiSelectableFlags, size: ImVec2): boolean {
-//   return imgui.igSelectable_BoolPtr(cString(label), selected ?? null, flags, size[BUFFER]);
+//   return imgui.igSelectable_BoolPtr(cString(label), selected ?? null, flags, size.buffer);
 // }
 // export function beginListBox(label: StringSource, size: ImVec2): boolean {
-//   return imgui.igBeginListBox(cString(label), size[BUFFER]);
+//   return imgui.igBeginListBox(cString(label), size.buffer);
 // }
 // export function endListBox(): void {
 //    imgui.igEndListBox();
@@ -698,16 +698,16 @@
 //   return imgui.igListBox_FnBoolPtr(cString(label), current_item, data, idx, out_text), data, items_count, height_in_items);
 // }
 // export function plotLines_FloatPtr(label: StringSource, values: Float32Array, values_count: number, values_offset: number, overlay_text: StringSource, scale_min: number, scale_max: number, graph_size: ImVec2, stride: number): void {
-//    imgui.igPlotLines_FloatPtr(cString(label), values, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size[BUFFER], stride);
+//    imgui.igPlotLines_FloatPtr(cString(label), values, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size.buffer, stride);
 // }
 // export function plotLines_FnFloatPtr(label: StringSource, data: Deno.UnsafeCallback, idx): number, data: BufferSource, values_count: number, values_offset: number, overlay_text: StringSource, scale_min: number, scale_max: number, graph_size: ImVec2): void {
-//    imgui.igPlotLines_FnFloatPtr(cString(label), data, idx), data, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size[BUFFER]);
+//    imgui.igPlotLines_FnFloatPtr(cString(label), data, idx), data, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size.buffer);
 // }
 // export function plotHistogram_FloatPtr(label: StringSource, values: Float32Array, values_count: number, values_offset: number, overlay_text: StringSource, scale_min: number, scale_max: number, graph_size: ImVec2, stride: number): void {
-//    imgui.igPlotHistogram_FloatPtr(cString(label), values, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size[BUFFER], stride);
+//    imgui.igPlotHistogram_FloatPtr(cString(label), values, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size.buffer, stride);
 // }
 // export function plotHistogram_FnFloatPtr(label: StringSource, data: Deno.UnsafeCallback, idx): number, data: BufferSource, values_count: number, values_offset: number, overlay_text: StringSource, scale_min: number, scale_max: number, graph_size: ImVec2): void {
-//    imgui.igPlotHistogram_FnFloatPtr(cString(label), data, idx), data, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size[BUFFER]);
+//    imgui.igPlotHistogram_FnFloatPtr(cString(label), data, idx), data, values_count, values_offset, cString(overlay_text), scale_min, scale_max, graph_size.buffer);
 // }
 // export function value_Bool(prefix: StringSource, b: boolean): void {
 //    imgui.igValue_Bool(cString(prefix), b);
@@ -791,7 +791,7 @@
 //   return imgui.igIsPopupOpen_Str(cString(str_id), flags);
 // }
 // export function beginTable(str_id: StringSource, column: number, flags: ImGuiTableFlags, outer_size: ImVec2, inner_width: number): boolean {
-//   return imgui.igBeginTable(cString(str_id), column, flags, outer_size[BUFFER], inner_width);
+//   return imgui.igBeginTable(cString(str_id), column, flags, outer_size.buffer, inner_width);
 // }
 // export function endTable(): void {
 //    imgui.igEndTable();
@@ -884,7 +884,7 @@
 //    imgui.igSetTabItemClosed(cString(tab_or_docked_window_label));
 // }
 // export function dockSpace(id: ImGuiID, size: ImVec2, flags: ImGuiDockNodeFlags, window_class: ImGuiWindowClass): ImGuiID {
-//   return imgui.igDockSpace(id, size[BUFFER], flags, window_class);
+//   return imgui.igDockSpace(id, size.buffer, flags, window_class);
 // }
 // export function dockSpaceOverViewport(viewport: ImGuiViewport, flags: ImGuiDockNodeFlags, window_class: ImGuiWindowClass): ImGuiID {
 //   return imgui.igDockSpaceOverViewport(viewport, flags, window_class);
@@ -944,7 +944,7 @@
 //    imgui.igEndDisabled();
 // }
 // export function pushClipRect(clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: boolean): void {
-//    imgui.igPushClipRect(clip_rect_min[BUFFER], clip_rect_max[BUFFER], intersect_with_current_clip_rect);
+//    imgui.igPushClipRect(clip_rect_min.buffer, clip_rect_max.buffer, intersect_with_current_clip_rect);
 // }
 // export function popClipRect(): void {
 //    imgui.igPopClipRect();
@@ -1025,10 +1025,10 @@
 //   return imgui.igGetForegroundDrawList_ViewportPtr(viewport);
 // }
 // export function isRectVisible_Nil(size: ImVec2): boolean {
-//   return imgui.igIsRectVisible_Nil(size[BUFFER]);
+//   return imgui.igIsRectVisible_Nil(size.buffer);
 // }
 // export function isRectVisible_Vec2(rect_min: ImVec2, rect_max: ImVec2): boolean {
-//   return imgui.igIsRectVisible_Vec2(rect_min[BUFFER], rect_max[BUFFER]);
+//   return imgui.igIsRectVisible_Vec2(rect_min.buffer, rect_max.buffer);
 // }
 // export function getTime(): number {
 //   return imgui.igGetTime();
@@ -1049,7 +1049,7 @@
 //   return imgui.igGetStateStorage();
 // }
 // export function beginChildFrame(id: ImGuiID, size: ImVec2, flags: ImGuiWindowFlags): boolean {
-//   return imgui.igBeginChildFrame(id, size[BUFFER], flags);
+//   return imgui.igBeginChildFrame(id, size.buffer, flags);
 // }
 // export function endChildFrame(): void {
 //    imgui.igEndChildFrame();
@@ -1061,7 +1061,7 @@
 //    imgui.igColorConvertU32ToFloat4(pOut, in);
 // }
 // export function colorConvertFloat4ToU32(in: ImVec4): ImU32 {
-//   return imgui.igColorConvertFloat4ToU32(in[BUFFER]);
+//   return imgui.igColorConvertFloat4ToU32(in.buffer);
 // }
 // export function colorConvertRGBtoHSV(r: number, g: number, b: number, out_h: Float32Array, out_s: Float32Array, out_v: Float32Array): void {
 //    imgui.igColorConvertRGBtoHSV(r, g, b, out_h, out_s, out_v);
@@ -1103,7 +1103,7 @@
 //   return imgui.igGetMouseClickedCount(button);
 // }
 // export function isMouseHoveringRect(r_min: ImVec2, r_max: ImVec2, clip: boolean): boolean {
-//   return imgui.igIsMouseHoveringRect(r_min[BUFFER], r_max[BUFFER], clip);
+//   return imgui.igIsMouseHoveringRect(r_min.buffer, r_max.buffer, clip);
 // }
 // export function isMousePosValid(mouse_pos: ImVec2): boolean {
 //   return imgui.igIsMousePosValid(mouse_pos);
@@ -1457,7 +1457,7 @@
 //   return imgui.ImColor_ImColor_Float(r, g, b, a);
 // }
 // export function imColor_ImColor_Vec4(col: ImVec4): ImColor {
-//   return imgui.ImColor_ImColor_Vec4(col[BUFFER]);
+//   return imgui.ImColor_ImColor_Vec4(col.buffer);
 // }
 // export function imColor_ImColor_Int(r: number, g: number, b: number, a: number): ImColor {
 //   return imgui.ImColor_ImColor_Int(r, g, b, a);
@@ -1508,7 +1508,7 @@
 //    imgui.ImDrawList_destroy(self);
 // }
 // export function imDrawList_PushClipRect(self: ImDrawList, clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: boolean): void {
-//    imgui.ImDrawList_PushClipRect(self, clip_rect_min[BUFFER], clip_rect_max[BUFFER], intersect_with_current_clip_rect);
+//    imgui.ImDrawList_PushClipRect(self, clip_rect_min.buffer, clip_rect_max.buffer, intersect_with_current_clip_rect);
 // }
 // export function imDrawList_PushClipRectFullScreen(self: ImDrawList): void {
 //    imgui.ImDrawList_PushClipRectFullScreen(self);
@@ -1529,46 +1529,46 @@
 //    imgui.ImDrawList_GetClipRectMax(pOut, self);
 // }
 // export function imDrawList_AddLine(self: ImDrawList, p1: ImVec2, p2: ImVec2, col: ImU32, thickness: number): void {
-//    imgui.ImDrawList_AddLine(self, p1[BUFFER], p2[BUFFER], col, thickness);
+//    imgui.ImDrawList_AddLine(self, p1.buffer, p2.buffer, col, thickness);
 // }
 // export function imDrawList_AddRect(self: ImDrawList, min: ImVec2, max: ImVec2, col: ImU32, rounding: number, flags: ImDrawFlags, thickness: number): void {
-//    imgui.ImDrawList_AddRect(self, min[BUFFER], max[BUFFER], col, rounding, flags, thickness);
+//    imgui.ImDrawList_AddRect(self, min.buffer, max.buffer, col, rounding, flags, thickness);
 // }
 // export function imDrawList_AddRectFilled(self: ImDrawList, min: ImVec2, max: ImVec2, col: ImU32, rounding: number, flags: ImDrawFlags): void {
-//    imgui.ImDrawList_AddRectFilled(self, min[BUFFER], max[BUFFER], col, rounding, flags);
+//    imgui.ImDrawList_AddRectFilled(self, min.buffer, max.buffer, col, rounding, flags);
 // }
 // export function imDrawList_AddRectFilledMultiColor(self: ImDrawList, min: ImVec2, max: ImVec2, col_upr_left: ImU32, col_upr_right: ImU32, col_bot_right: ImU32, col_bot_left: ImU32): void {
-//    imgui.ImDrawList_AddRectFilledMultiColor(self, min[BUFFER], max[BUFFER], col_upr_left, col_upr_right, col_bot_right, col_bot_left);
+//    imgui.ImDrawList_AddRectFilledMultiColor(self, min.buffer, max.buffer, col_upr_left, col_upr_right, col_bot_right, col_bot_left);
 // }
 // export function imDrawList_AddQuad(self: ImDrawList, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32, thickness: number): void {
-//    imgui.ImDrawList_AddQuad(self, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], col, thickness);
+//    imgui.ImDrawList_AddQuad(self, p1.buffer, p2.buffer, p3.buffer, p4.buffer, col, thickness);
 // }
 // export function imDrawList_AddQuadFilled(self: ImDrawList, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_AddQuadFilled(self, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], col);
+//    imgui.ImDrawList_AddQuadFilled(self, p1.buffer, p2.buffer, p3.buffer, p4.buffer, col);
 // }
 // export function imDrawList_AddTriangle(self: ImDrawList, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: number): void {
-//    imgui.ImDrawList_AddTriangle(self, p1[BUFFER], p2[BUFFER], p3[BUFFER], col, thickness);
+//    imgui.ImDrawList_AddTriangle(self, p1.buffer, p2.buffer, p3.buffer, col, thickness);
 // }
 // export function imDrawList_AddTriangleFilled(self: ImDrawList, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_AddTriangleFilled(self, p1[BUFFER], p2[BUFFER], p3[BUFFER], col);
+//    imgui.ImDrawList_AddTriangleFilled(self, p1.buffer, p2.buffer, p3.buffer, col);
 // }
 // export function imDrawList_AddCircle(self: ImDrawList, center: ImVec2, radius: number, col: ImU32, num_segments: number, thickness: number): void {
-//    imgui.ImDrawList_AddCircle(self, center[BUFFER], radius, col, num_segments, thickness);
+//    imgui.ImDrawList_AddCircle(self, center.buffer, radius, col, num_segments, thickness);
 // }
 // export function imDrawList_AddCircleFilled(self: ImDrawList, center: ImVec2, radius: number, col: ImU32, num_segments: number): void {
-//    imgui.ImDrawList_AddCircleFilled(self, center[BUFFER], radius, col, num_segments);
+//    imgui.ImDrawList_AddCircleFilled(self, center.buffer, radius, col, num_segments);
 // }
 // export function imDrawList_AddNgon(self: ImDrawList, center: ImVec2, radius: number, col: ImU32, num_segments: number, thickness: number): void {
-//    imgui.ImDrawList_AddNgon(self, center[BUFFER], radius, col, num_segments, thickness);
+//    imgui.ImDrawList_AddNgon(self, center.buffer, radius, col, num_segments, thickness);
 // }
 // export function imDrawList_AddNgonFilled(self: ImDrawList, center: ImVec2, radius: number, col: ImU32, num_segments: number): void {
-//    imgui.ImDrawList_AddNgonFilled(self, center[BUFFER], radius, col, num_segments);
+//    imgui.ImDrawList_AddNgonFilled(self, center.buffer, radius, col, num_segments);
 // }
 // export function imDrawList_AddText_Vec2(self: ImDrawList, pos: ImVec2, col: ImU32, text_begin: StringSource, text_end: StringSource): void {
-//    imgui.ImDrawList_AddText_Vec2(self, pos[BUFFER], col, cString(text_begin), cString(text_end));
+//    imgui.ImDrawList_AddText_Vec2(self, pos.buffer, col, cString(text_begin), cString(text_end));
 // }
 // export function imDrawList_AddText_FontPtr(self: ImDrawList, font: ImFont, font_size: number, pos: ImVec2, col: ImU32, text_begin: StringSource, text_end: StringSource, wrap_width: number, cpu_fine_clip_rect: ImVec4): void {
-//    imgui.ImDrawList_AddText_FontPtr(self, font, font_size, pos[BUFFER], col, cString(text_begin), cString(text_end), wrap_width, cpu_fine_clip_rect);
+//    imgui.ImDrawList_AddText_FontPtr(self, font, font_size, pos.buffer, col, cString(text_begin), cString(text_end), wrap_width, cpu_fine_clip_rect);
 // }
 // export function imDrawList_AddPolyline(self: ImDrawList, points: ImVec2, num_points: number, col: ImU32, flags: ImDrawFlags, thickness: number): void {
 //    imgui.ImDrawList_AddPolyline(self, points, num_points, col, flags, thickness);
@@ -1577,28 +1577,28 @@
 //    imgui.ImDrawList_AddConvexPolyFilled(self, points, num_points, col);
 // }
 // export function imDrawList_AddBezierCubic(self: ImDrawList, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32, thickness: number, num_segments: number): void {
-//    imgui.ImDrawList_AddBezierCubic(self, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], col, thickness, num_segments);
+//    imgui.ImDrawList_AddBezierCubic(self, p1.buffer, p2.buffer, p3.buffer, p4.buffer, col, thickness, num_segments);
 // }
 // export function imDrawList_AddBezierQuadratic(self: ImDrawList, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: number, num_segments: number): void {
-//    imgui.ImDrawList_AddBezierQuadratic(self, p1[BUFFER], p2[BUFFER], p3[BUFFER], col, thickness, num_segments);
+//    imgui.ImDrawList_AddBezierQuadratic(self, p1.buffer, p2.buffer, p3.buffer, col, thickness, num_segments);
 // }
 // export function imDrawList_AddImage(self: ImDrawList, user_texture_id: ImTextureID, min: ImVec2, max: ImVec2, uv_min: ImVec2, uv_max: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_AddImage(self, user_texture_id, min[BUFFER], max[BUFFER], uv_min[BUFFER], uv_max[BUFFER], col);
+//    imgui.ImDrawList_AddImage(self, user_texture_id, min.buffer, max.buffer, uv_min.buffer, uv_max.buffer, col);
 // }
 // export function imDrawList_AddImageQuad(self: ImDrawList, user_texture_id: ImTextureID, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, uv1: ImVec2, uv2: ImVec2, uv3: ImVec2, uv4: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_AddImageQuad(self, user_texture_id, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], uv1[BUFFER], uv2[BUFFER], uv3[BUFFER], uv4[BUFFER], col);
+//    imgui.ImDrawList_AddImageQuad(self, user_texture_id, p1.buffer, p2.buffer, p3.buffer, p4.buffer, uv1.buffer, uv2.buffer, uv3.buffer, uv4.buffer, col);
 // }
 // export function imDrawList_AddImageRounded(self: ImDrawList, user_texture_id: ImTextureID, min: ImVec2, max: ImVec2, uv_min: ImVec2, uv_max: ImVec2, col: ImU32, rounding: number, flags: ImDrawFlags): void {
-//    imgui.ImDrawList_AddImageRounded(self, user_texture_id, min[BUFFER], max[BUFFER], uv_min[BUFFER], uv_max[BUFFER], col, rounding, flags);
+//    imgui.ImDrawList_AddImageRounded(self, user_texture_id, min.buffer, max.buffer, uv_min.buffer, uv_max.buffer, col, rounding, flags);
 // }
 // export function imDrawList_PathClear(self: ImDrawList): void {
 //    imgui.ImDrawList_PathClear(self);
 // }
 // export function imDrawList_PathLineTo(self: ImDrawList, pos: ImVec2): void {
-//    imgui.ImDrawList_PathLineTo(self, pos[BUFFER]);
+//    imgui.ImDrawList_PathLineTo(self, pos.buffer);
 // }
 // export function imDrawList_PathLineToMergeDuplicate(self: ImDrawList, pos: ImVec2): void {
-//    imgui.ImDrawList_PathLineToMergeDuplicate(self, pos[BUFFER]);
+//    imgui.ImDrawList_PathLineToMergeDuplicate(self, pos.buffer);
 // }
 // export function imDrawList_PathFillConvex(self: ImDrawList, col: ImU32): void {
 //    imgui.ImDrawList_PathFillConvex(self, col);
@@ -1607,19 +1607,19 @@
 //    imgui.ImDrawList_PathStroke(self, col, flags, thickness);
 // }
 // export function imDrawList_PathArcTo(self: ImDrawList, center: ImVec2, radius: number, a_min: number, a_max: number, num_segments: number): void {
-//    imgui.ImDrawList_PathArcTo(self, center[BUFFER], radius, a_min, a_max, num_segments);
+//    imgui.ImDrawList_PathArcTo(self, center.buffer, radius, a_min, a_max, num_segments);
 // }
 // export function imDrawList_PathArcToFast(self: ImDrawList, center: ImVec2, radius: number, a_min_of_12: number, a_max_of_12: number): void {
-//    imgui.ImDrawList_PathArcToFast(self, center[BUFFER], radius, a_min_of_12, a_max_of_12);
+//    imgui.ImDrawList_PathArcToFast(self, center.buffer, radius, a_min_of_12, a_max_of_12);
 // }
 // export function imDrawList_PathBezierCubicCurveTo(self: ImDrawList, p2: ImVec2, p3: ImVec2, p4: ImVec2, num_segments: number): void {
-//    imgui.ImDrawList_PathBezierCubicCurveTo(self, p2[BUFFER], p3[BUFFER], p4[BUFFER], num_segments);
+//    imgui.ImDrawList_PathBezierCubicCurveTo(self, p2.buffer, p3.buffer, p4.buffer, num_segments);
 // }
 // export function imDrawList_PathBezierQuadraticCurveTo(self: ImDrawList, p2: ImVec2, p3: ImVec2, num_segments: number): void {
-//    imgui.ImDrawList_PathBezierQuadraticCurveTo(self, p2[BUFFER], p3[BUFFER], num_segments);
+//    imgui.ImDrawList_PathBezierQuadraticCurveTo(self, p2.buffer, p3.buffer, num_segments);
 // }
 // export function imDrawList_PathRect(self: ImDrawList, rect_min: ImVec2, rect_max: ImVec2, rounding: number, flags: ImDrawFlags): void {
-//    imgui.ImDrawList_PathRect(self, rect_min[BUFFER], rect_max[BUFFER], rounding, flags);
+//    imgui.ImDrawList_PathRect(self, rect_min.buffer, rect_max.buffer, rounding, flags);
 // }
 // export function imDrawList_AddCallback(self: ImDrawList, callback: ImDrawCallback, callback_data: BufferSource): void {
 //    imgui.ImDrawList_AddCallback(self, callback.pointer, callback_data);
@@ -1646,22 +1646,22 @@
 //    imgui.ImDrawList_PrimUnreserve(self, idx_count, vtx_count);
 // }
 // export function imDrawList_PrimRect(self: ImDrawList, a: ImVec2, b: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_PrimRect(self, a[BUFFER], b[BUFFER], col);
+//    imgui.ImDrawList_PrimRect(self, a.buffer, b.buffer, col);
 // }
 // export function imDrawList_PrimRectUV(self: ImDrawList, a: ImVec2, b: ImVec2, uv_a: ImVec2, uv_b: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_PrimRectUV(self, a[BUFFER], b[BUFFER], uv_a[BUFFER], uv_b[BUFFER], col);
+//    imgui.ImDrawList_PrimRectUV(self, a.buffer, b.buffer, uv_a.buffer, uv_b.buffer, col);
 // }
 // export function imDrawList_PrimQuadUV(self: ImDrawList, a: ImVec2, b: ImVec2, c: ImVec2, d: ImVec2, uv_a: ImVec2, uv_b: ImVec2, uv_c: ImVec2, uv_d: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_PrimQuadUV(self, a[BUFFER], b[BUFFER], c[BUFFER], d[BUFFER], uv_a[BUFFER], uv_b[BUFFER], uv_c[BUFFER], uv_d[BUFFER], col);
+//    imgui.ImDrawList_PrimQuadUV(self, a.buffer, b.buffer, c.buffer, d.buffer, uv_a.buffer, uv_b.buffer, uv_c.buffer, uv_d.buffer, col);
 // }
 // export function imDrawList_PrimWriteVtx(self: ImDrawList, pos: ImVec2, uv: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_PrimWriteVtx(self, pos[BUFFER], uv[BUFFER], col);
+//    imgui.ImDrawList_PrimWriteVtx(self, pos.buffer, uv.buffer, col);
 // }
 // export function imDrawList_PrimWriteIdx(self: ImDrawList, idx: ImDrawIdx): void {
 //    imgui.ImDrawList_PrimWriteIdx(self, idx);
 // }
 // export function imDrawList_PrimVtx(self: ImDrawList, pos: ImVec2, uv: ImVec2, col: ImU32): void {
-//    imgui.ImDrawList_PrimVtx(self, pos[BUFFER], uv[BUFFER], col);
+//    imgui.ImDrawList_PrimVtx(self, pos.buffer, uv.buffer, col);
 // }
 // export function imDrawList__ResetForNewFrame(self: ImDrawList): void {
 //    imgui.ImDrawList__ResetForNewFrame(self);
@@ -1688,10 +1688,10 @@
 //   return imgui.ImDrawList__CalcCircleAutoSegmentCount(self, radius);
 // }
 // export function imDrawList__PathArcToFastEx(self: ImDrawList, center: ImVec2, radius: number, a_min_sample: number, a_max_sample: number, a_step: number): void {
-//    imgui.ImDrawList__PathArcToFastEx(self, center[BUFFER], radius, a_min_sample, a_max_sample, a_step);
+//    imgui.ImDrawList__PathArcToFastEx(self, center.buffer, radius, a_min_sample, a_max_sample, a_step);
 // }
 // export function imDrawList__PathArcToN(self: ImDrawList, center: ImVec2, radius: number, a_min: number, a_max: number, num_segments: number): void {
-//    imgui.ImDrawList__PathArcToN(self, center[BUFFER], radius, a_min, a_max, num_segments);
+//    imgui.ImDrawList__PathArcToN(self, center.buffer, radius, a_min, a_max, num_segments);
 // }
 // export function imDrawData_ImDrawData(): ImDrawData {
 //   return imgui.ImDrawData_ImDrawData();
@@ -1706,7 +1706,7 @@
 //    imgui.ImDrawData_DeIndexAllBuffers(self);
 // }
 // export function imDrawData_ScaleClipRects(self: ImDrawData, fb_scale: ImVec2): void {
-//    imgui.ImDrawData_ScaleClipRects(self, fb_scale[BUFFER]);
+//    imgui.ImDrawData_ScaleClipRects(self, fb_scale.buffer);
 // }
 // export function imFontConf_ImFontConfig(): ImFontConfig {
 //   return imgui.ImFontConfig_ImFontConfig();
@@ -1829,7 +1829,7 @@
 //   return imgui.ImFontAtlas_AddCustomRectRegular(self, width, height);
 // }
 // export function imFontAtlas_AddCustomRectFontGlyph(self: ImFontAtlas, font: ImFont, id: ImWchar, width: number, height: number, advance_x: number, offset: ImVec2): number {
-//   return imgui.ImFontAtlas_AddCustomRectFontGlyph(self, font, id, width, height, advance_x, offset[BUFFER]);
+//   return imgui.ImFontAtlas_AddCustomRectFontGlyph(self, font, id, width, height, advance_x, offset.buffer);
 // }
 // export function imFontAtlas_GetCustomRectByIndex(self: ImFontAtlas, index: number): ImFontAtlasCustomRect {
 //   return imgui.ImFontAtlas_GetCustomRectByIndex(self, index);
@@ -1868,10 +1868,10 @@
 //   return imgui.ImFont_CalcWordWrapPositionA(self, scale, cString(text), cString(text_end), wrap_width);
 // }
 // export function imFont_RenderChar(self: ImFont, draw_list: ImDrawList, size: number, pos: ImVec2, col: ImU32, c: ImWchar): void {
-//    imgui.ImFont_RenderChar(self, draw_list, size, pos[BUFFER], col, c);
+//    imgui.ImFont_RenderChar(self, draw_list, size, pos.buffer, col, c);
 // }
 // export function imFont_RenderText(self: ImFont, draw_list: ImDrawList, size: number, pos: ImVec2, col: ImU32, clip_rect: ImVec4, text_begin: StringSource, text_end: StringSource, wrap_width: number, cpu_fine_clip: boolean): void {
-//    imgui.ImFont_RenderText(self, draw_list, size, pos[BUFFER], col, clip_rect[BUFFER], cString(text_begin), cString(text_end), wrap_width, cpu_fine_clip);
+//    imgui.ImFont_RenderText(self, draw_list, size, pos.buffer, col, clip_rect.buffer, cString(text_begin), cString(text_end), wrap_width, cpu_fine_clip);
 // }
 // export function imFont_BuildLookupTable(self: ImFont): void {
 //    imgui.ImFont_BuildLookupTable(self);
@@ -2075,34 +2075,34 @@
 //   return imgui.igImRsqrt_double(x);
 // }
 // export function imMin(pOut: ImVec2, lhs: ImVec2, rhs: ImVec2): void {
-//    imgui.igImMin(pOut, lhs[BUFFER], rhs[BUFFER]);
+//    imgui.igImMin(pOut, lhs.buffer, rhs.buffer);
 // }
 // export function imMax(pOut: ImVec2, lhs: ImVec2, rhs: ImVec2): void {
-//    imgui.igImMax(pOut, lhs[BUFFER], rhs[BUFFER]);
+//    imgui.igImMax(pOut, lhs.buffer, rhs.buffer);
 // }
 // export function imClamp(pOut: ImVec2, v: ImVec2, mn: ImVec2, mx: ImVec2): void {
-//    imgui.igImClamp(pOut, v[BUFFER], mn[BUFFER], mx[BUFFER]);
+//    imgui.igImClamp(pOut, v.buffer, mn.buffer, mx.buffer);
 // }
 // export function imLerp_Vec2Float(pOut: ImVec2, a: ImVec2, b: ImVec2, t: number): void {
-//    imgui.igImLerp_Vec2Float(pOut, a[BUFFER], b[BUFFER], t);
+//    imgui.igImLerp_Vec2Float(pOut, a.buffer, b.buffer, t);
 // }
 // export function imLerp_Vec2Vec2(pOut: ImVec2, a: ImVec2, b: ImVec2, t: ImVec2): void {
-//    imgui.igImLerp_Vec2Vec2(pOut, a[BUFFER], b[BUFFER], t[BUFFER]);
+//    imgui.igImLerp_Vec2Vec2(pOut, a.buffer, b.buffer, t.buffer);
 // }
 // export function imLerp_Vec4(pOut: ImVec4, a: ImVec4, b: ImVec4, t: number): void {
-//    imgui.igImLerp_Vec4(pOut, a[BUFFER], b[BUFFER], t);
+//    imgui.igImLerp_Vec4(pOut, a.buffer, b.buffer, t);
 // }
 // export function imSaturate(f: number): number {
 //   return imgui.igImSaturate(f);
 // }
 // export function imLengthSqr_Vec2(lhs: ImVec2): number {
-//   return imgui.igImLengthSqr_Vec2(lhs[BUFFER]);
+//   return imgui.igImLengthSqr_Vec2(lhs.buffer);
 // }
 // export function imLengthSqr_Vec4(lhs: ImVec4): number {
-//   return imgui.igImLengthSqr_Vec4(lhs[BUFFER]);
+//   return imgui.igImLengthSqr_Vec4(lhs.buffer);
 // }
 // export function imInvLength(lhs: ImVec2, fail_value: number): number {
-//   return imgui.igImInvLength(lhs[BUFFER], fail_value);
+//   return imgui.igImInvLength(lhs.buffer, fail_value);
 // }
 // export function imFloor_Float(f: number): number {
 //   return imgui.igImFloor_Float(f);
@@ -2111,25 +2111,25 @@
 //   return imgui.igImFloorSigned_Float(f);
 // }
 // export function imFloor_Vec2(pOut: ImVec2, v: ImVec2): void {
-//    imgui.igImFloor_Vec2(pOut, v[BUFFER]);
+//    imgui.igImFloor_Vec2(pOut, v.buffer);
 // }
 // export function imFloorSigned_Vec2(pOut: ImVec2, v: ImVec2): void {
-//    imgui.igImFloorSigned_Vec2(pOut, v[BUFFER]);
+//    imgui.igImFloorSigned_Vec2(pOut, v.buffer);
 // }
 // export function imModPositive(a: number, b: number): number {
 //   return imgui.igImModPositive(a, b);
 // }
 // export function imDot(a: ImVec2, b: ImVec2): number {
-//   return imgui.igImDot(a[BUFFER], b[BUFFER]);
+//   return imgui.igImDot(a.buffer, b.buffer);
 // }
 // export function imRotate(pOut: ImVec2, v: ImVec2, cos_a: number, sin_a: number): void {
-//    imgui.igImRotate(pOut, v[BUFFER], cos_a, sin_a);
+//    imgui.igImRotate(pOut, v.buffer, cos_a, sin_a);
 // }
 // export function imLinearSweep(current: number, target: number, speed: number): number {
 //   return imgui.igImLinearSweep(current, target, speed);
 // }
 // export function imMul(pOut: ImVec2, lhs: ImVec2, rhs: ImVec2): void {
-//    imgui.igImMul(pOut, lhs[BUFFER], rhs[BUFFER]);
+//    imgui.igImMul(pOut, lhs.buffer, rhs.buffer);
 // }
 // export function imIsFloatAboveGuaranteedIntegerPrecision(f: number): boolean {
 //   return imgui.igImIsFloatAboveGuaranteedIntegerPrecision(f);
@@ -2138,31 +2138,31 @@
 //   return imgui.igImExponentialMovingAverage(avg, sample, n);
 // }
 // export function imBezierCubicCalc(pOut: ImVec2, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, t: number): void {
-//    imgui.igImBezierCubicCalc(pOut, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], t);
+//    imgui.igImBezierCubicCalc(pOut, p1.buffer, p2.buffer, p3.buffer, p4.buffer, t);
 // }
 // export function imBezierCubicClosestPoint(pOut: ImVec2, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, p: ImVec2, num_segments: number): void {
-//    imgui.igImBezierCubicClosestPoint(pOut, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], p[BUFFER], num_segments);
+//    imgui.igImBezierCubicClosestPoint(pOut, p1.buffer, p2.buffer, p3.buffer, p4.buffer, p.buffer, num_segments);
 // }
 // export function imBezierCubicClosestPointCasteljau(pOut: ImVec2, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, p: ImVec2, tess_tol: number): void {
-//    imgui.igImBezierCubicClosestPointCasteljau(pOut, p1[BUFFER], p2[BUFFER], p3[BUFFER], p4[BUFFER], p[BUFFER], tess_tol);
+//    imgui.igImBezierCubicClosestPointCasteljau(pOut, p1.buffer, p2.buffer, p3.buffer, p4.buffer, p.buffer, tess_tol);
 // }
 // export function imBezierQuadraticCalc(pOut: ImVec2, p1: ImVec2, p2: ImVec2, p3: ImVec2, t: number): void {
-//    imgui.igImBezierQuadraticCalc(pOut, p1[BUFFER], p2[BUFFER], p3[BUFFER], t);
+//    imgui.igImBezierQuadraticCalc(pOut, p1.buffer, p2.buffer, p3.buffer, t);
 // }
 // export function imLineClosestPoint(pOut: ImVec2, a: ImVec2, b: ImVec2, p: ImVec2): void {
-//    imgui.igImLineClosestPoint(pOut, a[BUFFER], b[BUFFER], p[BUFFER]);
+//    imgui.igImLineClosestPoint(pOut, a.buffer, b.buffer, p.buffer);
 // }
 // export function imTriangleContainsPoint(a: ImVec2, b: ImVec2, c: ImVec2, p: ImVec2): boolean {
-//   return imgui.igImTriangleContainsPoint(a[BUFFER], b[BUFFER], c[BUFFER], p[BUFFER]);
+//   return imgui.igImTriangleContainsPoint(a.buffer, b.buffer, c.buffer, p.buffer);
 // }
 // export function imTriangleClosestPoint(pOut: ImVec2, a: ImVec2, b: ImVec2, c: ImVec2, p: ImVec2): void {
-//    imgui.igImTriangleClosestPoint(pOut, a[BUFFER], b[BUFFER], c[BUFFER], p[BUFFER]);
+//    imgui.igImTriangleClosestPoint(pOut, a.buffer, b.buffer, c.buffer, p.buffer);
 // }
 // export function imTriangleBarycentricCoords(a: ImVec2, b: ImVec2, c: ImVec2, p: ImVec2, out_u: Float32Array, out_v: Float32Array, out_w: Float32Array): void {
-//    imgui.igImTriangleBarycentricCoords(a[BUFFER], b[BUFFER], c[BUFFER], p[BUFFER], out_u, out_v, out_w);
+//    imgui.igImTriangleBarycentricCoords(a.buffer, b.buffer, c.buffer, p.buffer, out_u, out_v, out_w);
 // }
 // export function imTriangleArea(a: ImVec2, b: ImVec2, c: ImVec2): number {
-//   return imgui.igImTriangleArea(a[BUFFER], b[BUFFER], c[BUFFER]);
+//   return imgui.igImTriangleArea(a.buffer, b.buffer, c.buffer);
 // }
 // export function imGetDirQuadrantFromDelta(dx: number, dy: number): ImGuiDir {
 //   return imgui.igImGetDirQuadrantFromDelta(dx, dy);
@@ -2186,7 +2186,7 @@
 //   return imgui.ImVec2ih_ImVec2ih_short(_x, _y);
 // }
 // export function imVec2ih_ImVec2ih_Vec2(rhs: ImVec2): ImVec2ih {
-//   return imgui.ImVec2ih_ImVec2ih_Vec2(rhs[BUFFER]);
+//   return imgui.ImVec2ih_ImVec2ih_Vec2(rhs.buffer);
 // }
 // export function imRect_ImRect_Nil(): ImRect {
 //   return imgui.ImRect_ImRect_Nil();
@@ -2195,10 +2195,10 @@
 //    imgui.ImRect_destroy(self);
 // }
 // export function imRect_ImRect_Vec2(min: ImVec2, max: ImVec2): ImRect {
-//   return imgui.ImRect_ImRect_Vec2(min[BUFFER], max[BUFFER]);
+//   return imgui.ImRect_ImRect_Vec2(min.buffer, max.buffer);
 // }
 // export function imRect_ImRect_Vec4(v: ImVec4): ImRect {
-//   return imgui.ImRect_ImRect_Vec4(v[BUFFER]);
+//   return imgui.ImRect_ImRect_Vec4(v.buffer);
 // }
 // export function imRect_ImRect_Float(x1: number, y1: number, x2: number, y2: number): ImRect {
 //   return imgui.ImRect_ImRect_Float(x1, y1, x2, y2);
@@ -2231,7 +2231,7 @@
 //    imgui.ImRect_GetBR(pOut, self);
 // }
 // export function imRect_Contains_Vec2(self: ImRect, p: ImVec2): boolean {
-//   return imgui.ImRect_Contains_Vec2(self, p[BUFFER]);
+//   return imgui.ImRect_Contains_Vec2(self, p.buffer);
 // }
 // export function imRect_Contains_Rect(self: ImRect, r: ImRect): boolean {
 //   return imgui.ImRect_Contains_Rect(self, r);
@@ -2240,7 +2240,7 @@
 //   return imgui.ImRect_Overlaps(self, r);
 // }
 // export function imRect_Add_Vec2(self: ImRect, p: ImVec2): void {
-//    imgui.ImRect_Add_Vec2(self, p[BUFFER]);
+//    imgui.ImRect_Add_Vec2(self, p.buffer);
 // }
 // export function imRect_Add_Rect(self: ImRect, r: ImRect): void {
 //    imgui.ImRect_Add_Rect(self, r);
@@ -2249,10 +2249,10 @@
 //    imgui.ImRect_Expand_Float(self, amount);
 // }
 // export function imRect_Expand_Vec2(self: ImRect, amount: ImVec2): void {
-//    imgui.ImRect_Expand_Vec2(self, amount[BUFFER]);
+//    imgui.ImRect_Expand_Vec2(self, amount.buffer);
 // }
 // export function imRect_Translate(self: ImRect, d: ImVec2): void {
-//    imgui.ImRect_Translate(self, d[BUFFER]);
+//    imgui.ImRect_Translate(self, d.buffer);
 // }
 // export function imRect_TranslateX(self: ImRect, dx: number): void {
 //    imgui.ImRect_TranslateX(self, dx);
@@ -2348,7 +2348,7 @@
 //   return imgui.ImGuiStyleMod_ImGuiStyleMod_Float(idx, v);
 // }
 // export function imGuiStyleMod_ImGuiStyleMod_Vec2(idx: ImGuiStyleVar, v: ImVec2): ImGuiStyleMod {
-//   return imgui.ImGuiStyleMod_ImGuiStyleMod_Vec2(idx, v[BUFFER]);
+//   return imgui.ImGuiStyleMod_ImGuiStyleMod_Vec2(idx, v.buffer);
 // }
 // export function imGuiComboPreviewData_ImGuiComboPreviewData(): ImGuiComboPreviewData {
 //   return imgui.ImGuiComboPreviewData_ImGuiComboPreviewData();
@@ -2582,10 +2582,10 @@
 //    imgui.ImGuiViewportP_ClearRequestFlags(self);
 // }
 // export function imGuiViewportP_CalcWorkRectPos(pOut: ImVec2, self: ImGuiViewportP, off_min: ImVec2): void {
-//    imgui.ImGuiViewportP_CalcWorkRectPos(pOut, self, off_min[BUFFER]);
+//    imgui.ImGuiViewportP_CalcWorkRectPos(pOut, self, off_min.buffer);
 // }
 // export function imGuiViewportP_CalcWorkRectSize(pOut: ImVec2, self: ImGuiViewportP, off_min: ImVec2, off_max: ImVec2): void {
-//    imgui.ImGuiViewportP_CalcWorkRectSize(pOut, self, off_min[BUFFER], off_max[BUFFER]);
+//    imgui.ImGuiViewportP_CalcWorkRectSize(pOut, self, off_min.buffer, off_max.buffer);
 // }
 // export function imGuiViewportP_UpdateWorkRect(self: ImGuiViewportP): void {
 //    imgui.ImGuiViewportP_UpdateWorkRect(self);
@@ -2768,16 +2768,16 @@
 //   return imgui.igIsWindowNavFocusable(window);
 // }
 // export function setWindowPos_WindowPtr(window: ImGuiWindow, pos: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetWindowPos_WindowPtr(window, pos[BUFFER], cond);
+//    imgui.igSetWindowPos_WindowPtr(window, pos.buffer, cond);
 // }
 // export function setWindowSize_WindowPtr(window: ImGuiWindow, size: ImVec2, cond: ImGuiCond): void {
-//    imgui.igSetWindowSize_WindowPtr(window, size[BUFFER], cond);
+//    imgui.igSetWindowSize_WindowPtr(window, size.buffer, cond);
 // }
 // export function setWindowCollapsed_WindowPtr(window: ImGuiWindow, collapsed: boolean, cond: ImGuiCond): void {
 //    imgui.igSetWindowCollapsed_WindowPtr(window, collapsed, cond);
 // }
 // export function setWindowHitTestHole(window: ImGuiWindow, pos: ImVec2, size: ImVec2): void {
-//    imgui.igSetWindowHitTestHole(window, pos[BUFFER], size[BUFFER]);
+//    imgui.igSetWindowHitTestHole(window, pos.buffer, size.buffer);
 // }
 // export function windowRectAbsToRel(pOut: ImRect, window: ImGuiWindow, r: ImRect): void {
 //    imgui.igWindowRectAbsToRel(pOut, window, r);
@@ -2849,7 +2849,7 @@
 //    imgui.igRemoveContextHook(context, hook_to_remove);
 // }
 // export function translateWindowsInViewport(viewport: ImGuiViewportP, old_pos: ImVec2, new_pos: ImVec2): void {
-//    imgui.igTranslateWindowsInViewport(viewport, old_pos[BUFFER], new_pos[BUFFER]);
+//    imgui.igTranslateWindowsInViewport(viewport, old_pos.buffer, new_pos.buffer);
 // }
 // export function scaleWindowsInViewport(viewport: ImGuiViewportP, scale: number): void {
 //    imgui.igScaleWindowsInViewport(viewport, scale);
@@ -2867,7 +2867,7 @@
 //   return imgui.igGetViewportPlatformMonitor(viewport);
 // }
 // export function findHoveredViewportFromPlatformWindowStack(mouse_platform_pos: ImVec2): ImGuiViewportP {
-//   return imgui.igFindHoveredViewportFromPlatformWindowStack(mouse_platform_pos[BUFFER]);
+//   return imgui.igFindHoveredViewportFromPlatformWindowStack(mouse_platform_pos.buffer);
 // }
 // export function markIniSettingsDirty_Nil(): void {
 //    imgui.igMarkIniSettingsDirty_Nil();
@@ -2963,7 +2963,7 @@
 //   return imgui.igGetIDWithSeed(cString(str_id_begin), cString(str_id_end), seed);
 // }
 // export function itemSize_Vec2(size: ImVec2, text_baseline_y: number): void {
-//    imgui.igItemSize_Vec2(size[BUFFER], text_baseline_y);
+//    imgui.igItemSize_Vec2(size.buffer, text_baseline_y);
 // }
 // export function itemSize_Rect(bb: ImRect, text_baseline_y: number): void {
 //    imgui.igItemSize_Rect(bb, text_baseline_y);
@@ -2981,10 +2981,10 @@
 //    imgui.igSetLastItemData(item_id, in_flags, status_flags, item_rect);
 // }
 // export function calcItemSize(pOut: ImVec2, size: ImVec2, default_w: number, default_h: number): void {
-//    imgui.igCalcItemSize(pOut, size[BUFFER], default_w, default_h);
+//    imgui.igCalcItemSize(pOut, size.buffer, default_w, default_h);
 // }
 // export function calcWrapWidthForPos(pos: ImVec2, wrap_pos_x: number): number {
-//   return imgui.igCalcWrapWidthForPos(pos[BUFFER], wrap_pos_x);
+//   return imgui.igCalcWrapWidthForPos(pos.buffer, wrap_pos_x);
 // }
 // export function pushMultiItemsWidths(components: number, width_full: number): void {
 //    imgui.igPushMultiItemsWidths(components, width_full);
@@ -3014,7 +3014,7 @@
 //    imgui.igLogSetNextTextDecoration(cString(prefix), cString(suffix));
 // }
 // export function beginChildEx(name: StringSource, id: ImGuiID, size_arg: ImVec2, border: boolean, flags: ImGuiWindowFlags): boolean {
-//   return imgui.igBeginChildEx(cString(name), id, size_arg[BUFFER], border, flags);
+//   return imgui.igBeginChildEx(cString(name), id, size_arg.buffer, border, flags);
 // }
 // export function openPopupEx(id: ImGuiID, popup_flags: ImGuiPopupFlags): void {
 //    imgui.igOpenPopupEx(id, popup_flags);
@@ -3299,10 +3299,10 @@
 //    imgui.igDockBuilderRemoveNodeChildNodes(node_id);
 // }
 // export function dockBuilderSetNodePos(node_id: ImGuiID, pos: ImVec2): void {
-//    imgui.igDockBuilderSetNodePos(node_id, pos[BUFFER]);
+//    imgui.igDockBuilderSetNodePos(node_id, pos.buffer);
 // }
 // export function dockBuilderSetNodeSize(node_id: ImGuiID, size: ImVec2): void {
-//    imgui.igDockBuilderSetNodeSize(node_id, size[BUFFER]);
+//    imgui.igDockBuilderSetNodeSize(node_id, size.buffer);
 // }
 // export function dockBuilderSplitNode(node_id: ImGuiID, split_dir: ImGuiDir, size_ratio_for_node_at_dir: number, out_id_at_dir: ImGuiID, out_id_at_opposite_dir: ImGuiID): ImGuiID {
 //   return imgui.igDockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir, out_id_at_dir, out_id_at_opposite_dir);
@@ -3401,7 +3401,7 @@
 //   return imgui.igTableFindByID(id);
 // }
 // export function beginTableEx(name: StringSource, id: ImGuiID, columns_count: number, flags: ImGuiTableFlags, outer_size: ImVec2, inner_width: number): boolean {
-//   return imgui.igBeginTableEx(cString(name), id, columns_count, flags, outer_size[BUFFER], inner_width);
+//   return imgui.igBeginTableEx(cString(name), id, columns_count, flags, outer_size.buffer, inner_width);
 // }
 // export function tableBeginInitMemory(table: ImGuiTable, columns_count: number): void {
 //    imgui.igTableBeginInitMemory(table, columns_count);
@@ -3536,7 +3536,7 @@
 //    imgui.igTabBarQueueReorder(tab_bar, tab, offset);
 // }
 // export function tabBarQueueReorderFromMousePos(tab_bar: ImGuiTabBar, tab: ImGuiTabItem, mouse_pos: ImVec2): void {
-//    imgui.igTabBarQueueReorderFromMousePos(tab_bar, tab, mouse_pos[BUFFER]);
+//    imgui.igTabBarQueueReorderFromMousePos(tab_bar, tab, mouse_pos.buffer);
 // }
 // export function tabBarProcessReorder(tab_bar: ImGuiTabBar): boolean {
 //   return imgui.igTabBarProcessReorder(tab_bar);
@@ -3554,31 +3554,31 @@
 //    imgui.igTabItemBackground(draw_list, bb, flags, col);
 // }
 // export function tabItemLabelAndCloseButton(draw_list: ImDrawList, bb: ImRect, flags: ImGuiTabItemFlags, frame_padding: ImVec2, label: StringSource, tab_id: ImGuiID, close_button_id: ImGuiID, is_contents_visible: boolean, out_just_closed?: Uint8Array, out_text_clipped?: Uint8Array): void {
-//    imgui.igTabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding[BUFFER], cString(label), tab_id, close_button_id, is_contents_visible, out_just_closed ?? null, out_text_clipped ?? null);
+//    imgui.igTabItemLabelAndCloseButton(draw_list, bb, flags, frame_padding.buffer, cString(label), tab_id, close_button_id, is_contents_visible, out_just_closed ?? null, out_text_clipped ?? null);
 // }
 // export function renderText(pos: ImVec2, text: StringSource, text_end: StringSource, hide_text_after_hash: boolean): void {
-//    imgui.igRenderText(pos[BUFFER], cString(text), cString(text_end), hide_text_after_hash);
+//    imgui.igRenderText(pos.buffer, cString(text), cString(text_end), hide_text_after_hash);
 // }
 // export function renderTextWrapped(pos: ImVec2, text: StringSource, text_end: StringSource, wrap_width: number): void {
-//    imgui.igRenderTextWrapped(pos[BUFFER], cString(text), cString(text_end), wrap_width);
+//    imgui.igRenderTextWrapped(pos.buffer, cString(text), cString(text_end), wrap_width);
 // }
 // export function renderTextClipped(pos_min: ImVec2, pos_max: ImVec2, text: StringSource, text_end: StringSource, text_size_if_known: ImVec2, align: ImVec2, clip_rect: ImRect): void {
-//    imgui.igRenderTextClipped(pos_min[BUFFER], pos_max[BUFFER], cString(text), cString(text_end), text_size_if_known, align[BUFFER], clip_rect);
+//    imgui.igRenderTextClipped(pos_min.buffer, pos_max.buffer, cString(text), cString(text_end), text_size_if_known, align.buffer, clip_rect);
 // }
 // export function renderTextClippedEx(draw_list: ImDrawList, pos_min: ImVec2, pos_max: ImVec2, text: StringSource, text_end: StringSource, text_size_if_known: ImVec2, align: ImVec2, clip_rect: ImRect): void {
-//    imgui.igRenderTextClippedEx(draw_list, pos_min[BUFFER], pos_max[BUFFER], cString(text), cString(text_end), text_size_if_known, align[BUFFER], clip_rect);
+//    imgui.igRenderTextClippedEx(draw_list, pos_min.buffer, pos_max.buffer, cString(text), cString(text_end), text_size_if_known, align.buffer, clip_rect);
 // }
 // export function renderTextEllipsis(draw_list: ImDrawList, pos_min: ImVec2, pos_max: ImVec2, clip_max_x: number, ellipsis_max_x: number, text: StringSource, text_end: StringSource, text_size_if_known: ImVec2): void {
-//    imgui.igRenderTextEllipsis(draw_list, pos_min[BUFFER], pos_max[BUFFER], clip_max_x, ellipsis_max_x, cString(text), cString(text_end), text_size_if_known);
+//    imgui.igRenderTextEllipsis(draw_list, pos_min.buffer, pos_max.buffer, clip_max_x, ellipsis_max_x, cString(text), cString(text_end), text_size_if_known);
 // }
 // export function renderFrame(min: ImVec2, max: ImVec2, fill_col: ImU32, border: boolean, rounding: number): void {
-//    imgui.igRenderFrame(min[BUFFER], max[BUFFER], fill_col, border, rounding);
+//    imgui.igRenderFrame(min.buffer, max.buffer, fill_col, border, rounding);
 // }
 // export function renderFrameBorder(min: ImVec2, max: ImVec2, rounding: number): void {
-//    imgui.igRenderFrameBorder(min[BUFFER], max[BUFFER], rounding);
+//    imgui.igRenderFrameBorder(min.buffer, max.buffer, rounding);
 // }
 // export function renderColorRectWithAlphaCheckerboard(draw_list: ImDrawList, min: ImVec2, max: ImVec2, fill_col: ImU32, grid_step: number, grid_off: ImVec2, rounding: number, flags: ImDrawFlags): void {
-//    imgui.igRenderColorRectWithAlphaCheckerboard(draw_list, min[BUFFER], max[BUFFER], fill_col, grid_step, grid_off[BUFFER], rounding, flags);
+//    imgui.igRenderColorRectWithAlphaCheckerboard(draw_list, min.buffer, max.buffer, fill_col, grid_step, grid_off.buffer, rounding, flags);
 // }
 // export function renderNavHighlight(bb: ImRect, id: ImGuiID, flags: ImGuiNavHighlightFlags): void {
 //    imgui.igRenderNavHighlight(bb, id, flags);
@@ -3587,22 +3587,22 @@
 //   return imgui.igFindRenderedTextEnd(cString(text), cString(text_end));
 // }
 // export function renderMouseCursor(pos: ImVec2, scale: number, mouse_cursor: ImGuiMouseCursor, col_fill: ImU32, col_border: ImU32, col_shadow: ImU32): void {
-//    imgui.igRenderMouseCursor(pos[BUFFER], scale, mouse_cursor, col_fill, col_border, col_shadow);
+//    imgui.igRenderMouseCursor(pos.buffer, scale, mouse_cursor, col_fill, col_border, col_shadow);
 // }
 // export function renderArrow(draw_list: ImDrawList, pos: ImVec2, col: ImU32, dir: ImGuiDir, scale: number): void {
-//    imgui.igRenderArrow(draw_list, pos[BUFFER], col, dir, scale);
+//    imgui.igRenderArrow(draw_list, pos.buffer, col, dir, scale);
 // }
 // export function renderBullet(draw_list: ImDrawList, pos: ImVec2, col: ImU32): void {
-//    imgui.igRenderBullet(draw_list, pos[BUFFER], col);
+//    imgui.igRenderBullet(draw_list, pos.buffer, col);
 // }
 // export function renderCheckMark(draw_list: ImDrawList, pos: ImVec2, col: ImU32, sz: number): void {
-//    imgui.igRenderCheckMark(draw_list, pos[BUFFER], col, sz);
+//    imgui.igRenderCheckMark(draw_list, pos.buffer, col, sz);
 // }
 // export function renderArrowPointingAt(draw_list: ImDrawList, pos: ImVec2, half_sz: ImVec2, direction: ImGuiDir, col: ImU32): void {
-//    imgui.igRenderArrowPointingAt(draw_list, pos[BUFFER], half_sz[BUFFER], direction, col);
+//    imgui.igRenderArrowPointingAt(draw_list, pos.buffer, half_sz.buffer, direction, col);
 // }
 // export function renderArrowDockMenu(draw_list: ImDrawList, min: ImVec2, sz: number, col: ImU32): void {
-//    imgui.igRenderArrowDockMenu(draw_list, min[BUFFER], sz, col);
+//    imgui.igRenderArrowDockMenu(draw_list, min.buffer, sz, col);
 // }
 // export function renderRectFilledRangeH(draw_list: ImDrawList, rect: ImRect, col: ImU32, x_start_norm: number, x_end_norm: number, rounding: number): void {
 //    imgui.igRenderRectFilledRangeH(draw_list, rect, col, x_start_norm, x_end_norm, rounding);
@@ -3617,13 +3617,13 @@
 //    imgui.igTextEx(cString(text), cString(text_end), flags);
 // }
 // export function buttonEx(label: StringSource, size_arg: ImVec2, flags: ImGuiButtonFlags): boolean {
-//   return imgui.igButtonEx(cString(label), size_arg[BUFFER], flags);
+//   return imgui.igButtonEx(cString(label), size_arg.buffer, flags);
 // }
 // export function arrowButtonEx(str_id: StringSource, dir: ImGuiDir, size_arg: ImVec2, flags: ImGuiButtonFlags): boolean {
-//   return imgui.igArrowButtonEx(cString(str_id), dir, size_arg[BUFFER], flags);
+//   return imgui.igArrowButtonEx(cString(str_id), dir, size_arg.buffer, flags);
 // }
 // export function imageButtonEx(id: ImGuiID, texture_id: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, bg_col: ImVec4, tint_col: ImVec4): boolean {
-//   return imgui.igImageButtonEx(id, texture_id, size[BUFFER], uv0[BUFFER], uv1[BUFFER], bg_col[BUFFER], tint_col[BUFFER]);
+//   return imgui.igImageButtonEx(id, texture_id, size.buffer, uv0.buffer, uv1.buffer, bg_col.buffer, tint_col.buffer);
 // }
 // export function separatorEx(flags: ImGuiSeparatorFlags): void {
 //    imgui.igSeparatorEx(flags);
@@ -3635,10 +3635,10 @@
 //   return imgui.igCheckboxFlags_U64Ptr(cString(label), flags, flags_value);
 // }
 // export function closeButton(id: ImGuiID, pos: ImVec2): boolean {
-//   return imgui.igCloseButton(id, pos[BUFFER]);
+//   return imgui.igCloseButton(id, pos.buffer);
 // }
 // export function collapseButton(id: ImGuiID, pos: ImVec2, dock_node: ImGuiDockNode): boolean {
-//   return imgui.igCollapseButton(id, pos[BUFFER], dock_node);
+//   return imgui.igCollapseButton(id, pos.buffer, dock_node);
 // }
 // export function scrollbar(axis: ImGuiAxis): void {
 //    imgui.igScrollbar(axis);
@@ -3701,7 +3701,7 @@
 //   return imgui.igDataTypeClamp(data_type, data, min, max);
 // }
 // export function inputTextEx(label: StringSource, hint: StringSource, buf: StringSource, buf_size: number, size_arg: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: BufferSource): boolean {
-//   return imgui.igInputTextEx(cString(label), cString(hint), cString(buf), buf_size, size_arg[BUFFER], flags, callback.pointer, user_data);
+//   return imgui.igInputTextEx(cString(label), cString(hint), cString(buf), buf_size, size_arg.buffer, flags, callback.pointer, user_data);
 // }
 // export function tempInputText(bb: ImRect, id: ImGuiID, label: StringSource, buf: StringSource, buf_size: number, flags: ImGuiInputTextFlags): boolean {
 //   return imgui.igTempInputText(bb, id, cString(label), cString(buf), buf_size, flags);
@@ -3725,13 +3725,13 @@
 //    imgui.igColorPickerOptionsPopup(ref_col, flags);
 // }
 // export function plotEx(plot_type: ImGuiPlotType, label: StringSource, data: Deno.UnsafeCallback, idx): number, data: BufferSource, values_count: number, values_offset: number, overlay_text: StringSource, scale_min: number, scale_max: number, frame_size: ImVec2): number {
-//   return imgui.igPlotEx(plot_type, cString(label), data, idx), data, values_count, values_offset, cString(overlay_text), scale_min, scale_max, frame_size[BUFFER]);
+//   return imgui.igPlotEx(plot_type, cString(label), data, idx), data, values_count, values_offset, cString(overlay_text), scale_min, scale_max, frame_size.buffer);
 // }
 // export function shadeVertsLinearColorGradientKeepAlpha(draw_list: ImDrawList, vert_start_idx: number, vert_end_idx: number, gradient_p0: ImVec2, gradient_p1: ImVec2, col0: ImU32, col1: ImU32): void {
-//    imgui.igShadeVertsLinearColorGradientKeepAlpha(draw_list, vert_start_idx, vert_end_idx, gradient_p0[BUFFER], gradient_p1[BUFFER], col0, col1);
+//    imgui.igShadeVertsLinearColorGradientKeepAlpha(draw_list, vert_start_idx, vert_end_idx, gradient_p0.buffer, gradient_p1.buffer, col0, col1);
 // }
 // export function shadeVertsLinearUV(draw_list: ImDrawList, vert_start_idx: number, vert_end_idx: number, a: ImVec2, b: ImVec2, uv_a: ImVec2, uv_b: ImVec2, clamp: boolean): void {
-//    imgui.igShadeVertsLinearUV(draw_list, vert_start_idx, vert_end_idx, a[BUFFER], b[BUFFER], uv_a[BUFFER], uv_b[BUFFER], clamp);
+//    imgui.igShadeVertsLinearUV(draw_list, vert_start_idx, vert_end_idx, a.buffer, b.buffer, uv_a.buffer, uv_b.buffer, clamp);
 // }
 // export function gcCompactTransientMiscBuffers(): void {
 //    imgui.igGcCompactTransientMiscBuffers();

@@ -8,6 +8,18 @@
   "fmt": {
     "options": {
       "lineWidth": 120
+    },
+    "files": {
+      "exclude": [
+        "imgui"
+      ]
+    }
+  },
+  "lint": {
+    "files": {
+      "exclude": [
+        "imgui"
+      ]
     }
   }
 }

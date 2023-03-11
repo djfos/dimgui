@@ -4,24 +4,14 @@ import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
 import dimguiStyleSymbols from "../symbol/dimgui_style.ts";
 import dimguiInputTextCallbackDataSymbols from "../symbol/dimgui_input_text_callback_data.ts";
+import dimguiIOSymbols from "../symbol/dimgui_io.ts";
+import dimguiFontAtlasSymbols from "../symbol/dimgui_font_atlas.ts";
 import { DIMGUI_VERSION } from "../script/version.ts";
 
 const dImGuiCustomFunctions = {
   LogImDrawData: {
     parameters: ["pointer"],
     result: "void",
-  },
-  DImGuiIOGetConfigFlags: {
-    parameters: ["pointer"],
-    result: "i32",
-  },
-  DImGuiIOSetConfigFlags: {
-    parameters: ["pointer", "i32"],
-    result: "void",
-  },
-  DImGuiIOGetFonts: {
-    parameters: ["pointer"],
-    result: "pointer",
   },
   dimguiSetErrorCallback: {
     parameters: ["function"],
@@ -57,6 +47,8 @@ async function loadLibrary() {
       ...dImGuiCustomFunctions,
       ...dimguiStyleSymbols,
       ...dimguiInputTextCallbackDataSymbols,
+      ...dimguiIOSymbols,
+      ...dimguiFontAtlasSymbols,
     } as const,
   );
 }
@@ -76,5 +68,8 @@ export function cString(str?: StringSource) {
 }
 
 export function jsString(cstring: Deno.PointerValue): string {
+  if (cstring == null) {
+    return "";
+  }
   return new Deno.UnsafePointerView(cstring).getCString();
 }

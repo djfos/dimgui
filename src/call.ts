@@ -15,16 +15,13 @@ import {
   type ImGuiFocusedFlags,
   type ImGuiHoveredFlags,
   type ImGuiID,
-  type ImGuiInputTextCallback,
   type ImGuiInputTextFlags,
-  ImGuiIO,
   ImGuiListClipper,
   type ImGuiPayload,
   type ImGuiPopupFlags,
   type ImGuiSelectableFlags,
   type ImGuiSliderFlags,
   type ImGuiStorage,
-  ImGuiStyle,
   type ImGuiTabBarFlags,
   type ImGuiTabItemFlags,
   type ImGuiTableColumnFlags,
@@ -43,17 +40,18 @@ import {
 import {
   ImGuiCol,
   ImGuiCond,
-  ImGuiDataType,
   ImGuiDir,
   ImGuiKey,
   ImGuiMouseButton,
   ImGuiMouseCursor,
-  ImGuiPayloadType,
   ImGuiStyleVar,
   ImGuiTableBgTarget,
 } from "./enum.ts";
 import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 import { ImGuiInputTextCallbackData } from "./imgui_input_text_callback_data.ts";
+import { ImGuiIO } from "./imgui_io.ts";
+import { ImGuiStyle } from "./imgui_style.ts";
+import { ImGuiInputTextCallback } from "./callback.ts";
 
 // not register error callback by defualt.
 // there are some bug in imgui and only a few error could be reported by this.

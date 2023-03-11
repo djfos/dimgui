@@ -405,7 +405,7 @@ function transformParamter(type: string, name: string): Paramter {
       return {
         name: cleanName,
         type: type,
-        asArgument: `${cleanName}[BUFFER]`,
+        asArgument: `${cleanName}.buffer`,
       };
     }
     default: {
@@ -435,12 +435,10 @@ function makeDraft(
     parameterInofs.push(tranformedParameter);
   }
 
-  const outerParamters = parameterInofs.map((info) =>
-    `${info.name}${info.optional ? "?" : ""}: ${info.type}`
-  ).join(", ");
-  const innerArguments = parameterInofs.map((info) =>
-    info.asArgument ?? info.name
-  ).join(", ");
+  const outerParamters = parameterInofs.map((info) => `${info.name}${info.optional ? "?" : ""}: ${info.type}`).join(
+    ", ",
+  );
+  const innerArguments = parameterInofs.map((info) => info.asArgument ?? info.name).join(", ");
   const returnText = resultJSType == "void" ? "" : "return";
   const outerFunctionName = lowerCaseFirstLetter(
     functionName.replace("ig", ""),
@@ -490,8 +488,8 @@ function makeStructMembersDraft(filePath: string, structName: string) {
     if (line.match(/^\s*$/)) {
       return false;
     }
-    return true
-  });
+    return true;
+  }).map((l) => l.replaceAll("const", "").trim());
   interface DeclareInfo {
     name: string;
     type: string;
@@ -509,10 +507,10 @@ function makeStructMembersDraft(filePath: string, structName: string) {
   }
 
   function getterName(info: DeclareInfo) {
-    return "DImGuiGet" + info.name;
+    return "D" + structName + "Get" + info.name;
   }
   function setterName(info: DeclareInfo) {
-    return "DImGuiSet" + info.name;
+    return "D" + structName + "Set" + info.name;
   }
   function makeFunctions(info: DeclareInfo): string[] {
     const ffiType = typeToFFI(info.type);
@@ -562,7 +560,20 @@ function makeStructMembersDraft(filePath: string, structName: string) {
       // setter
       lines_.push(
         `set ${info.name}(value: ${jsType}) {`,
-        `  imgui.${setterName(info)}(this.#self, value[BUFFER]);`,
+        `  imgui.${setterName(info)}(this.#self, value.buffer);`,
+        `}`,
+      );
+    } else if (jsType == "string") {
+      // getter
+      lines_.push(
+        `get ${info.name}(): ${jsType} {`,
+        `  return jsString(imgui.${getterName(info)}(this.#self));`,
+        `}`,
+      );
+      // setter
+      lines_.push(
+        `set ${info.name}(value: ${jsType}) {`,
+        `  imgui.${setterName(info)}(this.#self, cString(value));`,
         `}`,
       );
     } else {
@@ -624,6 +635,8 @@ function gen() {
     "./draft/input_text_callback_data.txt",
     "ImGuiInputTextCallbackData",
   );
+  makeStructMembersDraft("./draft/io.txt", "ImGuiIO");
+  makeStructMembersDraft("./draft/font_atlas.txt", "ImFontAtlas");
 }
 
 gen();

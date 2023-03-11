@@ -1,5 +1,5 @@
 import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
-import { cString, ffi as imgui } from "./ffi.ts";
+import { ffi as imgui } from "./ffi.ts";
 
 export const BUFFER = Symbol("vkStructBuffer");
 export const DATAVIEW = Symbol("vkStructDataView");
@@ -228,68 +228,6 @@ export type ImDrawVert = Deno.PointerValue;
  */
 export type ImFont = Deno.PointerValue;
 /**
- * Runtime data for multiple fonts, bake multiple
- * fonts into a single texture, TTF/OTF font loader
- */
-export class ImFontAtlas {
-  #self: Deno.PointerValue;
-
-  constructor(imGuiIOPointer: Deno.PointerValue) {
-    this.#self = imGuiIOPointer;
-  }
-
-  addFontFromMemoryTTF(
-    font_data: BufferSource,
-    size_pixels: number,
-    font_cfg?: ImFontConfig,
-    glyph_ranges?: string,
-  ): ImFont {
-    return imgui.ImFontAtlas_AddFontFromMemoryTTF(
-      this.#self,
-      font_data,
-      font_data.byteLength,
-      size_pixels,
-      font_cfg ?? null,
-      cString(glyph_ranges),
-    );
-  }
-
-  //-------------------------------------------
-  // Glyph Ranges
-  //-------------------------------------------
-
-  // Helpers to retrieve list of common Unicode ranges (2 value per range, values are inclusive, zero-terminated list)
-  // NB: Make sure that your string are UTF-8 and NOT in your local code page. In C++11, you can create UTF-8 string literal using the u8"Hello world" syntax. See FAQ for details.
-  // NB: Consider using ImFontGlyphRangesBuilder to build glyph ranges from textual data.
-  GetGlyphRangesDefault(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesDefault(this.#self);
-  }
-  GetGlyphRangesGreek(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesGreek(this.#self);
-  }
-  GetGlyphRangesKorean(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesKorean(this.#self);
-  }
-  GetGlyphRangesJapanese(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesJapanese(this.#self);
-  }
-  GetGlyphRangesChineseFull(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesChineseFull(this.#self);
-  }
-  GetGlyphRangesChineseSimplifiedCommon(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(this.#self);
-  }
-  GetGlyphRangesCyrillic(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesCyrillic(this.#self);
-  }
-  GetGlyphRangesThai(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesThai(this.#self);
-  }
-  GetGlyphRangesVietnamese(): Deno.PointerValue {
-    return imgui.ImFontAtlas_GetGlyphRangesVietnamese(this.#self);
-  }
-}
-/**
  * Opaque interface to a font builder (stb_truetype or FreeType).
  */
 export type ImFontBuilderIO = Deno.PointerValue;
@@ -317,29 +255,29 @@ export type ImGuiContext = Deno.PointerValue;
 /**
  * Main configuration and I/O between your application and ImGui
  */
-export class ImGuiIO {
-  #self: Deno.PointerValue;
+// export class ImGuiIO {
+//   #self: Deno.PointerValue;
 
-  constructor(self: Deno.PointerValue) {
-    this.#self = self;
-  }
+//   constructor(self: Deno.PointerValue) {
+//     this.#self = self;
+//   }
 
-  get ConfigFlags(): number {
-    return imgui.DImGuiIOGetConfigFlags(this.#self);
-  }
-  set ConfigFlags(value: number) {
-    imgui.DImGuiIOSetConfigFlags(this.#self, value);
-  }
+//   get ConfigFlags(): number {
+//     return imgui.DImGuiIOGetConfigFlags(this.#self);
+//   }
+//   set ConfigFlags(value: number) {
+//     imgui.DImGuiIOSetConfigFlags(this.#self, value);
+//   }
 
-  get Fonts(): ImFontAtlas {
-    return new ImFontAtlas(imgui.DImGuiIOGetFonts(this.#self));
-  }
-}
+//   get Fonts(): ImFontAtlas {
+//     return new ImFontAtlas(imgui.DImGuiIOGetFonts(this.#self));
+//   }
+// }
 /**
  * Shared state of InputText() when using
  * custom ImGuiInputTextCallback (rare/advanced use)
  */
-import { ImGuiInputTextCallbackData } from "./imgui_input_text_callback_data.ts";
+// import { ImGuiInputTextCallbackData } from "./imgui_input_text_callback_data.ts";
 /**
  * Storage for ImGuiIO and IsKeyDown(), IsKeyPressed() etc functions.
  */
@@ -440,7 +378,7 @@ export type ImGuiStorage = Deno.PointerValue;
  * Runtime data for styling/colors
  */
 // export type ImGuiStyle = Deno.PointerValue;
-export { ImGuiStyle } from "./imgui_style.ts";
+// export { ImGuiStyle } from "./imgui_style.ts";
 /**
  * Sorting specifications for a table
  * (often handling sort specs for a single column, occasionally more)
@@ -639,25 +577,3 @@ export type ImU64 = Deno.PointerValue;
 export type ImWchar16 = number;
 export type ImWchar32 = number;
 export type ImWchar = number;
-
-// // Callback and functions types
-// typedef int     (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data);    // Callback function for ImGui::InputText()
-// typedef void    (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);              // Callback function for ImGui::SetNextWindowSizeConstraints()
-// typedef void*   (*ImGuiMemAllocFunc)(size_t sz, void* user_data);               // Function signature for ImGui::SetAllocatorFunctions()
-// typedef void    (*ImGuiMemFreeFunc)(void* ptr, void* user_data);                // Function signature for ImGui::SetAllocatorFunctions()
-
-// Callback and functions types
-/**
- * Callback function for ImGui::InputText()
- * return false to discard char
- */
-export type ImGuiInputTextCallback = (
-  data: ImGuiInputTextCallbackData,
-  buf: Uint8Array,
-) => boolean;
-/**
- * Callback function for ImGui::SetNextWindowSizeConstraints()
- */
-export type ImGuiSizeCallback = Deno.UnsafeFnPointer<
-  Deno.ForeignFunction<["buffer"], "void">
->; //

@@ -2,6 +2,9 @@ import { ImGuiDir } from "./enum.ts";
 import { BUFFER, ImVec2 } from "./type.ts";
 import { ffi as imgui } from "./ffi.ts";
 
+/**
+ * Runtime data for styling/colors
+ */
 export class ImGuiStyle {
   #self: Deno.PointerValue;
 

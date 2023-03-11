@@ -1,4 +1,3 @@
-import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 import * as imgui from "../mod.ts";
 import {
   Bool,
@@ -558,90 +557,101 @@ function demoText() {
     imgui.treePop();
   }
 }
-
+const statusImages = {
+  pressed_count: 0,
+};
 function demoImages() {
+  const s = statusImages;
   // IMGUI_DEMO_MARKER("Widgets/Images");
-  // if (imgui.treeNode("Images"))
-  // {
-  //     const io = imgui.getIO();
-  //     imgui.textWrapped(
-  //         "Below we are displaying the font texture (which is the only texture we have access to in this demo). " +
-  //         "Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. " +
-  //         "Hover the texture for a zoomed view!");
+  if (imgui.treeNode("Images")) {
+    const io = imgui.getIO();
+    imgui.textWrapped(
+      "Below we are displaying the font texture (which is the only texture we have access to in this demo). " +
+        "Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. " +
+        "Hover the texture for a zoomed view!",
+    );
 
-  //     // Below we are displaying the font texture because it is the only texture we have access to inside the demo!
-  //     // Remember that ImTextureID is just storage for whatever you want it to be. It is essentially a value that
-  //     // will be passed to the rendering backend via the ImDrawCmd structure.
-  //     // If you use one of the default imgui_impl_XXXX.cpp rendering backend, they all have comments at the top
-  //     // of their respective source file to specify what they expect to be stored in ImTextureID, for example:
-  //     // - The imgui_impl_dx11.cpp renderer expect a 'ID3D11ShaderResourceView*' pointer
-  //     // - The imgui_impl_opengl3.cpp renderer expect a GLuint OpenGL texture identifier, etc.
-  //     // More:
-  //     // - If you decided that ImTextureID = MyEngineTexture*, then you can pass your MyEngineTexture* pointers
-  //     //   to imgui.image(), and gather width/height through your own functions, etc.
-  //     // - You can use ShowMetricsWindow() to inspect the draw data that are being passed to your renderer,
-  //     //   it will help you debug issues if you are confused about it.
-  //     // - Consider using the lower-level ImDrawList::addImage() API, via imgui.getWindowDrawList()->AddImage().
-  //     // - Read https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
-  //     // - Read https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
-  //     ImTextureID my_tex_id = io.Fonts->TexID;
-  //     float my_tex_w = (float)io.Fonts->TexWidth;
-  //     float my_tex_h = (float)io.Fonts->TexHeight;
-  //     {
-  //         imgui.text("%.0fx%.0f", my_tex_w, my_tex_h);
-  //         ImVec2 pos = imgui.getCursorScreenPos();
-  //         ImVec2 uv_min = ImVec2(0.0, 0.0f);                 // Top-left
-  //         ImVec2 uv_max = ImVec2(1.0, 1.0f);                 // Lower-right
-  //         ImVec4 tint_col = ImVec4(1.0, 1.0, 1.0, 1.0f);   // No tint
-  //         ImVec4 border_col = ImVec4(1.0, 1.0, 1.0, 0.5f); // 50% opaque white
-  //         imgui.image(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col);
-  //         if (imgui.isItemHovered())
-  //         {
-  //             imgui.beginTooltip();
-  //             float region_sz = 32.0;
-  //             float region_x = io.MousePos.x - pos.x - region_sz * 0.5;
-  //             float region_y = io.MousePos.y - pos.y - region_sz * 0.5;
-  //             float zoom = 4.0;
-  //             if (region_x < 0.0f) { region_x = 0.0; }
-  //             else if (region_x > my_tex_w - region_sz) { region_x = my_tex_w - region_sz; }
-  //             if (region_y < 0.0f) { region_y = 0.0; }
-  //             else if (region_y > my_tex_h - region_sz) { region_y = my_tex_h - region_sz; }
-  //             imgui.text("Min: (%.2, %.2f)", region_x, region_y);
-  //             imgui.text("Max: (%.2, %.2f)", region_x + region_sz, region_y + region_sz);
-  //             ImVec2 uv0 = ImVec2((region_x) / my_tex_w, (region_y) / my_tex_h);
-  //             ImVec2 uv1 = ImVec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h);
-  //             imgui.image(my_tex_id, ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col);
-  //             imgui.endTooltip();
-  //         }
-  //     }
+    // Below we are displaying the font texture because it is the only texture we have access to inside the demo!
+    // Remember that ImTextureID is just storage for whatever you want it to be. It is essentially a value that
+    // will be passed to the rendering backend via the ImDrawCmd structure.
+    // If you use one of the default imgui_impl_XXXX.cpp rendering backend, they all have comments at the top
+    // of their respective source file to specify what they expect to be stored in ImTextureID, for example:
+    // - The imgui_impl_dx11.cpp renderer expect a 'ID3D11ShaderResourceView*' pointer
+    // - The imgui_impl_opengl3.cpp renderer expect a GLuint OpenGL texture identifier, etc.
+    // More:
+    // - If you decided that ImTextureID = MyEngineTexture*, then you can pass your MyEngineTexture* pointers
+    //   to imgui.image(), and gather width/height through your own functions, etc.
+    // - You can use ShowMetricsWindow() to inspect the draw data that are being passed to your renderer,
+    //   it will help you debug issues if you are confused about it.
+    // - Consider using the lower-level ImDrawList::addImage() API, via imgui.getWindowDrawList()->AddImage().
+    // - Read https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
+    // - Read https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
 
-  //     IMGUI_DEMO_MARKER("Widgets/Images/Textured buttons");
-  //     imgui.textWrapped("And now some textured buttons..");
-  //     static int pressed_count = 0;
-  //     for (let i = 0; i < 8; i++)
-  //     {
-  //         // UV coordinates are often (0.0, 0.0f) and (1.0, 1.0f) to display an entire textures.
-  //         // Here are trying to display only a 32x32 pixels area of the texture, hence the UV computation.
-  //         // Read about UV coordinates here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
-  //         imgui.pushID(i);
-  //         if (i > 0)
-  //             imgui.pushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(i - 1.0, i - 1.0f));
-  //         ImVec2 size = ImVec2(32.0, 32.0f);                         // Size of the image we want to make visible
-  //         ImVec2 uv0 = ImVec2(0.0, 0.0f);                            // UV coordinates for lower-left
-  //         ImVec2 uv1 = ImVec2(32.0 / my_tex_w, 32.0 / my_tex_h);    // UV coordinates for (32,32) in our texture
-  //         ImVec4 bg_col = ImVec4(0.0, 0.0, 0.0, 1.0f);             // Black background
-  //         ImVec4 tint_col = ImVec4(1.0, 1.0, 1.0, 1.0f);           // No tint
-  //         if (imgui.imageButton("", my_tex_id, size, uv0, uv1, bg_col, tint_col))
-  //             pressed_count += 1;
-  //         if (i > 0)
-  //             imgui.popStyleVar();
-  //         imgui.popID();
-  //         imgui.sameLine();
-  //     }
-  //     imgui.newLine();
-  //     imgui.text("Pressed %d times.", pressed_count);
-  //     imgui.treePop();
-  // }
+    // ImTextureID my_tex_id = io.Fonts->TexID;
+    // float my_tex_w = (float)io.Fonts->TexWidth;
+    // float my_tex_h = (float)io.Fonts->TexHeight;
+    const fonts = io.Fonts;
+    const my_tex_id = fonts.TexID;
+    const texData = fonts.getTexDataAsAlpha8();
+    const my_tex_w = texData.texWidth;
+    const my_tex_h = texData.texHeight;
+
+    {
+      imgui.text(`${my_tex_w.toFixed(0)}x${my_tex_h.toFixed(0)}`);
+      const pos = imgui.getCursorScreenPos();
+      const uv_min = new ImVec2(0.0, 0.0); // Top-left
+      const uv_max = new ImVec2(1.0, 1.0); // Lower-right
+      const tint_col = new ImVec4(1.0, 1.0, 1.0, 1.0); // No tint
+      const border_col = new ImVec4(1.0, 1.0, 1.0, 0.5); // 50% opaque white
+      imgui.image(my_tex_id, new ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col);
+      if (imgui.isItemHovered()) {
+        imgui.beginTooltip();
+        const mousePos = imgui.getMousePos();
+        const region_sz = 32.0;
+        let region_x = mousePos.x - pos.x - region_sz * 0.5;
+        let region_y = mousePos.y - pos.y - region_sz * 0.5;
+        const zoom = 4.0;
+        if (region_x < 0.0) region_x = 0.0;
+        else if (region_x > my_tex_w - region_sz) region_x = my_tex_w - region_sz;
+        if (region_y < 0.0) region_y = 0.0;
+        else if (region_y > my_tex_h - region_sz) region_y = my_tex_h - region_sz;
+        imgui.text(`Min: (${region_x}, ${region_y})`);
+        imgui.text(`Max: (${region_x + region_sz}, ${region_y + region_sz})`);
+        const uv0 = new ImVec2((region_x) / my_tex_w, (region_y) / my_tex_h);
+        const uv1 = new ImVec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h);
+        imgui.image(my_tex_id, new ImVec2(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col);
+        imgui.endTooltip();
+      }
+    }
+
+    // IMGUI_DEMO_MARKER("Widgets/Images/Textured buttons");
+    imgui.textWrapped("And now some textured buttons..");
+    for (let i = 0; i < 8; i++) {
+      // UV coordinates are often (0.0, 0.0f) and (1.0, 1.0f) to display an entire textures.
+      // Here are trying to display only a 32x32 pixels area of the texture, hence the UV computation.
+      // Read about UV coordinates here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
+      imgui.pushID(i);
+      if (i > 0) {
+        imgui.pushStyleVar(ImGuiStyleVar.FramePadding, new ImVec2(i - 1.0, i - 1.0));
+      }
+      const size = new ImVec2(32.0, 32.0); // Size of the image we want to make visible
+      const uv0 = new ImVec2(0.0, 0.0); // UV coordinates for lower-left
+      const uv1 = new ImVec2(32.0 / my_tex_w, 32.0 / my_tex_h); // UV coordinates for (32,32) in our texture
+      const bg_col = new ImVec4(0.0, 0.0, 0.0, 1.0); // Black background
+      const tint_col = new ImVec4(1.0, 1.0, 1.0, 1.0); // No tint
+      if (imgui.imageButton("", my_tex_id, size, uv0, uv1, bg_col, tint_col)) {
+        s.pressed_count += 1;
+      }
+      if (i > 0) {
+        imgui.popStyleVar();
+      }
+      imgui.popID();
+      imgui.sameLine();
+    }
+    imgui.newLine();
+    imgui.text(`Pressed ${s.pressed_count} times.`);
+    imgui.treePop();
+  }
 }
 
 const statusCombo = {

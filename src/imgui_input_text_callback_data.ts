@@ -1,8 +1,11 @@
 import { ImGuiKey } from "./enum.ts";
 import { ImGuiInputTextFlags, ImWchar } from "./type.ts";
 import { cString, ffi as imgui, StringSource } from "./ffi.ts";
-import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 
+/**
+ * Shared state of InputText() when using
+ * custom ImGuiInputTextCallback (rare/advanced use)
+ */
 export class ImGuiInputTextCallbackData {
   #self: Deno.PointerValue;
 

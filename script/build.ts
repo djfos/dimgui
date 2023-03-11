@@ -1,9 +1,5 @@
 import { join } from "https://deno.land/std@0.177.0/path/mod.ts";
-import {
-  getBinFileName,
-  getOutFileName,
-  getTemptLibraryPath,
-} from "./convention.ts";
+import { getBinFileName, getOutFileName, getTemptLibraryPath } from "./convention.ts";
 import { DIMGUI_VERSION } from "./version.ts";
 
 function print(message: string) {

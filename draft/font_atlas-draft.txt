@@ -1,0 +1,130 @@
+
+
+
+
+DIMGUI_EXPORT ImFontAtlasFlags DImFontAtlasGetFlags (ImFontAtlas* s){ return s->Flags;}
+DIMGUI_EXPORT ImTextureID DImFontAtlasGetTexID (ImFontAtlas* s){ return s->TexID;}
+DIMGUI_EXPORT int DImFontAtlasGetTexDesiredWidth (ImFontAtlas* s){ return s->TexDesiredWidth;}
+DIMGUI_EXPORT int DImFontAtlasGetTexGlyphPadding (ImFontAtlas* s){ return s->TexGlyphPadding;}
+DIMGUI_EXPORT bool DImFontAtlasGetLocked (ImFontAtlas* s){ return s->Locked;}
+DIMGUI_EXPORT void* DImFontAtlasGetUserData (ImFontAtlas* s){ return s->UserData;}
+
+
+
+
+DIMGUI_EXPORT void DImFontAtlasSetFlags (ImFontAtlas* s, ImFontAtlasFlags value){ s->Flags=value;}
+DIMGUI_EXPORT void DImFontAtlasSetTexID (ImFontAtlas* s, ImTextureID value){ s->TexID=value;}
+DIMGUI_EXPORT void DImFontAtlasSetTexDesiredWidth (ImFontAtlas* s, int value){ s->TexDesiredWidth=value;}
+DIMGUI_EXPORT void DImFontAtlasSetTexGlyphPadding (ImFontAtlas* s, int value){ s->TexGlyphPadding=value;}
+DIMGUI_EXPORT void DImFontAtlasSetLocked (ImFontAtlas* s, bool value){ s->Locked=value;}
+DIMGUI_EXPORT void DImFontAtlasSetUserData (ImFontAtlas* s, void* value){ s->UserData=value;}
+
+
+
+
+DImFontAtlasGetFlags:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasSetFlags:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasGetTexID:{
+    parameters: ["pointer"],
+    result: "pointer",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasSetTexID:{
+    parameters: ["pointer","pointer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasGetTexDesiredWidth:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasSetTexDesiredWidth:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasGetTexGlyphPadding:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasSetTexGlyphPadding:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasGetLocked:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasSetLocked:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasGetUserData:{
+    parameters: ["pointer"],
+    result: "buffer",
+} as const satisfies Deno.ForeignFunction,
+DImFontAtlasSetUserData:{
+    parameters: ["pointer","buffer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+
+
+
+
+/*
+ *  Build flags (see ImFontAtlasFlags_)
+*/
+get Flags(): ImFontAtlasFlags {
+  return imgui.DImFontAtlasGetFlags(this.#self);
+}
+set Flags(value: ImFontAtlasFlags) {
+  imgui.DImFontAtlasSetFlags(this.#self, value);
+}
+/*
+ *  User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the ImDrawCmd structure.
+*/
+get TexID(): ImTextureID {
+  return imgui.DImFontAtlasGetTexID(this.#self);
+}
+set TexID(value: ImTextureID) {
+  imgui.DImFontAtlasSetTexID(this.#self, value);
+}
+/*
+ *  Texture width desired by user before Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.
+*/
+get TexDesiredWidth(): number {
+  return imgui.DImFontAtlasGetTexDesiredWidth(this.#self);
+}
+set TexDesiredWidth(value: number) {
+  imgui.DImFontAtlasSetTexDesiredWidth(this.#self, value);
+}
+/*
+ *  Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = false).
+*/
+get TexGlyphPadding(): number {
+  return imgui.DImFontAtlasGetTexGlyphPadding(this.#self);
+}
+set TexGlyphPadding(value: number) {
+  imgui.DImFontAtlasSetTexGlyphPadding(this.#self, value);
+}
+/*
+ *  Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.
+*/
+get Locked(): boolean {
+  return imgui.DImFontAtlasGetLocked(this.#self);
+}
+set Locked(value: boolean) {
+  imgui.DImFontAtlasSetLocked(this.#self, value);
+}
+/*
+ *  Store your own atlas related user-data (if e.g. you have multiple font atlas).
+*/
+get UserData(): BufferSource {
+  return imgui.DImFontAtlasGetUserData(this.#self);
+}
+set UserData(value: BufferSource) {
+  imgui.DImFontAtlasSetUserData(this.#self, value);
+}
