@@ -1,14 +1,3 @@
-# dimgui
-
-> Port Dear ImGui to Deno.
-
-# Status
-
-> For now, only build on windows with opengl backend.
-
-# Usage
-
-```typescript
 import {
   createWindow,
   getPrimaryMonitor,
@@ -18,11 +7,7 @@ import {
 } from "https://deno.land/x/dwm@0.3.2/mod.ts";
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "https://deno.land/x/dimgui@v0.2.0/mod.ts";
-import { 
-  Bool, 
-  ImGuiConfigFlagBits,
-  showWidgetDemoWindow,
-} from "https://deno.land/x/dimgui@v0.2.0/mod.ts";
+import { Bool, ImGuiConfigFlagBits, showWidgetDemoWindow } from "https://deno.land/x/dimgui@v0.2.0/mod.ts";
 
 function queryWindowSizeAndFontSize() {
   const aspectRatio = 16 / 9;
@@ -111,17 +96,3 @@ await mainloop(() => {
 imgui.implOpenGL3Shutdown();
 imgui.implGlfwShutdown();
 imgui.destroyContext(imguiContext);
-```
-
-# Contribute
-
-```bash
-# build the shared library
-deno task build
-# generate cimgui ffi symbols and many draft to copy
-deno task gen 
-# test for window created by dwm
-deno task test-dwm
-# test for window created by embeded glfw
-deno task test-self
-```
