@@ -147,6 +147,9 @@ export class Utf8Array {
     }
   }
 
+  /**
+   * create a empty buffer
+   */
   static empty(capacity: number) {
     const ret = new Utf8Array(capacity);
     return ret;
@@ -481,17 +484,11 @@ export class ImVec2 {
   constructor(x: number, y: number);
   constructor(x: ImVec2);
   constructor(x: BufferSource);
-  constructor(x?: number | ImVec2 | BufferSource, y?: number) {
-    if (x === undefined) { // zeros
-      this.#data = new Float32Array(2);
+  constructor(x: number | ImVec2 | BufferSource = 0, y: number = 0) {
+    if (typeof x == "number") { // assign
+      this.#data = Float32Array.of(x, y);
     } else if (x instanceof ImVec2) { // clone
-      this.#data = new Float32Array(2);
-      this.#data = x.#data.slice(0);
-    } else if (typeof x == "number") { // assign
-      assert(y !== undefined && typeof y == "number");
-      this.#data = new Float32Array(2);
-      this.x = x;
-      this.y = y;
+      this.#data = Float32Array.of(x.x, x.y);
     } else if (x instanceof ArrayBuffer) { // view
       this.#data = new Float32Array(x, 0, 2);
     } else { // view of TypedArray
@@ -531,18 +528,15 @@ export class ImVec4 {
   constructor();
   constructor(x: number, y: number, z: number, w: number);
   constructor(v: ImVec4);
-  constructor(x?: number | ImVec4, y?: number, z?: number, w?: number) {
-    this.#data = new Float32Array(4);
-    if (x instanceof ImVec4) {
-      this.#data = x.#data.slice(0);
-    } else if (
-      typeof x == "number" && typeof y == "number" && typeof z == "number" &&
-      typeof w == "number"
-    ) {
-      this.x = x;
-      this.y = y;
-      this.z = z;
-      this.w = w;
+  constructor(x: number | ImVec4 | BufferSource = 0, y: number = 0, z: number = 0, w: number = 0) {
+    if (typeof x == "number") { // assign
+      this.#data = Float32Array.of(x, y, z, w);
+    } else if (x instanceof ImVec4) { // clone
+      this.#data = Float32Array.of(x.x, x.y, x.z, x.w);
+    } else if (x instanceof ArrayBuffer) { // view
+      this.#data = new Float32Array(x, 0, 4);
+    } else { // view of TypedArray
+      this.#data = new Float32Array(x.buffer, x.byteOffset, 4);
     }
   }
 
@@ -576,10 +570,14 @@ export class ImVec4 {
   }
 
   pointer(index: number): Float32Array {
-    return new Float32Array(
-      this.#data.buffer,
-      index * this.#data.BYTES_PER_ELEMENT,
-    );
+    return this.#data.subarray(index, index + 1);
+  }
+
+  static fromHSV(h: number, s: number, v: number, a = 1) {
+    const vec4 = new ImVec4();
+    imgui.igColorConvertHSVtoRGB(h, s, v, vec4.pointer(0), vec4.pointer(1), vec4.pointer(2));
+    vec4.w = a;
+    return vec4;
   }
 }
 

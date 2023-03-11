@@ -2,7 +2,6 @@
 import { cString, ffi as imgui, jsString, StringSource } from "./ffi.ts";
 import {
   Bool,
-  BUFFER,
   type ImDrawData,
   type ImDrawList,
   type ImDrawListSharedData,
@@ -49,13 +48,12 @@ import {
   ImGuiKey,
   ImGuiMouseButton,
   ImGuiMouseCursor,
+  ImGuiPayloadType,
   ImGuiStyleVar,
   ImGuiTableBgTarget,
 } from "./enum.ts";
 import { assert } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 import { ImGuiInputTextCallbackData } from "./imgui_input_text_callback_data.ts";
-
-const Zero2 = new ImVec2(0, 0);
 
 // not register error callback by defualt.
 // there are some bug in imgui and only a few error could be reported by this.
@@ -187,35 +185,35 @@ export function getDrawData(): ImDrawData {
  * call this to learn about the library! try to make it always
  * available in your application!
  */
-export function showDemoWindow(open?: Uint8Array): void {
-  imgui.igShowDemoWindow(open ?? null);
+export function showDemoWindow(open: Uint8Array | null = null): void {
+  imgui.igShowDemoWindow(open);
 }
 /**
  * create Metrics/Debugger window. display Dear ImGui internals: windows,
  * draw commands, various internal state, etc.
  */
-export function showMetricsWindow(open?: Uint8Array): void {
-  imgui.igShowMetricsWindow(open ?? null);
+export function showMetricsWindow(open: Uint8Array | null = null): void {
+  imgui.igShowMetricsWindow(open);
 }
 /**
  * create Debug Log window. display a simplified log of important dear imgui events.
  */
-export function showDebugLogWindow(open?: Uint8Array): void {
-  imgui.igShowDebugLogWindow(open ?? null);
+export function showDebugLogWindow(open: Uint8Array | null = null): void {
+  imgui.igShowDebugLogWindow(open);
 }
 /**
  * create Stack Tool window. hover items with mouse to query information
  * about the source of their unique ID.
  */
-export function showStackToolWindow(open?: Uint8Array): void {
-  imgui.igShowStackToolWindow(open ?? null);
+export function showStackToolWindow(open: Uint8Array | null = null): void {
+  imgui.igShowStackToolWindow(open);
 }
 /**
  * create About window. display Dear ImGui version,
  * credits and build/system information.
  */
-export function showAboutWindow(open?: Uint8Array): void {
-  imgui.igShowAboutWindow(open ?? null);
+export function showAboutWindow(open: Uint8Array | null = null): void {
+  imgui.igShowAboutWindow(open);
 }
 /**
  * add style editor block (not a window). you can pass in a reference
@@ -293,12 +291,8 @@ export function styleColorsClassic(dst: ImGuiStyle): void {
 //   IMGUI_API bool          Begin(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);
 //   IMGUI_API void          End();
 
-export function begin(
-  name: StringSource,
-  open?: Uint8Array,
-  flags: ImGuiWindowFlags = 0,
-): boolean {
-  return imgui.igBegin(cString(name), open ?? null, flags);
+export function begin(name: StringSource, open: Uint8Array | null = null, flags: ImGuiWindowFlags = 0): boolean {
+  return imgui.igBegin(cString(name), open, flags);
 }
 export function end(): void {
   imgui.igEnd();
@@ -315,17 +309,16 @@ export function end(): void {
 //   IMGUI_API bool          BeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0);
 //   IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0);
 //   IMGUI_API void          EndChild();
-
 export function beginChild(
   id: StringSource | ImGuiID,
-  size: ImVec2 = Zero2,
-  border: boolean = false,
+  size = new ImVec2(),
+  border = false,
   flags: ImGuiWindowFlags = 0,
 ): boolean {
   if (typeof id == "number") {
-    return imgui.igBeginChild_ID(id, size[BUFFER], border, flags);
+    return imgui.igBeginChild_ID(id, size.buffer, border, flags);
   } else {
-    return imgui.igBeginChild_Str(cString(id), size[BUFFER], border, flags);
+    return imgui.igBeginChild_Str(cString(id), size.buffer, border, flags);
   }
 }
 
@@ -388,7 +381,7 @@ export function getWindowDpiScale(): number {
  */
 export function getWindowPos(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetWindowPos(vec2[BUFFER]);
+  imgui.igGetWindowPos(vec2.buffer);
   return vec2;
 }
 /**
@@ -396,7 +389,7 @@ export function getWindowPos(): ImVec2 {
  */
 export function getWindowSize(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetWindowSize(vec2[BUFFER]);
+  imgui.igGetWindowSize(vec2.buffer);
   return vec2;
 }
 /**
@@ -443,12 +436,8 @@ export function getWindowViewport(): ImGuiViewport {
  * set next window position. call before Begin().
  * use pivot=(0.5f,0.5f) to center on given point, etc.
  */
-export function setNextWindowPos(
-  pos: ImVec2,
-  cond: ImGuiCond = 0,
-  pivot: ImVec2 = Zero2,
-): void {
-  imgui.igSetNextWindowPos(pos[BUFFER], cond, pivot[BUFFER]);
+export function setNextWindowPos(pos: ImVec2, cond: ImGuiCond = 0, pivot = new ImVec2()): void {
+  imgui.igSetNextWindowPos(pos.buffer, cond, pivot.buffer);
 }
 
 /**
@@ -456,7 +445,7 @@ export function setNextWindowPos(
  * call before Begin()
  */
 export function setNextWindowSize(size: ImVec2, cond: ImGuiCond = 0): void {
-  imgui.igSetNextWindowSize(size[BUFFER], cond);
+  imgui.igSetNextWindowSize(size.buffer, cond);
 }
 /**
  * set next window size limits.
@@ -471,8 +460,8 @@ export function setNextWindowSize(size: ImVec2, cond: ImGuiCond = 0): void {
 //   custom_callback_data: Deno.PointerValue, // do we need this?
 // ): void {
 //   imgui.igSetNextWindowSizeConstraints(
-//     size_min[BUFFER],
-//     size_max[BUFFER],
+//     size_min.buffer,
+//     size_max.buffer,
 //     custom_callback,
 //     custom_callback_data,
 //   );
@@ -485,15 +474,12 @@ export function setNextWindowSize(size: ImVec2, cond: ImGuiCond = 0): void {
  * set an axis to 0.0f to leave it automatic. call before Begin()
  */
 export function setNextWindowContentSize(size: ImVec2): void {
-  imgui.igSetNextWindowContentSize(size[BUFFER]);
+  imgui.igSetNextWindowContentSize(size.buffer);
 }
 /**
  * set next window collapsed state. call before Begin()
  */
-export function setNextWindowCollapsed(
-  collapsed: boolean,
-  cond: ImGuiCond = 0,
-): void {
+export function setNextWindowCollapsed(collapsed: boolean, cond: ImGuiCond = 0): void {
   imgui.igSetNextWindowCollapsed(collapsed, cond);
 }
 /**
@@ -506,7 +492,7 @@ export function setNextWindowFocus(): void {
  * set next window scrolling value (use < 0.0f to not affect a given axis).
  */
 export function setNextWindowScroll(scroll: ImVec2): void {
-  imgui.igSetNextWindowScroll(scroll[BUFFER]);
+  imgui.igSetNextWindowScroll(scroll.buffer);
 }
 
 /**
@@ -526,33 +512,21 @@ export function setNextWindowViewport(viewport_id: ImGuiID): void {
 /**
  * set named window position.
  */
-export function setWindowPos(
-  name: StringSource,
-  pos: ImVec2,
-  cond: ImGuiCond = 0,
-): void {
-  imgui.igSetWindowPos_Str(cString(name), pos[BUFFER], cond);
+export function setWindowPos(name: StringSource, pos: ImVec2, cond: ImGuiCond = 0): void {
+  imgui.igSetWindowPos_Str(cString(name), pos.buffer, cond);
 }
 
 /**
  * set named window size. set axis to 0.0f to force an auto-fit on this axis.
  */
-export function setWindowSize(
-  name: StringSource,
-  size: ImVec2,
-  cond: ImGuiCond = 0,
-): void {
-  imgui.igSetWindowSize_Str(cString(name), size[BUFFER], cond);
+export function setWindowSize(name: StringSource, size: ImVec2, cond: ImGuiCond = 0): void {
+  imgui.igSetWindowSize_Str(cString(name), size.buffer, cond);
 }
 
 /**
  * set named window collapsed state
  */
-export function setWindowCollapsed(
-  name: StringSource,
-  collapsed: boolean,
-  cond: ImGuiCond = 0,
-): void {
+export function setWindowCollapsed(name: StringSource, collapsed: boolean, cond: ImGuiCond = 0): void {
   imgui.igSetWindowCollapsed_Str(cString(name), collapsed, cond);
 }
 
@@ -581,7 +555,7 @@ export function setWindowFocus(name?: StringSource): void {
  */
 export function getContentRegionAvail(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetContentRegionAvail(vec2[BUFFER]);
+  imgui.igGetContentRegionAvail(vec2.buffer);
   return vec2;
 }
 /**
@@ -590,7 +564,7 @@ export function getContentRegionAvail(): ImVec2 {
  */
 export function getContentRegionMax(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetContentRegionMax(vec2[BUFFER]);
+  imgui.igGetContentRegionMax(vec2.buffer);
   return vec2;
 }
 /**
@@ -598,7 +572,7 @@ export function getContentRegionMax(): ImVec2 {
  */
 export function getWindowContentRegionMin(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetWindowContentRegionMin(vec2[BUFFER]);
+  imgui.igGetWindowContentRegionMin(vec2.buffer);
   return vec2;
 }
 /**
@@ -607,7 +581,7 @@ export function getWindowContentRegionMin(): ImVec2 {
  */
 export function getWindowContentRegionMax(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetWindowContentRegionMax(vec2[BUFFER]);
+  imgui.igGetWindowContentRegionMax(vec2.buffer);
   return vec2;
 }
 
@@ -683,20 +657,14 @@ export function setScrollHereY(center_y_ratio: number = 0.5): void {
  * adjust scrolling amount to make given position visible.
  * Generally GetCursorStartPos() + offset to compute a valid position.
  */
-export function setScrollFromPosX_Float(
-  local_x: number,
-  center_x_ratio: number = 0.5,
-): void {
+export function setScrollFromPosX_Float(local_x: number, center_x_ratio: number = 0.5): void {
   imgui.igSetScrollFromPosX_Float(local_x, center_x_ratio);
 }
 /**
  * adjust scrolling amount to make given position visible.
  * Generally GetCursorStartPos() + offset to compute a valid position.
  */
-export function setScrollFromPosY_Float(
-  local_y: number,
-  center_y_ratio: number = 0.5,
-): void {
+export function setScrollFromPosY_Float(local_y: number, center_y_ratio: number = 0.5): void {
   imgui.igSetScrollFromPosY_Float(local_y, center_y_ratio);
 }
 
@@ -728,7 +696,7 @@ export function popFont(): void {
  */
 export function pushStyleColor(idx: ImGuiCol, col: ImU32 | ImVec4): void {
   if (col instanceof ImVec4) {
-    imgui.igPushStyleColor_Vec4(idx, col[BUFFER]);
+    imgui.igPushStyleColor_Vec4(idx, col.buffer);
   } else {
     imgui.igPushStyleColor_U32(idx, col);
   }
@@ -741,7 +709,7 @@ export function popStyleColor(count: number = 1): void {
  */
 export function pushStyleVar(idx: ImGuiStyleVar, val: number | ImVec2): void {
   if (val instanceof ImVec2) {
-    imgui.igPushStyleVar_Vec2(idx, val[BUFFER]);
+    imgui.igPushStyleVar_Vec2(idx, val.buffer);
   } else {
     imgui.igPushStyleVar_Float(idx, val);
   }
@@ -835,14 +803,14 @@ export function getFontSize(): number {
 
 export function getFontTexUvWhitePixel(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetFontTexUvWhitePixel(vec2[BUFFER]);
+  imgui.igGetFontTexUvWhitePixel(vec2.buffer);
   return vec2;
 }
 export function getColorU32_Col(idx: ImGuiCol, alpha_mul: number): ImU32 {
   return imgui.igGetColorU32_Col(idx, alpha_mul);
 }
 export function getColorU32_Vec4(col: ImVec4): ImU32 {
-  return imgui.igGetColorU32_Vec4(col[BUFFER]);
+  return imgui.igGetColorU32_Vec4(col.buffer);
 }
 export function getColorU32_U32(col: ImU32): ImU32 {
   return imgui.igGetColorU32_U32(col);
@@ -897,10 +865,7 @@ export function separator(): void {
  * call between widgets or groups to layout them horizontally.
  * X position given in window coordinates.
  */
-export function sameLine(
-  offset_from_start_x: number = 0.0,
-  spacing: number = -1.0,
-): void {
+export function sameLine(offset_from_start_x: number = 0.0, spacing: number = -1.0): void {
   imgui.igSameLine(offset_from_start_x, spacing);
 }
 /**
@@ -920,7 +885,7 @@ export function spacing(): void {
  * Dummy() won't take the mouse click or be navigable into.
  */
 export function dummy(size: ImVec2): void {
-  imgui.igDummy(size[BUFFER]);
+  imgui.igDummy(size.buffer);
 }
 /**
  * move content position toward the right, by indent_w,
@@ -956,7 +921,7 @@ export function endGroup(): void {
  */
 export function getCursorPos(out?: ImVec2): ImVec2 {
   const vec2 = out ?? new ImVec2();
-  imgui.igGetCursorPos(vec2[BUFFER]);
+  imgui.igGetCursorPos(vec2.buffer);
   return vec2;
 }
 //   (some functions are using window-relative coordinates, such as: GetCursorPos, GetCursorStartPos, GetContentRegionMax, GetWindowContentRegion* etc.
@@ -971,7 +936,7 @@ export function getCursorPosY(): number {
   return imgui.igGetCursorPosY();
 }
 export function setCursorPos(local_pos: ImVec2): void {
-  imgui.igSetCursorPos(local_pos[BUFFER]);
+  imgui.igSetCursorPos(local_pos.buffer);
 }
 export function setCursorPosX(local_x: number): void {
   imgui.igSetCursorPosX(local_x);
@@ -985,7 +950,7 @@ export function setCursorPosY(local_y: number): void {
  */
 export function getCursorStartPos(out?: ImVec2): ImVec2 {
   const vec2 = out ?? new ImVec2();
-  imgui.igGetCursorStartPos(vec2[BUFFER]);
+  imgui.igGetCursorStartPos(vec2.buffer);
   return vec2;
 }
 /**
@@ -995,14 +960,14 @@ export function getCursorStartPos(out?: ImVec2): ImVec2 {
  */
 export function getCursorScreenPos(out?: ImVec2): ImVec2 {
   const vec2 = out ?? new ImVec2();
-  imgui.igGetCursorScreenPos(vec2[BUFFER]);
+  imgui.igGetCursorScreenPos(vec2.buffer);
   return vec2;
 }
 /**
  * cursor position in absolute coordinates
  */
 export function setCursorScreenPos(pos: ImVec2): void {
-  imgui.igSetCursorScreenPos(pos[BUFFER]);
+  imgui.igSetCursorScreenPos(pos.buffer);
 }
 /**
  * vertically align upcoming text baseline to `FramePadding.y`
@@ -1106,7 +1071,7 @@ export function text(text: StringSource): void {
   imgui.igText(cString(text));
 }
 export function textColored(col: ImVec4, fmt: StringSource): void {
-  imgui.igTextColored(col[BUFFER], cString(fmt));
+  imgui.igTextColored(col.buffer, cString(fmt));
 }
 export function textWrapped(fmt: StringSource): void {
   imgui.igTextWrapped(cString(fmt));
@@ -1138,11 +1103,8 @@ export function bulletText(label: StringSource): void {
 /**
  * button
  */
-export function button(
-  label: StringSource,
-  size: ImVec2 = new ImVec2(0, 0),
-): boolean {
-  return imgui.igButton(cString(label), size[BUFFER]);
+export function button(label: StringSource, size: ImVec2 = new ImVec2()): boolean {
+  return imgui.igButton(cString(label), size.buffer);
 }
 /**
  * button with FramePadding=(0,0) to easily embed within text
@@ -1155,12 +1117,8 @@ export function smallButton(label: StringSource): boolean {
  * frequently useful to build custom behaviors using the public api
  * (along with IsItemActive, IsItemHovered, etc.)
  */
-export function invisibleButton(
-  str_id: StringSource,
-  size: ImVec2,
-  flags: ImGuiButtonFlags = 0,
-): boolean {
-  return imgui.igInvisibleButton(cString(str_id), size[BUFFER], flags);
+export function invisibleButton(str_id: StringSource, size: ImVec2, flags: ImGuiButtonFlags = 0): boolean {
+  return imgui.igInvisibleButton(cString(str_id), size.buffer, flags);
 }
 /**
  * square button with an arrow shape
@@ -1171,14 +1129,10 @@ export function arrowButton(str_id: StringSource, dir: ImGuiDir): boolean {
 /**
  * checkbox
  */
-export function checkbox(label: StringSource, v?: Uint8Array): boolean {
-  return imgui.igCheckbox(cString(label), v ?? null);
+export function checkbox(label: StringSource, v: Uint8Array | null = null): boolean {
+  return imgui.igCheckbox(cString(label), v);
 }
-export function checkboxFlags(
-  label: StringSource,
-  flags: BufferSource,
-  flags_value: number | bigint,
-): boolean {
+export function checkboxFlags(label: StringSource, flags: BufferSource, flags_value: number | bigint): boolean {
   return imgui.igCheckboxFlags_S64Ptr(cString(label), flags, flags_value);
 }
 /**
@@ -1187,11 +1141,7 @@ export function checkboxFlags(
  * @example
  * radioButton("one", my_value==1, ()=>{ my_value = 1; });
  */
-export function radioButton(
-  label: StringSource,
-  active: boolean,
-  onSelected?: () => void,
-): boolean {
+export function radioButton(label: StringSource, active: boolean, onSelected?: () => void): boolean {
   const pressed = imgui.igRadioButton_Bool(cString(label), active);
   if (pressed) {
     onSelected?.();
@@ -1223,11 +1173,11 @@ export function image(
 ): void {
   imgui.igImage(
     user_texture_id,
-    size[BUFFER],
-    uv0[BUFFER],
-    uv1[BUFFER],
-    tint_col[BUFFER],
-    border_col[BUFFER],
+    size.buffer,
+    uv0.buffer,
+    uv1.buffer,
+    tint_col.buffer,
+    border_col.buffer,
   );
 }
 export function imageButton(
@@ -1242,11 +1192,11 @@ export function imageButton(
   return imgui.igImageButton(
     cString(str_id),
     user_texture_id,
-    size[BUFFER],
-    uv0[BUFFER],
-    uv1[BUFFER],
-    bg_col[BUFFER],
-    tint_col[BUFFER],
+    size.buffer,
+    uv0.buffer,
+    uv1.buffer,
+    bg_col.buffer,
+    tint_col.buffer,
   );
 }
 
@@ -1259,11 +1209,7 @@ export function imageButton(
 //   IMGUI_API bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int popup_max_height_in_items = -1);      // Separate items with \0 within a string, end item-list with \0\0. e.g. "One\0Two\0Three\0"
 //   IMGUI_API bool          Combo(const char* label, int* current_item, bool(*items_getter)(void* data, int idx, const char** out_text), void* data, int items_count, int popup_max_height_in_items = -1);
 
-export function beginCombo(
-  label: StringSource,
-  preview_value: StringSource,
-  flags: ImGuiComboFlags = 0,
-): boolean {
+export function beginCombo(label: StringSource, preview_value: StringSource, flags: ImGuiComboFlags = 0): boolean {
   return imgui.igBeginCombo(cString(label), cString(preview_value), flags);
 }
 export function endCombo(): void {
@@ -1323,90 +1269,58 @@ export function combo(
 export function dragFloat(
   label: StringSource,
   v: Float32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igDragFloat(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragFloat(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragFloat2(
   label: StringSource,
   v: Float32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 2);
-  return imgui.igDragFloat2(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragFloat2(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragFloat3(
   label: StringSource,
   v: Float32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 3);
-  return imgui.igDragFloat3(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragFloat3(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragFloat4(
   label: StringSource,
   v: Float32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%.3f",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 4);
-  return imgui.igDragFloat4(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragFloat4(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragFloatRange2(
   label: StringSource,
   v_current_min: Float32Array,
   v_current_max: Float32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%.3f",
   format_max: StringSource = "",
   flags: ImGuiSliderFlags = 0,
@@ -1428,90 +1342,58 @@ export function dragFloatRange2(
 export function dragInt(
   label: StringSource,
   v: Int32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igDragInt(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragInt(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragInt2(
   label: StringSource,
   v: Int32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 2);
-  return imgui.igDragInt2(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragInt2(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragInt3(
   label: StringSource,
   v: Int32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 3);
-  return imgui.igDragInt3(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragInt3(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragInt4(
   label: StringSource,
   v: Int32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%d",
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 4);
-  return imgui.igDragInt4(
-    cString(label),
-    v,
-    v_speed,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igDragInt4(cString(label), v, v_speed, v_min, v_max, cString(format), flags);
 }
 export function dragIntRange2(
   label: StringSource,
   v_current_min: Int32Array,
   v_current_max: Int32Array,
-  v_speed: number = 1.0,
-  v_min: number = 0,
-  v_max: number = 0,
+  v_speed = 1.0,
+  v_min = 0,
+  v_max = 0,
   format: StringSource = "%d",
   format_max: StringSource = "",
   flags: ImGuiSliderFlags = 0,
@@ -1561,14 +1443,7 @@ export function sliderFloat(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igSliderFloat(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderFloat(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderFloat2(
   label: StringSource,
@@ -1579,14 +1454,7 @@ export function sliderFloat2(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 2);
-  return imgui.igSliderFloat2(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderFloat2(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderFloat3(
   label: StringSource,
@@ -1597,14 +1465,7 @@ export function sliderFloat3(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 3);
-  return imgui.igSliderFloat3(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderFloat3(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderFloat4(
   label: StringSource,
@@ -1615,14 +1476,7 @@ export function sliderFloat4(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 4);
-  return imgui.igSliderFloat4(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderFloat4(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderAngle(
   label: StringSource,
@@ -1633,14 +1487,7 @@ export function sliderAngle(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v_rad.length >= 1);
-  return imgui.igSliderAngle(
-    cString(label),
-    v_rad,
-    v_degrees_min,
-    v_degrees_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderAngle(cString(label), v_rad, v_degrees_min, v_degrees_max, cString(format), flags);
 }
 export function sliderInt(
   label: StringSource,
@@ -1651,14 +1498,7 @@ export function sliderInt(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igSliderInt(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderInt(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderInt2(
   label: StringSource,
@@ -1669,14 +1509,7 @@ export function sliderInt2(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 2);
-  return imgui.igSliderInt2(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderInt2(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderInt3(
   label: StringSource,
@@ -1687,14 +1520,7 @@ export function sliderInt3(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 3);
-  return imgui.igSliderInt3(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderInt3(cString(label), v, v_min, v_max, cString(format), flags);
 }
 export function sliderInt4(
   label: StringSource,
@@ -1705,14 +1531,7 @@ export function sliderInt4(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 4);
-  return imgui.igSliderInt4(
-    cString(label),
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igSliderInt4(cString(label), v, v_min, v_max, cString(format), flags);
 }
 /**
  * vertical silder
@@ -1727,15 +1546,7 @@ export function vSliderFloat(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igVSliderFloat(
-    cString(label),
-    size[BUFFER],
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igVSliderFloat(cString(label), size.buffer, v, v_min, v_max, cString(format), flags);
 }
 /**
  * vertical silder
@@ -1750,15 +1561,7 @@ export function vSliderInt(
   flags: ImGuiSliderFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igVSliderInt(
-    cString(label),
-    size[BUFFER],
-    v,
-    v_min,
-    v_max,
-    cString(format),
-    flags,
-  );
+  return imgui.igVSliderInt(cString(label), size.buffer, v, v_min, v_max, cString(format), flags);
 }
 
 //   // Widgets: Input with Keyboard
@@ -1811,19 +1614,19 @@ export function inputText(
 export function inputTextMultiline(
   label: StringSource,
   buf: Uint8Array,
-  size: ImVec2,
+  size = new ImVec2(),
   flags: ImGuiInputTextFlags = 0,
   callback?: ImGuiInputTextCallback,
 ): boolean {
   if (callback === undefined) {
-    return imgui.igInputTextMultiline(cString(label), cString(buf), buf.byteLength, size[BUFFER], flags, null, null);
+    return imgui.igInputTextMultiline(cString(label), cString(buf), buf.byteLength, size.buffer, flags, null, null);
   } else {
     const func = wrapInputTextCallback(callback, buf);
     const ret = imgui.igInputTextMultiline(
       cString(label),
       cString(buf),
       buf.byteLength,
-      size[BUFFER],
+      size.buffer,
       flags,
       func.pointer,
       null,
@@ -1860,20 +1663,13 @@ export function inputTextWithHint(
 export function inputFloat(
   label: StringSource,
   v: Float32Array,
-  step: number = 0.0,
-  step_fast: number = 0.0,
+  step = 0.0,
+  step_fast = 0.0,
   format: StringSource = "%.3f",
   flags: ImGuiInputTextFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igInputFloat(
-    cString(label),
-    v,
-    step,
-    step_fast,
-    cString(format),
-    flags,
-  );
+  return imgui.igInputFloat(cString(label), v, step, step_fast, cString(format), flags);
 }
 export function inputFloat2(
   label: StringSource,
@@ -1905,8 +1701,8 @@ export function inputFloat4(
 export function inputInt(
   label: StringSource,
   v: Int32Array,
-  step: number = 1,
-  step_fast: number = 100,
+  step = 1,
+  step_fast = 100,
   flags: ImGuiInputTextFlags = 0,
 ): boolean {
   assert(v.length >= 1);
@@ -1939,20 +1735,13 @@ export function inputInt4(
 export function inputDouble(
   label: StringSource,
   v: Float64Array,
-  step: number = 0.0,
-  step_fast: number = 0.0,
+  step = 0.0,
+  step_fast = 0.0,
   format: StringSource = "%.6f",
   flags: ImGuiInputTextFlags = 0,
 ): boolean {
   assert(v.length >= 1);
-  return imgui.igInputDouble(
-    cString(label),
-    v,
-    step,
-    step_fast,
-    cString(format),
-    flags,
-  );
+  return imgui.igInputDouble(cString(label), v, step, step_fast, cString(format), flags);
 }
 
 //   // Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
@@ -1990,7 +1779,7 @@ export function colorPicker4(
   label: StringSource,
   col: Float32Array,
   flags: ImGuiColorEditFlags = 0,
-  ref_col: Float32Array,
+  ref_col: Float32Array | null = null,
 ): boolean {
   return imgui.igColorPicker4(cString(label), col, flags, ref_col);
 }
@@ -1998,14 +1787,9 @@ export function colorButton(
   desc_id: StringSource,
   col: ImVec4,
   flags: ImGuiColorEditFlags = 0,
-  size: ImVec2 = new ImVec2(0, 0),
+  size: ImVec2 = new ImVec2(),
 ): boolean {
-  return imgui.igColorButton(
-    cString(desc_id),
-    col[BUFFER],
-    flags,
-    size[BUFFER],
-  );
+  return imgui.igColorButton(cString(desc_id), col.buffer, flags, size.buffer);
 }
 /**
  * initialize current options (generally on application startup)
@@ -2041,10 +1825,7 @@ export function treeNode(label: StringSource): boolean {
   return imgui.igTreeNode_Str(cString(label));
 }
 
-export function treeNodeEx(
-  label: StringSource,
-  flags: ImGuiTreeNodeFlags = 0,
-): boolean {
+export function treeNodeEx(label: StringSource, flags: ImGuiTreeNodeFlags = 0): boolean {
   return imgui.igTreeNodeEx_Str(cString(label), flags);
 }
 
@@ -2059,14 +1840,10 @@ export function getTreeNodeToLabelSpacing(): number {
 }
 export function collapsingHeader(
   label: StringSource,
-  visible?: Uint8Array,
+  visible: Uint8Array | null = null,
   flags: ImGuiTreeNodeFlags = 0,
 ): boolean {
-  return imgui.igCollapsingHeader_BoolPtr(
-    cString(label),
-    visible ?? null,
-    flags,
-  );
+  return imgui.igCollapsingHeader_BoolPtr(cString(label), visible, flags);
 }
 export function setNextItemOpen(is_open: boolean, cond: ImGuiCond = 0): void {
   imgui.igSetNextItemOpen(is_open, cond);
@@ -2091,22 +1868,12 @@ export function selectable(
   label: StringSource,
   selected: boolean | Bool = false,
   flags: ImGuiSelectableFlags = 0,
-  size: ImVec2 = new ImVec2(0, 0),
+  size: ImVec2 = new ImVec2(),
 ): boolean {
   if (selected instanceof Bool) {
-    return imgui.igSelectable_BoolPtr(
-      cString(label),
-      selected ? selected[BUFFER] : null,
-      flags,
-      size[BUFFER],
-    );
+    return imgui.igSelectable_BoolPtr(cString(label), selected ? selected.buffer : null, flags, size.buffer);
   } else {
-    return imgui.igSelectable_Bool(
-      cString(label),
-      selected,
-      flags,
-      size[BUFFER],
-    );
+    return imgui.igSelectable_Bool(cString(label), selected, flags, size.buffer);
   }
 }
 /**
@@ -2117,13 +1884,13 @@ export function selectable(
 //   label: StringSource,
 //   selected?:Uint8Array,
 //   flags: ImGuiSelectableFlags = 0,
-//   size: ImVec2 = new ImVec2(0, 0),
+//   size: ImVec2 = new ImVec2(),
 // ): boolean {
 //   return imgui.igSelectable_BoolPtr(
 //     cString(label),
-//     selected ? selected[BUFFER] : null,
+//     selected ? selected.buffer : null,
 //     flags,
-//     size[BUFFER],
+//     size.buffer,
 //   );
 // }
 
@@ -2140,7 +1907,7 @@ export function selectable(
 
 export function beginListBox(
   label: StringSource,
-  size: ImVec2 = new ImVec2(0, 0),
+  size: ImVec2 = new ImVec2(),
 ): boolean {
   return imgui.igBeginListBox(cString(label), size.buffer);
 }
@@ -2163,10 +1930,7 @@ export function listBox(
   const height_in_items_f = height_in_items + 0.25;
   const size = new ImVec2(
     0.0,
-    Math.floor(
-      getTextLineHeightWithSpacing() * height_in_items_f +
-        getStyle().FramePadding.y * 2.0,
-    ),
+    Math.floor(getTextLineHeightWithSpacing() * height_in_items_f + getStyle().FramePadding.y * 2.0),
   );
 
   if (!beginListBox(label, size)) {
@@ -2223,7 +1987,7 @@ export function plotLines(
   overlay_text?: StringSource,
   scale_min = floatMin(),
   scale_max = floatMax(),
-  graph_size = new ImVec2(0, 0),
+  graph_size = new ImVec2(),
   stride = 8,
 ) {
   imgui.igPlotLines_FloatPtr(
@@ -2254,11 +2018,7 @@ export function value_Int(prefix: StringSource, v: number): void {
 export function value_Uint(prefix: StringSource, v: number): void {
   imgui.igValue_Uint(cString(prefix), v);
 }
-export function value_Float(
-  prefix: StringSource,
-  v: number,
-  float_format: StringSource,
-): void {
+export function value_Float(prefix: StringSource, v: number, float_format?: StringSource): void {
   imgui.igValue_Float(cString(prefix), v, cString(float_format));
 }
 
@@ -2285,37 +2045,23 @@ export function beginMainMenuBar(): boolean {
 export function endMainMenuBar(): void {
   imgui.igEndMainMenuBar();
 }
-export function beginMenu(label: StringSource, enabled: boolean): boolean {
+export function beginMenu(label: StringSource, enabled = true): boolean {
   return imgui.igBeginMenu(cString(label), enabled);
 }
 export function endMenu(): void {
   imgui.igEndMenu();
 }
-export function menuItem_Bool(
+export function menuItem(
   label: StringSource,
-  shortcut: StringSource,
-  selected: boolean,
-  enabled: boolean,
+  shortcut?: StringSource,
+  selected: boolean | Uint8Array = false,
+  enabled = true,
 ): boolean {
-  return imgui.igMenuItem_Bool(
-    cString(label),
-    cString(shortcut),
-    selected,
-    enabled,
-  );
-}
-export function menuItem_BoolPtr(
-  label: StringSource,
-  shortcut: StringSource,
-  selected?: Uint8Array,
-  enabled: boolean = true,
-): boolean {
-  return imgui.igMenuItem_BoolPtr(
-    cString(label),
-    cString(shortcut),
-    selected ?? null,
-    enabled,
-  );
+  if (selected instanceof Uint8Array) {
+    return imgui.igMenuItem_BoolPtr(cString(label), cString(shortcut), selected, enabled);
+  } else {
+    return imgui.igMenuItem_Bool(cString(label), cString(shortcut), selected, enabled);
+  }
 }
 
 //   // Tooltips
@@ -2351,22 +2097,15 @@ export function setTooltip(text: StringSource) {
 //   IMGUI_API bool          BeginPopupModal(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0); // return true if the modal is open, and you can start outputting to it.
 //   IMGUI_API void          EndPopup();                                                                         // only call EndPopup() if BeginPopupXXX() returns true!
 
-export function beginPopup(
-  str_id: StringSource,
-  flags: ImGuiWindowFlags = 0,
-): boolean {
+export function beginPopup(str_id: StringSource, flags: ImGuiWindowFlags = 0): boolean {
   return imgui.igBeginPopup(cString(str_id), flags);
 }
 export function beginPopupModal(
   name: StringSource,
-  open?: Uint8Array,
+  open: Uint8Array | null = null,
   flags: ImGuiWindowFlags = 0,
 ): boolean {
-  return imgui.igBeginPopupModal(
-    cString(name),
-    open ?? null,
-    flags,
-  );
+  return imgui.igBeginPopupModal(cString(name), open, flags);
 }
 export function endPopup(): void {
   imgui.igEndPopup();
@@ -2385,20 +2124,14 @@ export function endPopup(): void {
 //   IMGUI_API void          OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);   // helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)
 //   IMGUI_API void          CloseCurrentPopup();                                                                // manually close the popup we have begin-ed into.
 
-export function openPopup(
-  id: StringSource | number,
-  popup_flags: ImGuiPopupFlags = 0,
-): void {
+export function openPopup(id: StringSource | number, popup_flags: ImGuiPopupFlags = 0): void {
   if (typeof id == "number") {
     imgui.igOpenPopup_ID(id, popup_flags);
   } else {
     imgui.igOpenPopup_Str(cString(id), popup_flags);
   }
 }
-export function openPopupOnItemClick(
-  str_id: StringSource,
-  popup_flags: ImGuiPopupFlags = 0,
-): void {
+export function openPopupOnItemClick(str_id: StringSource, popup_flags: ImGuiPopupFlags = 0): void {
   imgui.igOpenPopupOnItemClick(cString(str_id), popup_flags);
 }
 export function closeCurrentPopup(): void {
@@ -2414,22 +2147,13 @@ export function closeCurrentPopup(): void {
 //   IMGUI_API bool          BeginPopupContextWindow(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);// open+begin popup when clicked on current window.
 //   IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);  // open+begin popup when clicked in void (where there are no windows).
 
-export function beginPopupContextItem(
-  str_id: StringSource,
-  popup_flags: ImGuiPopupFlags = 0,
-): boolean {
+export function beginPopupContextItem(str_id?: StringSource, popup_flags: ImGuiPopupFlags = 1): boolean {
   return imgui.igBeginPopupContextItem(cString(str_id), popup_flags);
 }
-export function beginPopupContextWindow(
-  str_id: StringSource,
-  popup_flags: ImGuiPopupFlags = 0,
-): boolean {
+export function beginPopupContextWindow(str_id?: StringSource, popup_flags: ImGuiPopupFlags = 1): boolean {
   return imgui.igBeginPopupContextWindow(cString(str_id), popup_flags);
 }
-export function beginPopupContextVoid(
-  str_id: StringSource,
-  popup_flags: ImGuiPopupFlags = 0,
-): boolean {
+export function beginPopupContextVoid(str_id?: StringSource, popup_flags: ImGuiPopupFlags = 1): boolean {
   return imgui.igBeginPopupContextVoid(cString(str_id), popup_flags);
 }
 
@@ -2439,10 +2163,7 @@ export function beginPopupContextVoid(
 //   //  - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId + ImGuiPopupFlags_AnyPopupLevel: return true if any popup is open.
 //   IMGUI_API bool          IsPopupOpen(const char* str_id, ImGuiPopupFlags flags = 0);                         // return true if the popup is open.
 
-export function isPopupOpen_Str(
-  str_id: StringSource,
-  flags: ImGuiPopupFlags = 0,
-): boolean {
+export function isPopupOpen_Str(str_id: StringSource, flags: ImGuiPopupFlags = 0): boolean {
   return imgui.igIsPopupOpen_Str(cString(str_id), flags);
 }
 
@@ -2479,24 +2200,21 @@ export function beginTable(
   str_id: StringSource,
   column: number,
   flags: ImGuiTableFlags = 0,
-  outer_size: ImVec2 = new ImVec2(0, 0),
+  outer_size: ImVec2 = new ImVec2(),
   inner_width: number = 0.0,
 ): boolean {
   return imgui.igBeginTable(
     cString(str_id),
     column,
     flags,
-    outer_size[BUFFER],
+    outer_size.buffer,
     inner_width,
   );
 }
 export function endTable(): void {
   imgui.igEndTable();
 }
-export function tableNextRow(
-  row_flags: ImGuiTableRowFlags = 0,
-  min_row_height: number = 0.0,
-): void {
+export function tableNextRow(row_flags: ImGuiTableRowFlags = 0, min_row_height = 0.0): void {
   imgui.igTableNextRow(row_flags, min_row_height);
 }
 export function tableNextColumn(): boolean {
@@ -2522,15 +2240,10 @@ export function tableSetColumnIndex(column_n: number): boolean {
 export function tableSetupColumn(
   label: StringSource,
   flags: ImGuiTableColumnFlags = 0,
-  init_width_or_weight: number,
-  user_id: ImGuiID,
+  init_width_or_weight = 0,
+  user_id = 0,
 ): void {
-  imgui.igTableSetupColumn(
-    cString(label),
-    flags,
-    init_width_or_weight,
-    user_id,
-  );
+  imgui.igTableSetupColumn(cString(label), flags, init_width_or_weight, user_id);
 }
 export function tableSetupScrollFreeze(cols: number, rows: number): void {
   imgui.igTableSetupScrollFreeze(cols, rows);
@@ -2569,20 +2282,16 @@ export function tableGetColumnIndex(): number {
 export function tableGetRowIndex(): number {
   return imgui.igTableGetRowIndex();
 }
-export function tableGetColumnName_Int(column_n: number): StringSource {
+export function tableGetColumnName_Int(column_n = -1): StringSource {
   return jsString(imgui.igTableGetColumnName_Int(column_n));
 }
-export function tableGetColumnFlags(column_n: number): ImGuiTableColumnFlags {
+export function tableGetColumnFlags(column_n = -1): ImGuiTableColumnFlags {
   return imgui.igTableGetColumnFlags(column_n);
 }
 export function tableSetColumnEnabled(column_n: number, v: boolean): void {
   imgui.igTableSetColumnEnabled(column_n, v);
 }
-export function tableSetBgColor(
-  target: ImGuiTableBgTarget,
-  color: ImU32,
-  column_n: number,
-): void {
+export function tableSetBgColor(target: ImGuiTableBgTarget, color: ImU32, column_n = -1): void {
   imgui.igTableSetBgColor(target, color, column_n);
 }
 
@@ -2606,10 +2315,7 @@ export function tableSetBgColor(
 //   IMGUI_API bool          TabItemButton(const char* label, ImGuiTabItemFlags flags = 0);      // create a Tab behaving like a button. return true when clicked. cannot be selected in the tab bar.
 //   IMGUI_API void          SetTabItemClosed(const char* tab_or_docked_window_label);           // notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name.
 
-export function beginTabBar(
-  str_id: StringSource,
-  flags: ImGuiTabBarFlags = 0,
-): boolean {
+export function beginTabBar(str_id: StringSource, flags: ImGuiTabBarFlags = 0): boolean {
   return imgui.igBeginTabBar(cString(str_id), flags);
 }
 export function endTabBar(): void {
@@ -2617,27 +2323,18 @@ export function endTabBar(): void {
 }
 export function beginTabItem(
   label: StringSource,
-  open?: Uint8Array,
+  open: Uint8Array | null = null,
   flags: ImGuiTabItemFlags = 0,
 ): boolean {
-  return imgui.igBeginTabItem(
-    cString(label),
-    open ?? null,
-    flags,
-  );
+  return imgui.igBeginTabItem(cString(label), open, flags);
 }
 export function endTabItem(): void {
   imgui.igEndTabItem();
 }
-export function tabItemButton(
-  label: StringSource,
-  flags: ImGuiTabItemFlags = 0,
-): boolean {
+export function tabItemButton(label: StringSource, flags: ImGuiTabItemFlags = 0): boolean {
   return imgui.igTabItemButton(cString(label), flags);
 }
-export function setTabItemClosed(
-  tab_or_docked_window_label: StringSource,
-): void {
+export function setTabItemClosed(tab_or_docked_window_label: StringSource): void {
   imgui.igSetTabItemClosed(cString(tab_or_docked_window_label));
 }
 
@@ -2663,20 +2360,20 @@ export function setTabItemClosed(
 
 export function dockSpace(
   id: ImGuiID,
-  size: ImVec2,
+  size = new ImVec2(),
   flags: ImGuiDockNodeFlags = 0,
-  window_class: ImGuiWindowClass,
+  window_class: ImGuiWindowClass = null,
 ): ImGuiID {
-  return imgui.igDockSpace(id, size[BUFFER], flags, window_class);
+  return imgui.igDockSpace(id, size.buffer, flags, window_class);
 }
 export function dockSpaceOverViewport(
   viewport: ImGuiViewport,
   flags: ImGuiDockNodeFlags = 0,
-  window_class: ImGuiWindowClass,
+  window_class: ImGuiWindowClass = null,
 ): ImGuiID {
   return imgui.igDockSpaceOverViewport(viewport, flags, window_class);
 }
-export function setNextWindowDockID(dock_id: ImGuiID, cond: ImGuiCond): void {
+export function setNextWindowDockID(dock_id: ImGuiID, cond: ImGuiCond = 0): void {
   imgui.igSetNextWindowDockID(dock_id, cond);
 }
 export function setNextWindowClass(window_class: ImGuiWindowClass): void {
@@ -2729,10 +2426,7 @@ export function endDragDropSource(): void {
 export function beginDragDropTarget(): boolean {
   return imgui.igBeginDragDropTarget();
 }
-export function acceptDragDropPayload(
-  type: StringSource,
-  flags: ImGuiDragDropFlags = 0,
-): ImGuiPayload {
+export function acceptDragDropPayload(type: StringSource, flags: ImGuiDragDropFlags = 0): ImGuiPayload {
   return imgui.igAcceptDragDropPayload(cString(type), flags);
 }
 export function endDragDropTarget(): void {
@@ -2767,8 +2461,8 @@ export function pushClipRect(
   intersect_with_current_clip_rect: boolean,
 ): void {
   imgui.igPushClipRect(
-    clip_rect_min[BUFFER],
-    clip_rect_max[BUFFER],
+    clip_rect_min.buffer,
+    clip_rect_max.buffer,
     intersect_with_current_clip_rect,
   );
 }
@@ -2784,7 +2478,7 @@ export function popClipRect(): void {
 export function setItemDefaultFocus(): void {
   imgui.igSetItemDefaultFocus();
 }
-export function setKeyboardFocusHere(offset: number): void {
+export function setKeyboardFocusHere(offset: number = 0): void {
   imgui.igSetKeyboardFocusHere(offset);
 }
 
@@ -2855,17 +2549,17 @@ export function getItemID(): ImGuiID {
 
 export function getItemRectMin(out?: ImVec2): ImVec2 {
   const vec2 = out ?? new ImVec2();
-  imgui.igGetItemRectMin(vec2[BUFFER]);
+  imgui.igGetItemRectMin(vec2.buffer);
   return vec2;
 }
 export function getItemRectMax(out?: ImVec2): ImVec2 {
   const vec2 = out ?? new ImVec2();
-  imgui.igGetItemRectMax(vec2[BUFFER]);
+  imgui.igGetItemRectMax(vec2.buffer);
   return vec2;
 }
 export function getItemRectSize(out?: ImVec2): ImVec2 {
   const vec2 = out ?? new ImVec2();
-  imgui.igGetItemRectSize(vec2[BUFFER]);
+  imgui.igGetItemRectSize(vec2.buffer);
   return vec2;
 }
 export function setItemAllowOverlap(): void {
@@ -2894,14 +2588,10 @@ export function getBackgroundDrawList_Nil(): ImDrawList {
 export function getForegroundDrawList_Nil(): ImDrawList {
   return imgui.igGetForegroundDrawList_Nil();
 }
-export function getBackgroundDrawList_ViewportPtr(
-  viewport: ImGuiViewport,
-): ImDrawList {
+export function getBackgroundDrawList_ViewportPtr(viewport: ImGuiViewport): ImDrawList {
   return imgui.igGetBackgroundDrawList_ViewportPtr(viewport);
 }
-export function getForegroundDrawList_ViewportPtr(
-  viewport: ImGuiViewport,
-): ImDrawList {
+export function getForegroundDrawList_ViewportPtr(viewport: ImGuiViewport): ImDrawList {
   return imgui.igGetForegroundDrawList_ViewportPtr(viewport);
 }
 
@@ -2918,13 +2608,10 @@ export function getForegroundDrawList_ViewportPtr(
 //   IMGUI_API void          EndChildFrame();                                                    // always call EndChildFrame() regardless of BeginChildFrame() return values (which indicates a collapsed/clipped window)
 
 export function isRectVisible_Nil(size: ImVec2): boolean {
-  return imgui.igIsRectVisible_Nil(size[BUFFER]);
+  return imgui.igIsRectVisible_Nil(size.buffer);
 }
-export function isRectVisible_Vec2(
-  rect_min: ImVec2,
-  rect_max: ImVec2,
-): boolean {
-  return imgui.igIsRectVisible_Vec2(rect_min[BUFFER], rect_max[BUFFER]);
+export function isRectVisible_Vec2(rect_min: ImVec2, rect_max: ImVec2): boolean {
+  return imgui.igIsRectVisible_Vec2(rect_min.buffer, rect_max.buffer);
 }
 export function getTime(): number {
   return imgui.igGetTime();
@@ -2944,12 +2631,8 @@ export function setStateStorage(storage: ImGuiStorage): void {
 export function getStateStorage(): ImGuiStorage {
   return imgui.igGetStateStorage();
 }
-export function beginChildFrame(
-  id: ImGuiID,
-  size: ImVec2,
-  flags: ImGuiWindowFlags = 0,
-): boolean {
-  return imgui.igBeginChildFrame(id, size[BUFFER], flags);
+export function beginChildFrame(id: ImGuiID, size: ImVec2, flags: ImGuiWindowFlags = 0): boolean {
+  return imgui.igBeginChildFrame(id, size.buffer, flags);
 }
 export function endChildFrame(): void {
   imgui.igEndChildFrame();
@@ -2960,13 +2643,13 @@ export function endChildFrame(): void {
 
 export function calcTextSize(
   text: StringSource,
-  text_end: StringSource,
-  hide_text_after_double_hash: boolean,
-  wrap_width: number,
+  text_end?: StringSource,
+  hide_text_after_double_hash = false,
+  wrap_width = -1,
 ): ImVec2 {
   const vec2 = new ImVec2();
   imgui.igCalcTextSize(
-    vec2[BUFFER],
+    vec2.buffer,
     cString(text),
     cString(text_end),
     hide_text_after_double_hash,
@@ -2983,11 +2666,11 @@ export function calcTextSize(
 
 export function colorConvertU32ToFloat4(input: ImU32): ImVec4 {
   const vec4 = new ImVec4();
-  imgui.igColorConvertU32ToFloat4(vec4[BUFFER], input);
+  imgui.igColorConvertU32ToFloat4(vec4.buffer, input);
   return vec4;
 }
 export function colorConvertFloat4ToU32(input: ImVec4): ImU32 {
-  return imgui.igColorConvertFloat4ToU32(input[BUFFER]);
+  return imgui.igColorConvertFloat4ToU32(input.buffer);
 }
 export function colorConvertRGBtoHSV(
   r: number,
@@ -3010,12 +2693,7 @@ export function colorConvertHSVtoRGB(
   imgui.igColorConvertHSVtoRGB(h, s, v, out_r, out_g, out_b);
 }
 
-export function createHSVColor(
-  h: number,
-  s: number,
-  v: number,
-  a: number = 1.0,
-): ImVec4 {
+export function createHSVColor(h: number, s: number, v: number, a: number = 1.0): ImVec4 {
   const color = new ImVec4();
   colorConvertHSVtoRGB(
     h,
@@ -3044,17 +2722,13 @@ export function createHSVColor(
 export function isKeyDown(key: ImGuiKey): boolean {
   return imgui.igIsKeyDown_Nil(key);
 }
-export function isKeyPressed(key: ImGuiKey, repeat: boolean = true): boolean {
+export function isKeyPressed(key: ImGuiKey, repeat = true): boolean {
   return imgui.igIsKeyPressed_Bool(key, repeat);
 }
 export function isKeyReleased(key: ImGuiKey): boolean {
   return imgui.igIsKeyReleased_Nil(key);
 }
-export function getKeyPressedAmount(
-  key: ImGuiKey,
-  repeat_delay: number,
-  rate: number,
-): number {
+export function getKeyPressedAmount(key: ImGuiKey, repeat_delay: number, rate: number): number {
   return imgui.igGetKeyPressedAmount(key, repeat_delay, rate);
 }
 export function getKeyName(key: ImGuiKey): string {
@@ -3090,10 +2764,7 @@ export function setNextFrameWantCaptureKeyboard(
 export function isMouseDown_Nil(button: ImGuiMouseButton): boolean {
   return imgui.igIsMouseDown_Nil(button);
 }
-export function isMouseClicked_Bool(
-  button: ImGuiMouseButton,
-  repeat: boolean,
-): boolean {
+export function isMouseClicked_Bool(button: ImGuiMouseButton, repeat = false): boolean {
   return imgui.igIsMouseClicked_Bool(button, repeat);
 }
 export function isMouseReleased_Nil(button: ImGuiMouseButton): boolean {
@@ -3105,44 +2776,34 @@ export function isMouseDoubleClicked(button: ImGuiMouseButton): boolean {
 export function getMouseClickedCount(button: ImGuiMouseButton): number {
   return imgui.igGetMouseClickedCount(button);
 }
-export function isMouseHoveringRect(
-  r_min: ImVec2,
-  r_max: ImVec2,
-  clip: boolean,
-): boolean {
-  return imgui.igIsMouseHoveringRect(r_min[BUFFER], r_max[BUFFER], clip);
+export function isMouseHoveringRect(r_min: ImVec2, r_max: ImVec2, clip = true): boolean {
+  return imgui.igIsMouseHoveringRect(r_min.buffer, r_max.buffer, clip);
 }
-export function isMousePosValid(mouse_pos: ImVec2): boolean {
-  return imgui.igIsMousePosValid(mouse_pos[BUFFER]);
+export function isMousePosValid(mouse_pos: ImVec2 | null = null): boolean {
+  return imgui.igIsMousePosValid(mouse_pos?.buffer ?? null);
 }
 export function isAnyMouseDown(): boolean {
   return imgui.igIsAnyMouseDown();
 }
 export function getMousePos(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetMousePos(vec2[BUFFER]);
+  imgui.igGetMousePos(vec2.buffer);
   return vec2;
 }
 export function getMousePosOnOpeningCurrentPopup(): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetMousePosOnOpeningCurrentPopup(vec2[BUFFER]);
+  imgui.igGetMousePosOnOpeningCurrentPopup(vec2.buffer);
   return vec2;
 }
-export function isMouseDragging(
-  button: ImGuiMouseButton,
-  lock_threshold: number,
-): boolean {
+export function isMouseDragging(button: ImGuiMouseButton, lock_threshold = -1): boolean {
   return imgui.igIsMouseDragging(button, lock_threshold);
 }
-export function getMouseDragDelta(
-  button: ImGuiMouseButton,
-  lock_threshold: number,
-): ImVec2 {
+export function getMouseDragDelta(button = ImGuiMouseButton.Left, lock_threshold = -1): ImVec2 {
   const vec2 = new ImVec2();
-  imgui.igGetMouseDragDelta(vec2[BUFFER], button, lock_threshold);
+  imgui.igGetMouseDragDelta(vec2.buffer, button, lock_threshold);
   return vec2;
 }
-export function resetMouseDragDelta(button: ImGuiMouseButton): void {
+export function resetMouseDragDelta(button = ImGuiMouseButton.Left): void {
   imgui.igResetMouseDragDelta(button);
 }
 export function getMouseCursor(): ImGuiMouseCursor {
@@ -3151,9 +2812,7 @@ export function getMouseCursor(): ImGuiMouseCursor {
 export function setMouseCursor(cursor_type: ImGuiMouseCursor): void {
   imgui.igSetMouseCursor(cursor_type);
 }
-export function setNextFrameWantCaptureMouse(
-  want_capture_mouse: boolean,
-): void {
+export function setNextFrameWantCaptureMouse(want_capture_mouse: boolean): void {
   imgui.igSetNextFrameWantCaptureMouse(want_capture_mouse);
 }
 
@@ -3178,21 +2837,35 @@ export function setClipboardText(text: StringSource): void {
 //   IMGUI_API void          SaveIniSettingsToDisk(const char* ini_filename);                    // this is automatically called (if io.IniFilename is not empty) a few seconds after any modification that should be reflected in the .ini file (and also by DestroyContext).
 //   IMGUI_API const char*   SaveIniSettingsToMemory(size_t* out_ini_size = NULL);               // return a zero-terminated string with the .ini data which you can save by your own mean. call when io.WantSaveIniSettings is set, then save data by your own mean and clear io.WantSaveIniSettings.
 
+/**
+ * call after CreateContext() and before the first call to NewFrame().
+ * NewFrame() automatically calls LoadIniSettingsFromDisk(io.IniFilename).
+ */
 export function loadIniSettingsFromDisk(ini_filename: StringSource): void {
   imgui.igLoadIniSettingsFromDisk(cString(ini_filename));
 }
-export function loadIniSettingsFromMemory(
-  ini_data: StringSource,
-  ini_size: number | bigint,
-): void {
+/**
+ * call after CreateContext() and before the first call to NewFrame() to provide .ini data from your own data source.
+ * set `ini_size` to `0` if `ini_data` is a zero-terminated string.
+ */
+export function loadIniSettingsFromMemory(ini_data: StringSource, ini_size: number | bigint = 0): void {
   imgui.igLoadIniSettingsFromMemory(cString(ini_data), ini_size);
 }
+/**
+ * this is automatically called (if io.IniFilename is not empty) a few seconds after any modification
+ * that should be reflected in the .ini file (and also by DestroyContext).
+ * @param ini_filename
+ */
 export function saveIniSettingsToDisk(ini_filename: StringSource): void {
   imgui.igSaveIniSettingsToDisk(cString(ini_filename));
 }
-// export function saveIniSettingsToMemory(out_ini_size: number): StringSource {
-//   return jsString(imgui.igSaveIniSettingsToMemory(out_ini_size));
-// }
+/**
+ * return a zero-terminated string with the .ini data which you can save by your own mean.
+ * call when io.WantSaveIniSettings is set, then save data by your own mean and clear io.WantSaveIniSettings.
+ */
+export function saveIniSettingsToMemory(): StringSource {
+  return jsString(imgui.igSaveIniSettingsToMemory(null));
+}
 
 //   // Debug Utilities
 //   IMGUI_API void          DebugTextEncoding(const char* text);
@@ -3201,6 +2874,9 @@ export function saveIniSettingsToDisk(ini_filename: StringSource): void {
 export function debugTextEncoding(text: StringSource): void {
   imgui.igDebugTextEncoding(cString(text));
 }
+/**
+ * This is called by IMGUI_CHECKVERSION() macro.
+ */
 export function debugCheckVersionAndDataLayout(
   version_str: StringSource,
   sz_io: number | bigint,
@@ -3270,5 +2946,5 @@ export function implOpenGL3RenderDrawData(drawData: ImDrawData): void {
 
 // helper
 export function printImVec2(vec2: ImVec2): void {
-  imgui.DImGuiPrintImVec2(vec2[BUFFER]);
+  imgui.DImGuiPrintImVec2(vec2.buffer);
 }
