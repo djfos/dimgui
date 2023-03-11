@@ -35,15 +35,3 @@ DIMGUI_EXPORT void DImGuiPrintImVec2(const ImVec2 vec)
 {
     printf_s("vec2 [%.3f ,%.3f]\n", vec.x, vec.y);
 }
-
-// ImGuiIO getter and setter
-
-DIMGUI_EXPORT ImGuiConfigFlags DImGuiIOGetConfigFlags(ImGuiIO *io)
-{
-    return io->ConfigFlags;
-}
-
-DIMGUI_EXPORT void DImGuiIOSetConfigFlags(ImGuiIO *io, ImGuiConfigFlags flags)
-{
-    io->ConfigFlags = flags;
-}

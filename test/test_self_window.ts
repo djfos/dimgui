@@ -13,13 +13,7 @@ function getProcAddress(name: string) {
 }
 
 function main() {
-  const window = imgui.glfwCreateWindow(
-    800,
-    600,
-    cString("DwmWindow"),
-    null,
-    null,
-  );
+  const window = imgui.glfwCreateWindow(800, 600, cString("DwmWindow"), null, null);
   if (!window) {
     throw new Error("Failed to create window");
   }

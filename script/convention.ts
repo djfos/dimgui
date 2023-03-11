@@ -32,11 +32,7 @@ export function getCacheDirectory() {
 }
 
 export function getTemptLibraryPath(version: string) {
-  const suffix = Deno.build.os === "windows"
-    ? "dll"
-    : Deno.build.os === "darwin"
-    ? "dylib"
-    : "so";
+  const suffix = Deno.build.os === "windows" ? "dll" : Deno.build.os === "darwin" ? "dylib" : "so";
   const tmp = join(
     getCacheDirectory(),
     `imgui${version.replaceAll(".", "-")}.${suffix}`,

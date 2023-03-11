@@ -1,18 +1,26 @@
 # dimgui
+
 > Port Dear ImGui to Deno.
 
 # Status
-> Not ready for use
+
+> For now, only build on windows with opengl backend.
 
 # Usage
-``` bash
-# build
-deno task build
 
-# generate cimgui ffi symbols
+```typescript
+// TODO
+```
+
+# Contribute
+
+```bash
+# build the shared library
+deno task build
+# generate cimgui ffi symbols and many draft to copy
 deno task gen 
-# test for window created by imgui.dll
-deno task test-self 
 # test for window created by dwm
-deno task test-dwm 
+deno task test-dwm
+# test for window created by embeded glfw
+deno task test-self
 ```

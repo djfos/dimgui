@@ -42,6 +42,10 @@ set(IMGUI_SOURCE_FILE
     ${IMGUI_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
     cimgui/cimgui.cpp
     dim_config.cpp
+    src/dimgui_style.cpp
+    src/dimgui_input_text_callback_data.cpp
+    src/dimgui_io.cpp
+    src/dimgui_font_atlas.cpp
 )
 
 add_library(imgui SHARED ${IMGUI_SOURCE_FILE})

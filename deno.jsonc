@@ -4,5 +4,22 @@
     "gen": "deno run --unstable --allow-all script/gen_binding.ts",
     "test-self": "deno run --unstable --allow-all --allow-ffi test/test_self_window.ts",
     "test-dwm": "deno run --unstable --allow-all --allow-ffi test/test_dwm_window.ts"
+  },
+  "fmt": {
+    "options": {
+      "lineWidth": 120
+    },
+    "files": {
+      "exclude": [
+        "imgui"
+      ]
+    }
+  },
+  "lint": {
+    "files": {
+      "exclude": [
+        "imgui"
+      ]
+    }
   }
 }

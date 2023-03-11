@@ -1,9 +1,5 @@
 import { join } from "https://deno.land/std@0.177.0/path/mod.ts";
-import {
-  getBinFileName,
-  getOutFileName,
-  getTemptLibraryPath,
-} from "./convention.ts";
+import { getBinFileName, getOutFileName, getTemptLibraryPath } from "./convention.ts";
 import { DIMGUI_VERSION } from "./version.ts";
 
 function print(message: string) {
@@ -26,6 +22,7 @@ function embed(): void {
   const binFile = join(binPath, getBinFileName());
   const outFile = join(distPath, getOutFileName());
 
+  // deno-lint-ignore no-explicit-any
   const encode = (Deno as any)[(Deno as any).internal]
     .core
     .ops.op_base64_encode;

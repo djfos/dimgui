@@ -2,19 +2,15 @@ import { getOutFileName, getTemptLibraryPath } from "../script/convention.ts";
 import cimguiSymbols from "../symbol/cimgui.ts";
 import glfwSymbols from "../symbol/glfw.ts";
 import imguiBackendSymbols from "../symbol/imgui_backend.ts";
+import dimguiStyleSymbols from "../symbol/dimgui_style.ts";
+import dimguiInputTextCallbackDataSymbols from "../symbol/dimgui_input_text_callback_data.ts";
+import dimguiIOSymbols from "../symbol/dimgui_io.ts";
+import dimguiFontAtlasSymbols from "../symbol/dimgui_font_atlas.ts";
 import { DIMGUI_VERSION } from "../script/version.ts";
 
 const dImGuiCustomFunctions = {
   LogImDrawData: {
     parameters: ["pointer"],
-    result: "void",
-  },
-  DImGuiIOGetConfigFlags: {
-    parameters: ["pointer"],
-    result: "i32",
-  },
-  DImGuiIOSetConfigFlags: {
-    parameters: ["pointer", "i32"],
     result: "void",
   },
   dimguiSetErrorCallback: {
@@ -49,6 +45,10 @@ async function loadLibrary() {
       ...glfwSymbols,
       ...imguiBackendSymbols,
       ...dImGuiCustomFunctions,
+      ...dimguiStyleSymbols,
+      ...dimguiInputTextCallbackDataSymbols,
+      ...dimguiIOSymbols,
+      ...dimguiFontAtlasSymbols,
     } as const,
   );
 }
@@ -56,13 +56,20 @@ async function loadLibrary() {
 const library = await loadLibrary();
 export const ffi = library.symbols;
 
-export function cString(str: string) {
-  if (str.length === 0) {
+export type StringSource = string | BufferSource;
+export function cString(str?: StringSource) {
+  if (str === undefined) {
     return null;
   }
-  return new TextEncoder().encode(str + "\0");
+  if (typeof str == "string") {
+    return new TextEncoder().encode(str + "\0");
+  }
+  return str;
 }
 
 export function jsString(cstring: Deno.PointerValue): string {
+  if (cstring == null) {
+    return "";
+  }
   return new Deno.UnsafePointerView(cstring).getCString();
 }

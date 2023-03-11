@@ -1,0 +1,988 @@
+
+
+
+
+DIMGUI_EXPORT ImGuiConfigFlags DImGuiIOGetConfigFlags (ImGuiIO* s){ return s->ConfigFlags;}
+DIMGUI_EXPORT ImGuiBackendFlags DImGuiIOGetBackendFlags (ImGuiIO* s){ return s->BackendFlags;}
+DIMGUI_EXPORT ImVec2 DImGuiIOGetDisplaySize (ImGuiIO* s){ return s->DisplaySize;}
+DIMGUI_EXPORT float DImGuiIOGetDeltaTime (ImGuiIO* s){ return s->DeltaTime;}
+DIMGUI_EXPORT float DImGuiIOGetIniSavingRate (ImGuiIO* s){ return s->IniSavingRate;}
+DIMGUI_EXPORT char* DImGuiIOGetIniFilename (ImGuiIO* s){ return s->IniFilename;}
+DIMGUI_EXPORT char* DImGuiIOGetLogFilename (ImGuiIO* s){ return s->LogFilename;}
+DIMGUI_EXPORT float DImGuiIOGetMouseDoubleClickTime (ImGuiIO* s){ return s->MouseDoubleClickTime;}
+DIMGUI_EXPORT float DImGuiIOGetMouseDoubleClickMaxDist (ImGuiIO* s){ return s->MouseDoubleClickMaxDist;}
+DIMGUI_EXPORT float DImGuiIOGetMouseDragThreshold (ImGuiIO* s){ return s->MouseDragThreshold;}
+DIMGUI_EXPORT float DImGuiIOGetKeyRepeatDelay (ImGuiIO* s){ return s->KeyRepeatDelay;}
+DIMGUI_EXPORT float DImGuiIOGetKeyRepeatRate (ImGuiIO* s){ return s->KeyRepeatRate;}
+DIMGUI_EXPORT float DImGuiIOGetHoverDelayNormal (ImGuiIO* s){ return s->HoverDelayNormal;}
+DIMGUI_EXPORT float DImGuiIOGetHoverDelayShort (ImGuiIO* s){ return s->HoverDelayShort;}
+DIMGUI_EXPORT void* DImGuiIOGetUserData (ImGuiIO* s){ return s->UserData;}
+DIMGUI_EXPORT ImFontAtlas* DImGuiIOGetFonts (ImGuiIO* s){ return s->Fonts;}
+DIMGUI_EXPORT float DImGuiIOGetFontGlobalScale (ImGuiIO* s){ return s->FontGlobalScale;}
+DIMGUI_EXPORT bool DImGuiIOGetFontAllowUserScaling (ImGuiIO* s){ return s->FontAllowUserScaling;}
+DIMGUI_EXPORT ImFont* DImGuiIOGetFontDefault (ImGuiIO* s){ return s->FontDefault;}
+DIMGUI_EXPORT ImVec2 DImGuiIOGetDisplayFramebufferScale (ImGuiIO* s){ return s->DisplayFramebufferScale;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigDockingNoSplit (ImGuiIO* s){ return s->ConfigDockingNoSplit;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigDockingWithShift (ImGuiIO* s){ return s->ConfigDockingWithShift;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigDockingAlwaysTabBar (ImGuiIO* s){ return s->ConfigDockingAlwaysTabBar;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigDockingTransparentPayload (ImGuiIO* s){ return s->ConfigDockingTransparentPayload;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigViewportsNoAutoMerge (ImGuiIO* s){ return s->ConfigViewportsNoAutoMerge;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigViewportsNoTaskBarIcon (ImGuiIO* s){ return s->ConfigViewportsNoTaskBarIcon;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigViewportsNoDecoration (ImGuiIO* s){ return s->ConfigViewportsNoDecoration;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigViewportsNoDefaultParent (ImGuiIO* s){ return s->ConfigViewportsNoDefaultParent;}
+DIMGUI_EXPORT bool DImGuiIOGetMouseDrawCursor (ImGuiIO* s){ return s->MouseDrawCursor;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigMacOSXBehaviors (ImGuiIO* s){ return s->ConfigMacOSXBehaviors;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigInputTrickleEventQueue (ImGuiIO* s){ return s->ConfigInputTrickleEventQueue;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigInputTextCursorBlink (ImGuiIO* s){ return s->ConfigInputTextCursorBlink;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigInputTextEnterKeepActive (ImGuiIO* s){ return s->ConfigInputTextEnterKeepActive;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigDragClickToInputText (ImGuiIO* s){ return s->ConfigDragClickToInputText;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigWindowsResizeFromEdges (ImGuiIO* s){ return s->ConfigWindowsResizeFromEdges;}
+DIMGUI_EXPORT bool DImGuiIOGetConfigWindowsMoveFromTitleBarOnly (ImGuiIO* s){ return s->ConfigWindowsMoveFromTitleBarOnly;}
+DIMGUI_EXPORT float DImGuiIOGetConfigMemoryCompactTimer (ImGuiIO* s){ return s->ConfigMemoryCompactTimer;}
+DIMGUI_EXPORT bool DImGuiIOGetWantCaptureMouse (ImGuiIO* s){ return s->WantCaptureMouse;}
+DIMGUI_EXPORT bool DImGuiIOGetWantCaptureKeyboard (ImGuiIO* s){ return s->WantCaptureKeyboard;}
+DIMGUI_EXPORT bool DImGuiIOGetWantTextInput (ImGuiIO* s){ return s->WantTextInput;}
+DIMGUI_EXPORT bool DImGuiIOGetWantSetMousePos (ImGuiIO* s){ return s->WantSetMousePos;}
+DIMGUI_EXPORT bool DImGuiIOGetWantSaveIniSettings (ImGuiIO* s){ return s->WantSaveIniSettings;}
+DIMGUI_EXPORT bool DImGuiIOGetNavActive (ImGuiIO* s){ return s->NavActive;}
+DIMGUI_EXPORT bool DImGuiIOGetNavVisible (ImGuiIO* s){ return s->NavVisible;}
+DIMGUI_EXPORT float DImGuiIOGetFramerate (ImGuiIO* s){ return s->Framerate;}
+DIMGUI_EXPORT int DImGuiIOGetMetricsRenderVertices (ImGuiIO* s){ return s->MetricsRenderVertices;}
+DIMGUI_EXPORT int DImGuiIOGetMetricsRenderIndices (ImGuiIO* s){ return s->MetricsRenderIndices;}
+DIMGUI_EXPORT int DImGuiIOGetMetricsRenderWindows (ImGuiIO* s){ return s->MetricsRenderWindows;}
+DIMGUI_EXPORT int DImGuiIOGetMetricsActiveWindows (ImGuiIO* s){ return s->MetricsActiveWindows;}
+DIMGUI_EXPORT int DImGuiIOGetMetricsActiveAllocations (ImGuiIO* s){ return s->MetricsActiveAllocations;}
+DIMGUI_EXPORT ImVec2 DImGuiIOGetMouseDelta (ImGuiIO* s){ return s->MouseDelta;}
+
+
+
+
+DIMGUI_EXPORT void DImGuiIOSetConfigFlags (ImGuiIO* s, ImGuiConfigFlags value){ s->ConfigFlags=value;}
+DIMGUI_EXPORT void DImGuiIOSetBackendFlags (ImGuiIO* s, ImGuiBackendFlags value){ s->BackendFlags=value;}
+DIMGUI_EXPORT void DImGuiIOSetDisplaySize (ImGuiIO* s, ImVec2 value){ s->DisplaySize=value;}
+DIMGUI_EXPORT void DImGuiIOSetDeltaTime (ImGuiIO* s, float value){ s->DeltaTime=value;}
+DIMGUI_EXPORT void DImGuiIOSetIniSavingRate (ImGuiIO* s, float value){ s->IniSavingRate=value;}
+DIMGUI_EXPORT void DImGuiIOSetIniFilename (ImGuiIO* s, char* value){ s->IniFilename=value;}
+DIMGUI_EXPORT void DImGuiIOSetLogFilename (ImGuiIO* s, char* value){ s->LogFilename=value;}
+DIMGUI_EXPORT void DImGuiIOSetMouseDoubleClickTime (ImGuiIO* s, float value){ s->MouseDoubleClickTime=value;}
+DIMGUI_EXPORT void DImGuiIOSetMouseDoubleClickMaxDist (ImGuiIO* s, float value){ s->MouseDoubleClickMaxDist=value;}
+DIMGUI_EXPORT void DImGuiIOSetMouseDragThreshold (ImGuiIO* s, float value){ s->MouseDragThreshold=value;}
+DIMGUI_EXPORT void DImGuiIOSetKeyRepeatDelay (ImGuiIO* s, float value){ s->KeyRepeatDelay=value;}
+DIMGUI_EXPORT void DImGuiIOSetKeyRepeatRate (ImGuiIO* s, float value){ s->KeyRepeatRate=value;}
+DIMGUI_EXPORT void DImGuiIOSetHoverDelayNormal (ImGuiIO* s, float value){ s->HoverDelayNormal=value;}
+DIMGUI_EXPORT void DImGuiIOSetHoverDelayShort (ImGuiIO* s, float value){ s->HoverDelayShort=value;}
+DIMGUI_EXPORT void DImGuiIOSetUserData (ImGuiIO* s, void* value){ s->UserData=value;}
+DIMGUI_EXPORT void DImGuiIOSetFonts (ImGuiIO* s, ImFontAtlas* value){ s->Fonts=value;}
+DIMGUI_EXPORT void DImGuiIOSetFontGlobalScale (ImGuiIO* s, float value){ s->FontGlobalScale=value;}
+DIMGUI_EXPORT void DImGuiIOSetFontAllowUserScaling (ImGuiIO* s, bool value){ s->FontAllowUserScaling=value;}
+DIMGUI_EXPORT void DImGuiIOSetFontDefault (ImGuiIO* s, ImFont* value){ s->FontDefault=value;}
+DIMGUI_EXPORT void DImGuiIOSetDisplayFramebufferScale (ImGuiIO* s, ImVec2 value){ s->DisplayFramebufferScale=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigDockingNoSplit (ImGuiIO* s, bool value){ s->ConfigDockingNoSplit=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigDockingWithShift (ImGuiIO* s, bool value){ s->ConfigDockingWithShift=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigDockingAlwaysTabBar (ImGuiIO* s, bool value){ s->ConfigDockingAlwaysTabBar=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigDockingTransparentPayload (ImGuiIO* s, bool value){ s->ConfigDockingTransparentPayload=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigViewportsNoAutoMerge (ImGuiIO* s, bool value){ s->ConfigViewportsNoAutoMerge=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigViewportsNoTaskBarIcon (ImGuiIO* s, bool value){ s->ConfigViewportsNoTaskBarIcon=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigViewportsNoDecoration (ImGuiIO* s, bool value){ s->ConfigViewportsNoDecoration=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigViewportsNoDefaultParent (ImGuiIO* s, bool value){ s->ConfigViewportsNoDefaultParent=value;}
+DIMGUI_EXPORT void DImGuiIOSetMouseDrawCursor (ImGuiIO* s, bool value){ s->MouseDrawCursor=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigMacOSXBehaviors (ImGuiIO* s, bool value){ s->ConfigMacOSXBehaviors=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigInputTrickleEventQueue (ImGuiIO* s, bool value){ s->ConfigInputTrickleEventQueue=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigInputTextCursorBlink (ImGuiIO* s, bool value){ s->ConfigInputTextCursorBlink=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigInputTextEnterKeepActive (ImGuiIO* s, bool value){ s->ConfigInputTextEnterKeepActive=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigDragClickToInputText (ImGuiIO* s, bool value){ s->ConfigDragClickToInputText=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigWindowsResizeFromEdges (ImGuiIO* s, bool value){ s->ConfigWindowsResizeFromEdges=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigWindowsMoveFromTitleBarOnly (ImGuiIO* s, bool value){ s->ConfigWindowsMoveFromTitleBarOnly=value;}
+DIMGUI_EXPORT void DImGuiIOSetConfigMemoryCompactTimer (ImGuiIO* s, float value){ s->ConfigMemoryCompactTimer=value;}
+DIMGUI_EXPORT void DImGuiIOSetWantCaptureMouse (ImGuiIO* s, bool value){ s->WantCaptureMouse=value;}
+DIMGUI_EXPORT void DImGuiIOSetWantCaptureKeyboard (ImGuiIO* s, bool value){ s->WantCaptureKeyboard=value;}
+DIMGUI_EXPORT void DImGuiIOSetWantTextInput (ImGuiIO* s, bool value){ s->WantTextInput=value;}
+DIMGUI_EXPORT void DImGuiIOSetWantSetMousePos (ImGuiIO* s, bool value){ s->WantSetMousePos=value;}
+DIMGUI_EXPORT void DImGuiIOSetWantSaveIniSettings (ImGuiIO* s, bool value){ s->WantSaveIniSettings=value;}
+DIMGUI_EXPORT void DImGuiIOSetNavActive (ImGuiIO* s, bool value){ s->NavActive=value;}
+DIMGUI_EXPORT void DImGuiIOSetNavVisible (ImGuiIO* s, bool value){ s->NavVisible=value;}
+DIMGUI_EXPORT void DImGuiIOSetFramerate (ImGuiIO* s, float value){ s->Framerate=value;}
+DIMGUI_EXPORT void DImGuiIOSetMetricsRenderVertices (ImGuiIO* s, int value){ s->MetricsRenderVertices=value;}
+DIMGUI_EXPORT void DImGuiIOSetMetricsRenderIndices (ImGuiIO* s, int value){ s->MetricsRenderIndices=value;}
+DIMGUI_EXPORT void DImGuiIOSetMetricsRenderWindows (ImGuiIO* s, int value){ s->MetricsRenderWindows=value;}
+DIMGUI_EXPORT void DImGuiIOSetMetricsActiveWindows (ImGuiIO* s, int value){ s->MetricsActiveWindows=value;}
+DIMGUI_EXPORT void DImGuiIOSetMetricsActiveAllocations (ImGuiIO* s, int value){ s->MetricsActiveAllocations=value;}
+DIMGUI_EXPORT void DImGuiIOSetMouseDelta (ImGuiIO* s, ImVec2 value){ s->MouseDelta=value;}
+
+
+
+
+DImGuiIOGetConfigFlags:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigFlags:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetBackendFlags:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetBackendFlags:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetDisplaySize:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetDisplaySize:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetDeltaTime:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetDeltaTime:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetIniSavingRate:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetIniSavingRate:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetIniFilename:{
+    parameters: ["pointer"],
+    result: "buffer",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetIniFilename:{
+    parameters: ["pointer","buffer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetLogFilename:{
+    parameters: ["pointer"],
+    result: "buffer",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetLogFilename:{
+    parameters: ["pointer","buffer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMouseDoubleClickTime:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMouseDoubleClickTime:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMouseDoubleClickMaxDist:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMouseDoubleClickMaxDist:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMouseDragThreshold:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMouseDragThreshold:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetKeyRepeatDelay:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetKeyRepeatDelay:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetKeyRepeatRate:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetKeyRepeatRate:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetHoverDelayNormal:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetHoverDelayNormal:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetHoverDelayShort:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetHoverDelayShort:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetUserData:{
+    parameters: ["pointer"],
+    result: "buffer",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetUserData:{
+    parameters: ["pointer","buffer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetFonts:{
+    parameters: ["pointer"],
+    result: "pointer",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetFonts:{
+    parameters: ["pointer","pointer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetFontGlobalScale:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetFontGlobalScale:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetFontAllowUserScaling:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetFontAllowUserScaling:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetFontDefault:{
+    parameters: ["pointer"],
+    result: "pointer",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetFontDefault:{
+    parameters: ["pointer","pointer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetDisplayFramebufferScale:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetDisplayFramebufferScale:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigDockingNoSplit:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigDockingNoSplit:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigDockingWithShift:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigDockingWithShift:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigDockingAlwaysTabBar:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigDockingAlwaysTabBar:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigDockingTransparentPayload:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigDockingTransparentPayload:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigViewportsNoAutoMerge:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigViewportsNoAutoMerge:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigViewportsNoTaskBarIcon:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigViewportsNoTaskBarIcon:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigViewportsNoDecoration:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigViewportsNoDecoration:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigViewportsNoDefaultParent:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigViewportsNoDefaultParent:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMouseDrawCursor:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMouseDrawCursor:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigMacOSXBehaviors:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigMacOSXBehaviors:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigInputTrickleEventQueue:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigInputTrickleEventQueue:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigInputTextCursorBlink:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigInputTextCursorBlink:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigInputTextEnterKeepActive:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigInputTextEnterKeepActive:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigDragClickToInputText:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigDragClickToInputText:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigWindowsResizeFromEdges:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigWindowsResizeFromEdges:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigWindowsMoveFromTitleBarOnly:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigWindowsMoveFromTitleBarOnly:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetConfigMemoryCompactTimer:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetConfigMemoryCompactTimer:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetWantCaptureMouse:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetWantCaptureMouse:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetWantCaptureKeyboard:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetWantCaptureKeyboard:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetWantTextInput:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetWantTextInput:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetWantSetMousePos:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetWantSetMousePos:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetWantSaveIniSettings:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetWantSaveIniSettings:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetNavActive:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetNavActive:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetNavVisible:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetNavVisible:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetFramerate:{
+    parameters: ["pointer"],
+    result: "f32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetFramerate:{
+    parameters: ["pointer","f32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMetricsRenderVertices:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMetricsRenderVertices:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMetricsRenderIndices:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMetricsRenderIndices:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMetricsRenderWindows:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMetricsRenderWindows:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMetricsActiveWindows:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMetricsActiveWindows:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMetricsActiveAllocations:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMetricsActiveAllocations:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOGetMouseDelta:{
+    parameters: ["pointer"],
+    result: {struct:ImVec2},
+} as const satisfies Deno.ForeignFunction,
+DImGuiIOSetMouseDelta:{
+    parameters: ["pointer",{struct:ImVec2}],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+
+
+
+
+/*
+ *  = 0              // See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation options, etc.
+*/
+get ConfigFlags(): ImGuiConfigFlags {
+  return imgui.DImGuiIOGetConfigFlags(this.#self);
+}
+set ConfigFlags(value: ImGuiConfigFlags) {
+  imgui.DImGuiIOSetConfigFlags(this.#self, value);
+}
+/*
+ *  = 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.
+*/
+get BackendFlags(): ImGuiBackendFlags {
+  return imgui.DImGuiIOGetBackendFlags(this.#self);
+}
+set BackendFlags(value: ImGuiBackendFlags) {
+  imgui.DImGuiIOSetBackendFlags(this.#self, value);
+}
+/*
+ *  <unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.
+*/
+get DisplaySize(): ImVec2 {
+  const data = imgui.DImGuiIOGetDisplaySize(this.#self);
+  return new ImVec2(data);
+}
+set DisplaySize(value: ImVec2) {
+  imgui.DImGuiIOSetDisplaySize(this.#self, value.buffer);
+}
+/*
+ *  = 1.0f/60.0f     // Time elapsed since last frame, in seconds. May change every frame.
+*/
+get DeltaTime(): number {
+  return imgui.DImGuiIOGetDeltaTime(this.#self);
+}
+set DeltaTime(value: number) {
+  imgui.DImGuiIOSetDeltaTime(this.#self, value);
+}
+/*
+ *  = 5.0f           // Minimum time between saving positions/sizes to .ini file, in seconds.
+*/
+get IniSavingRate(): number {
+  return imgui.DImGuiIOGetIniSavingRate(this.#self);
+}
+set IniSavingRate(value: number) {
+  imgui.DImGuiIOSetIniSavingRate(this.#self, value);
+}
+/*
+ *  = "imgui.ini"    // Path to .ini file (important: default "imgui.ini" is relative to current working dir!). Set NULL to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.
+*/
+get IniFilename(): string {
+  return jsString(imgui.DImGuiIOGetIniFilename(this.#self));
+}
+set IniFilename(value: string) {
+  imgui.DImGuiIOSetIniFilename(this.#self, cString(value));
+}
+/*
+ *  = "imgui_log.txt"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).
+*/
+get LogFilename(): string {
+  return jsString(imgui.DImGuiIOGetLogFilename(this.#self));
+}
+set LogFilename(value: string) {
+  imgui.DImGuiIOSetLogFilename(this.#self, cString(value));
+}
+/*
+ *  = 0.30f          // Time for a double-click, in seconds.
+*/
+get MouseDoubleClickTime(): number {
+  return imgui.DImGuiIOGetMouseDoubleClickTime(this.#self);
+}
+set MouseDoubleClickTime(value: number) {
+  imgui.DImGuiIOSetMouseDoubleClickTime(this.#self, value);
+}
+/*
+ *  = 6.0f           // Distance threshold to stay in to validate a double-click, in pixels.
+*/
+get MouseDoubleClickMaxDist(): number {
+  return imgui.DImGuiIOGetMouseDoubleClickMaxDist(this.#self);
+}
+set MouseDoubleClickMaxDist(value: number) {
+  imgui.DImGuiIOSetMouseDoubleClickMaxDist(this.#self, value);
+}
+/*
+ *  = 6.0f           // Distance threshold before considering we are dragging.
+*/
+get MouseDragThreshold(): number {
+  return imgui.DImGuiIOGetMouseDragThreshold(this.#self);
+}
+set MouseDragThreshold(value: number) {
+  imgui.DImGuiIOSetMouseDragThreshold(this.#self, value);
+}
+/*
+ *  = 0.275f         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).
+*/
+get KeyRepeatDelay(): number {
+  return imgui.DImGuiIOGetKeyRepeatDelay(this.#self);
+}
+set KeyRepeatDelay(value: number) {
+  imgui.DImGuiIOSetKeyRepeatDelay(this.#self, value);
+}
+/*
+ *  = 0.050f         // When holding a key/button, rate at which it repeats, in seconds.
+*/
+get KeyRepeatRate(): number {
+  return imgui.DImGuiIOGetKeyRepeatRate(this.#self);
+}
+set KeyRepeatRate(value: number) {
+  imgui.DImGuiIOSetKeyRepeatRate(this.#self, value);
+}
+/*
+ *  = 0.30 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayNormal) returns true.
+*/
+get HoverDelayNormal(): number {
+  return imgui.DImGuiIOGetHoverDelayNormal(this.#self);
+}
+set HoverDelayNormal(value: number) {
+  imgui.DImGuiIOSetHoverDelayNormal(this.#self, value);
+}
+/*
+ *  = 0.10 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayShort) returns true.
+*/
+get HoverDelayShort(): number {
+  return imgui.DImGuiIOGetHoverDelayShort(this.#self);
+}
+set HoverDelayShort(value: number) {
+  imgui.DImGuiIOSetHoverDelayShort(this.#self, value);
+}
+/*
+ *  = NULL           // Store your own data.
+*/
+get UserData(): BufferSource {
+  return imgui.DImGuiIOGetUserData(this.#self);
+}
+set UserData(value: BufferSource) {
+  imgui.DImGuiIOSetUserData(this.#self, value);
+}
+/*
+ *  <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
+*/
+get Fonts(): ImFontAtlas {
+  return imgui.DImGuiIOGetFonts(this.#self);
+}
+set Fonts(value: ImFontAtlas) {
+  imgui.DImGuiIOSetFonts(this.#self, value);
+}
+/*
+ *  = 1.0f           // Global scale all fonts
+*/
+get FontGlobalScale(): number {
+  return imgui.DImGuiIOGetFontGlobalScale(this.#self);
+}
+set FontGlobalScale(value: number) {
+  imgui.DImGuiIOSetFontGlobalScale(this.#self, value);
+}
+/*
+ *  = false          // Allow user scaling text of individual window with CTRL+Wheel.
+*/
+get FontAllowUserScaling(): boolean {
+  return imgui.DImGuiIOGetFontAllowUserScaling(this.#self);
+}
+set FontAllowUserScaling(value: boolean) {
+  imgui.DImGuiIOSetFontAllowUserScaling(this.#self, value);
+}
+/*
+ *  = NULL           // Font to use on NewFrame(). Use NULL to uses Fonts->Fonts[0].
+*/
+get FontDefault(): ImFont {
+  return imgui.DImGuiIOGetFontDefault(this.#self);
+}
+set FontDefault(value: ImFont) {
+  imgui.DImGuiIOSetFontDefault(this.#self, value);
+}
+/*
+ *  = (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.
+*/
+get DisplayFramebufferScale(): ImVec2 {
+  const data = imgui.DImGuiIOGetDisplayFramebufferScale(this.#self);
+  return new ImVec2(data);
+}
+set DisplayFramebufferScale(value: ImVec2) {
+  imgui.DImGuiIOSetDisplayFramebufferScale(this.#self, value.buffer);
+}
+/*
+ *  = false          // Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.
+*/
+get ConfigDockingNoSplit(): boolean {
+  return imgui.DImGuiIOGetConfigDockingNoSplit(this.#self);
+}
+set ConfigDockingNoSplit(value: boolean) {
+  imgui.DImGuiIOSetConfigDockingNoSplit(this.#self, value);
+}
+/*
+ *  = false          // Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)
+*/
+get ConfigDockingWithShift(): boolean {
+  return imgui.DImGuiIOGetConfigDockingWithShift(this.#self);
+}
+set ConfigDockingWithShift(value: boolean) {
+  imgui.DImGuiIOSetConfigDockingWithShift(this.#self, value);
+}
+/*
+ *  = false          // [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.
+*/
+get ConfigDockingAlwaysTabBar(): boolean {
+  return imgui.DImGuiIOGetConfigDockingAlwaysTabBar(this.#self);
+}
+set ConfigDockingAlwaysTabBar(value: boolean) {
+  imgui.DImGuiIOSetConfigDockingAlwaysTabBar(this.#self, value);
+}
+/*
+ *  = false          // [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.
+*/
+get ConfigDockingTransparentPayload(): boolean {
+  return imgui.DImGuiIOGetConfigDockingTransparentPayload(this.#self);
+}
+set ConfigDockingTransparentPayload(value: boolean) {
+  imgui.DImGuiIOSetConfigDockingTransparentPayload(this.#self, value);
+}
+/*
+ *  = false;         // Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.
+*/
+get ConfigViewportsNoAutoMerge(): boolean {
+  return imgui.DImGuiIOGetConfigViewportsNoAutoMerge(this.#self);
+}
+set ConfigViewportsNoAutoMerge(value: boolean) {
+  imgui.DImGuiIOSetConfigViewportsNoAutoMerge(this.#self, value);
+}
+/*
+ *  = false          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.
+*/
+get ConfigViewportsNoTaskBarIcon(): boolean {
+  return imgui.DImGuiIOGetConfigViewportsNoTaskBarIcon(this.#self);
+}
+set ConfigViewportsNoTaskBarIcon(value: boolean) {
+  imgui.DImGuiIOSetConfigViewportsNoTaskBarIcon(this.#self, value);
+}
+/*
+ *  = true           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).
+*/
+get ConfigViewportsNoDecoration(): boolean {
+  return imgui.DImGuiIOGetConfigViewportsNoDecoration(this.#self);
+}
+set ConfigViewportsNoDecoration(value: boolean) {
+  imgui.DImGuiIOSetConfigViewportsNoDecoration(this.#self, value);
+}
+/*
+ *  = false          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to true if you want the default to be 0, then all viewports will be top-level OS windows.
+*/
+get ConfigViewportsNoDefaultParent(): boolean {
+  return imgui.DImGuiIOGetConfigViewportsNoDefaultParent(this.#self);
+}
+set ConfigViewportsNoDefaultParent(value: boolean) {
+  imgui.DImGuiIOSetConfigViewportsNoDefaultParent(this.#self, value);
+}
+/*
+ *  = false          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.
+*/
+get MouseDrawCursor(): boolean {
+  return imgui.DImGuiIOGetMouseDrawCursor(this.#self);
+}
+set MouseDrawCursor(value: boolean) {
+  imgui.DImGuiIOSetMouseDrawCursor(this.#self, value);
+}
+/*
+ *  = defined(__APPLE__) // OS X style: Text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.
+*/
+get ConfigMacOSXBehaviors(): boolean {
+  return imgui.DImGuiIOGetConfigMacOSXBehaviors(this.#self);
+}
+set ConfigMacOSXBehaviors(value: boolean) {
+  imgui.DImGuiIOSetConfigMacOSXBehaviors(this.#self, value);
+}
+/*
+ *  = true           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.
+*/
+get ConfigInputTrickleEventQueue(): boolean {
+  return imgui.DImGuiIOGetConfigInputTrickleEventQueue(this.#self);
+}
+set ConfigInputTrickleEventQueue(value: boolean) {
+  imgui.DImGuiIOSetConfigInputTrickleEventQueue(this.#self, value);
+}
+/*
+ *  = true           // Enable blinking cursor (optional as some users consider it to be distracting).
+*/
+get ConfigInputTextCursorBlink(): boolean {
+  return imgui.DImGuiIOGetConfigInputTextCursorBlink(this.#self);
+}
+set ConfigInputTextCursorBlink(value: boolean) {
+  imgui.DImGuiIOSetConfigInputTextCursorBlink(this.#self, value);
+}
+/*
+ *  = false          // [BETA] Pressing Enter will keep item active and select contents (single-line only).
+*/
+get ConfigInputTextEnterKeepActive(): boolean {
+  return imgui.DImGuiIOGetConfigInputTextEnterKeepActive(this.#self);
+}
+set ConfigInputTextEnterKeepActive(value: boolean) {
+  imgui.DImGuiIOSetConfigInputTextEnterKeepActive(this.#self, value);
+}
+/*
+ *  = false          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.
+*/
+get ConfigDragClickToInputText(): boolean {
+  return imgui.DImGuiIOGetConfigDragClickToInputText(this.#self);
+}
+set ConfigDragClickToInputText(value: boolean) {
+  imgui.DImGuiIOSetConfigDragClickToInputText(this.#self, value);
+}
+/*
+ *  = true           // Enable resizing of windows from their edges and from the lower-left corner. This requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)
+*/
+get ConfigWindowsResizeFromEdges(): boolean {
+  return imgui.DImGuiIOGetConfigWindowsResizeFromEdges(this.#self);
+}
+set ConfigWindowsResizeFromEdges(value: boolean) {
+  imgui.DImGuiIOSetConfigWindowsResizeFromEdges(this.#self, value);
+}
+/*
+ *  = false       // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.
+*/
+get ConfigWindowsMoveFromTitleBarOnly(): boolean {
+  return imgui.DImGuiIOGetConfigWindowsMoveFromTitleBarOnly(this.#self);
+}
+set ConfigWindowsMoveFromTitleBarOnly(value: boolean) {
+  imgui.DImGuiIOSetConfigWindowsMoveFromTitleBarOnly(this.#self, value);
+}
+/*
+ *  = 60.0f          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0f to disable.
+*/
+get ConfigMemoryCompactTimer(): number {
+  return imgui.DImGuiIOGetConfigMemoryCompactTimer(this.#self);
+}
+set ConfigMemoryCompactTimer(value: number) {
+  imgui.DImGuiIOSetConfigMemoryCompactTimer(this.#self, value);
+}
+/*
+ *  Set when Dear ImGui will use mouse inputs, in this case do not dispatch them to your main game/application (either way, always pass on mouse inputs to imgui). (e.g. unclicked mouse is hovering over an imgui window, widget is active, mouse was clicked over an imgui window, etc.).
+*/
+get WantCaptureMouse(): boolean {
+  return imgui.DImGuiIOGetWantCaptureMouse(this.#self);
+}
+set WantCaptureMouse(value: boolean) {
+  imgui.DImGuiIOSetWantCaptureMouse(this.#self, value);
+}
+/*
+ *  Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. InputText active, or an imgui window is focused and navigation is enabled, etc.).
+*/
+get WantCaptureKeyboard(): boolean {
+  return imgui.DImGuiIOGetWantCaptureKeyboard(this.#self);
+}
+set WantCaptureKeyboard(value: boolean) {
+  imgui.DImGuiIOSetWantCaptureKeyboard(this.#self, value);
+}
+/*
+ *  Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a InputText widget is active).
+*/
+get WantTextInput(): boolean {
+  return imgui.DImGuiIOGetWantTextInput(this.#self);
+}
+set WantTextInput(value: boolean) {
+  imgui.DImGuiIOSetWantTextInput(this.#self, value);
+}
+/*
+ *  MousePos has been altered, backend should reposition mouse on next frame. Rarely used! Set only when ImGuiConfigFlags_NavEnableSetMousePos flag is enabled.
+*/
+get WantSetMousePos(): boolean {
+  return imgui.DImGuiIOGetWantSetMousePos(this.#self);
+}
+set WantSetMousePos(value: boolean) {
+  imgui.DImGuiIOSetWantSetMousePos(this.#self, value);
+}
+/*
+ *  When manual .ini load/save is active (io.IniFilename == NULL), this will be set to notify your application that you can call SaveIniSettingsToMemory() and save yourself. Important: clear io.WantSaveIniSettings yourself after saving!
+*/
+get WantSaveIniSettings(): boolean {
+  return imgui.DImGuiIOGetWantSaveIniSettings(this.#self);
+}
+set WantSaveIniSettings(value: boolean) {
+  imgui.DImGuiIOSetWantSaveIniSettings(this.#self, value);
+}
+/*
+ *  Keyboard/Gamepad navigation is currently allowed (will handle ImGuiKey_NavXXX events) = a window is focused and it doesn't use the ImGuiWindowFlags_NoNavInputs flag.
+*/
+get NavActive(): boolean {
+  return imgui.DImGuiIOGetNavActive(this.#self);
+}
+set NavActive(value: boolean) {
+  imgui.DImGuiIOSetNavActive(this.#self, value);
+}
+/*
+ *  Keyboard/Gamepad navigation is visible and allowed (will handle ImGuiKey_NavXXX events).
+*/
+get NavVisible(): boolean {
+  return imgui.DImGuiIOGetNavVisible(this.#self);
+}
+set NavVisible(value: boolean) {
+  imgui.DImGuiIOSetNavVisible(this.#self, value);
+}
+/*
+ *  Estimate of application framerate (rolling average over 60 frames, based on io.DeltaTime), in frame per second. Solely for convenience. Slow applications may not want to use a moving average or may want to reset underlying buffers occasionally.
+*/
+get Framerate(): number {
+  return imgui.DImGuiIOGetFramerate(this.#self);
+}
+set Framerate(value: number) {
+  imgui.DImGuiIOSetFramerate(this.#self, value);
+}
+/*
+ *  Vertices output during last call to Render()
+*/
+get MetricsRenderVertices(): number {
+  return imgui.DImGuiIOGetMetricsRenderVertices(this.#self);
+}
+set MetricsRenderVertices(value: number) {
+  imgui.DImGuiIOSetMetricsRenderVertices(this.#self, value);
+}
+/*
+ *  Indices output during last call to Render() = number of triangles * 3
+*/
+get MetricsRenderIndices(): number {
+  return imgui.DImGuiIOGetMetricsRenderIndices(this.#self);
+}
+set MetricsRenderIndices(value: number) {
+  imgui.DImGuiIOSetMetricsRenderIndices(this.#self, value);
+}
+/*
+ *  Number of visible windows
+*/
+get MetricsRenderWindows(): number {
+  return imgui.DImGuiIOGetMetricsRenderWindows(this.#self);
+}
+set MetricsRenderWindows(value: number) {
+  imgui.DImGuiIOSetMetricsRenderWindows(this.#self, value);
+}
+/*
+ *  Number of active windows
+*/
+get MetricsActiveWindows(): number {
+  return imgui.DImGuiIOGetMetricsActiveWindows(this.#self);
+}
+set MetricsActiveWindows(value: number) {
+  imgui.DImGuiIOSetMetricsActiveWindows(this.#self, value);
+}
+/*
+ *  Number of active allocations, updated by MemAlloc/MemFree based on current context. May be off if you have multiple imgui contexts.
+*/
+get MetricsActiveAllocations(): number {
+  return imgui.DImGuiIOGetMetricsActiveAllocations(this.#self);
+}
+set MetricsActiveAllocations(value: number) {
+  imgui.DImGuiIOSetMetricsActiveAllocations(this.#self, value);
+}
+/*
+ *  Mouse delta. Note that this is zero if either current or previous position are invalid (-FLT_MAX,-FLT_MAX), so a disappearing/reappearing mouse won't have a huge delta.
+*/
+get MouseDelta(): ImVec2 {
+  const data = imgui.DImGuiIOGetMouseDelta(this.#self);
+  return new ImVec2(data);
+}
+set MouseDelta(value: ImVec2) {
+  imgui.DImGuiIOSetMouseDelta(this.#self, value.buffer);
+}

@@ -739,3 +739,8 @@ export enum ImGuiCond
     FirstUseEver  = 1 << 2,   // Set the variable if the object/window has no persistently saved data (no entry in .ini file)
     Appearing     = 1 << 3,   // Set the variable if the object/window is appearing after being hidden/inactive (or the first time)
 }
+
+export enum ImGuiPayloadType {
+    Color_3f = "_COL3F",    // float[3]: Standard type for colors, without alpha. User code may use this type.
+    Color_4f = "_COL4F",    // float[4]: Standard type for colors. User code may use this type.
+}

@@ -1,0 +1,225 @@
+
+
+
+
+DIMGUI_EXPORT ImGuiInputTextFlags DImGuiInputTextCallbackDataGetEventFlag (ImGuiInputTextCallbackData* s){ return s->EventFlag;}
+DIMGUI_EXPORT ImGuiInputTextFlags DImGuiInputTextCallbackDataGetFlags (ImGuiInputTextCallbackData* s){ return s->Flags;}
+DIMGUI_EXPORT ImWchar DImGuiInputTextCallbackDataGetEventChar (ImGuiInputTextCallbackData* s){ return s->EventChar;}
+DIMGUI_EXPORT ImGuiKey DImGuiInputTextCallbackDataGetEventKey (ImGuiInputTextCallbackData* s){ return s->EventKey;}
+DIMGUI_EXPORT char* DImGuiInputTextCallbackDataGetBuf (ImGuiInputTextCallbackData* s){ return s->Buf;}
+DIMGUI_EXPORT int DImGuiInputTextCallbackDataGetBufTextLen (ImGuiInputTextCallbackData* s){ return s->BufTextLen;}
+DIMGUI_EXPORT int DImGuiInputTextCallbackDataGetBufSize (ImGuiInputTextCallbackData* s){ return s->BufSize;}
+DIMGUI_EXPORT bool DImGuiInputTextCallbackDataGetBufDirty (ImGuiInputTextCallbackData* s){ return s->BufDirty;}
+DIMGUI_EXPORT int DImGuiInputTextCallbackDataGetCursorPos (ImGuiInputTextCallbackData* s){ return s->CursorPos;}
+DIMGUI_EXPORT int DImGuiInputTextCallbackDataGetSelectionStart (ImGuiInputTextCallbackData* s){ return s->SelectionStart;}
+DIMGUI_EXPORT int DImGuiInputTextCallbackDataGetSelectionEnd (ImGuiInputTextCallbackData* s){ return s->SelectionEnd;}
+
+
+
+
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetEventFlag (ImGuiInputTextCallbackData* s, ImGuiInputTextFlags value){ s->EventFlag=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetFlags (ImGuiInputTextCallbackData* s, ImGuiInputTextFlags value){ s->Flags=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetEventChar (ImGuiInputTextCallbackData* s, ImWchar value){ s->EventChar=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetEventKey (ImGuiInputTextCallbackData* s, ImGuiKey value){ s->EventKey=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetBuf (ImGuiInputTextCallbackData* s, char* value){ s->Buf=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetBufTextLen (ImGuiInputTextCallbackData* s, int value){ s->BufTextLen=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetBufSize (ImGuiInputTextCallbackData* s, int value){ s->BufSize=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetBufDirty (ImGuiInputTextCallbackData* s, bool value){ s->BufDirty=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetCursorPos (ImGuiInputTextCallbackData* s, int value){ s->CursorPos=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetSelectionStart (ImGuiInputTextCallbackData* s, int value){ s->SelectionStart=value;}
+DIMGUI_EXPORT void DImGuiInputTextCallbackDataSetSelectionEnd (ImGuiInputTextCallbackData* s, int value){ s->SelectionEnd=value;}
+
+
+
+
+DImGuiInputTextCallbackDataGetEventFlag:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetEventFlag:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetFlags:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetFlags:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetEventChar:{
+    parameters: ["pointer"],
+    result: "u16",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetEventChar:{
+    parameters: ["pointer","u16"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetEventKey:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetEventKey:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetBuf:{
+    parameters: ["pointer"],
+    result: "buffer",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetBuf:{
+    parameters: ["pointer","buffer"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetBufTextLen:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetBufTextLen:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetBufSize:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetBufSize:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetBufDirty:{
+    parameters: ["pointer"],
+    result: "bool",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetBufDirty:{
+    parameters: ["pointer","bool"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetCursorPos:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetCursorPos:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetSelectionStart:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetSelectionStart:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataGetSelectionEnd:{
+    parameters: ["pointer"],
+    result: "i32",
+} as const satisfies Deno.ForeignFunction,
+DImGuiInputTextCallbackDataSetSelectionEnd:{
+    parameters: ["pointer","i32"],
+    result: "void",
+} as const satisfies Deno.ForeignFunction,
+
+
+
+
+/*
+ *  One ImGuiInputTextFlags_Callback*    // Read-only
+*/
+get EventFlag(): ImGuiInputTextFlags {
+  return imgui.DImGuiInputTextCallbackDataGetEventFlag(this.#self);
+}
+set EventFlag(value: ImGuiInputTextFlags) {
+  imgui.DImGuiInputTextCallbackDataSetEventFlag(this.#self, value);
+}
+/*
+ *  What user passed to InputText()      // Read-only
+*/
+get Flags(): ImGuiInputTextFlags {
+  return imgui.DImGuiInputTextCallbackDataGetFlags(this.#self);
+}
+set Flags(value: ImGuiInputTextFlags) {
+  imgui.DImGuiInputTextCallbackDataSetFlags(this.#self, value);
+}
+/*
+ *  Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;
+*/
+get EventChar(): ImWchar {
+  return imgui.DImGuiInputTextCallbackDataGetEventChar(this.#self);
+}
+set EventChar(value: ImWchar) {
+  imgui.DImGuiInputTextCallbackDataSetEventChar(this.#self, value);
+}
+/*
+ *  Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]
+*/
+get EventKey(): ImGuiKey {
+  return imgui.DImGuiInputTextCallbackDataGetEventKey(this.#self);
+}
+set EventKey(value: ImGuiKey) {
+  imgui.DImGuiInputTextCallbackDataSetEventKey(this.#self, value);
+}
+/*
+ *  Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!
+*/
+get Buf(): string {
+  return jsString(imgui.DImGuiInputTextCallbackDataGetBuf(this.#self));
+}
+set Buf(value: string) {
+  imgui.DImGuiInputTextCallbackDataSetBuf(this.#self, cString(value));
+}
+/*
+ *  Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()
+*/
+get BufTextLen(): number {
+  return imgui.DImGuiInputTextCallbackDataGetBufTextLen(this.#self);
+}
+set BufTextLen(value: number) {
+  imgui.DImGuiInputTextCallbackDataSetBufTextLen(this.#self, value);
+}
+/*
+ *  Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1
+*/
+get BufSize(): number {
+  return imgui.DImGuiInputTextCallbackDataGetBufSize(this.#self);
+}
+set BufSize(value: number) {
+  imgui.DImGuiInputTextCallbackDataSetBufSize(this.#self, value);
+}
+/*
+ *  Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]
+*/
+get BufDirty(): boolean {
+  return imgui.DImGuiInputTextCallbackDataGetBufDirty(this.#self);
+}
+set BufDirty(value: boolean) {
+  imgui.DImGuiInputTextCallbackDataSetBufDirty(this.#self, value);
+}
+/*
+ *                                       // Read-write   // [Completion,History,Always]
+*/
+get CursorPos(): number {
+  return imgui.DImGuiInputTextCallbackDataGetCursorPos(this.#self);
+}
+set CursorPos(value: number) {
+  imgui.DImGuiInputTextCallbackDataSetCursorPos(this.#self, value);
+}
+/*
+ *                                       // Read-write   // [Completion,History,Always] == to SelectionEnd when no selection)
+*/
+get SelectionStart(): number {
+  return imgui.DImGuiInputTextCallbackDataGetSelectionStart(this.#self);
+}
+set SelectionStart(value: number) {
+  imgui.DImGuiInputTextCallbackDataSetSelectionStart(this.#self, value);
+}
+/*
+ *                                       // Read-write   // [Completion,History,Always]
+*/
+get SelectionEnd(): number {
+  return imgui.DImGuiInputTextCallbackDataGetSelectionEnd(this.#self);
+}
+set SelectionEnd(value: number) {
+  imgui.DImGuiInputTextCallbackDataSetSelectionEnd(this.#self, value);
+}

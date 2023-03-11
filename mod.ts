@@ -1,3 +1,2 @@
-export * from "./src/type.ts";
-export * from "./src/enum.ts";
-export * from "./src/call.ts";
+export * from "./src/mod.ts";
+export * from "./src/demo.ts";

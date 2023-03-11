@@ -1,18 +1,30 @@
 import {
   createWindow,
+  getPrimaryMonitor,
   getProcAddress,
   mainloop,
   pollEvents,
-} from "https://deno.land/x/dwm@0.3.0/mod.ts";
+} from "https://deno.land/x/dwm@0.3.2/mod.ts";
 import * as gl from "https://deno.land/x/gluten@0.1.3/api/gles23.2.ts";
 import * as imgui from "../mod.ts";
-import { CBool, ImGuiConfigFlagBits } from "../mod.ts";
-import { testWidget } from "./test_widget.ts";
+import { Bool, ImGuiConfigFlagBits, showWidgetDemoWindow } from "../mod.ts";
+
+function queryWindowSizeAndFontSize() {
+  const aspectRatio = 16 / 9;
+  const lines = 40;
+  const monitor = getPrimaryMonitor();
+  const height = Math.ceil(monitor.workArea.height * 0.7);
+  const width = Math.ceil(height * aspectRatio);
+  const fontSize = Math.min(32, Math.ceil(height / lines));
+  return { width, height, fontSize };
+}
+const windowInfo = queryWindowSizeAndFontSize();
+console.info(windowInfo);
 
 const window = createWindow({
   title: "IMGUI DWM",
-  width: 1600,
-  height: 1200,
+  width: windowInfo.width,
+  height: windowInfo.height,
   resizable: true,
   glVersion: "v3.2",
   gles: false,
@@ -20,54 +32,60 @@ const window = createWindow({
 
 gl.load(getProcAddress);
 
-imgui.printImVec2(new imgui.ImVec2(10, 20));
-
 const imguiContext = imgui.createContext();
 imgui.implGlfwInitForOpenGL(window.nativeHandle);
 imgui.implOpenGL3Init("#version 130");
 
+// set io
 const io = imgui.getIO();
-io.ConfigFlags |= ImGuiConfigFlagBits.DockingEnable
+io.ConfigFlags |= ImGuiConfigFlagBits.DockingEnable;
 
-const showDemoWindow = new CBool(true);
-const showMetricsWindow = new CBool(false);
-const showDebugLogWindow = new CBool(false);
-const showStackToolWindow = new CBool(false);
-const showAboutWindow = new CBool(false);
+// set font
+const fonts = io.Fonts;
+if (Deno.build.os == "windows") {
+  const fontFile = "C:/Windows/Fonts/consola.ttf";
+  try {
+    const fontData = Deno.readFileSync(fontFile);
+    fonts.addFontFromMemoryTTF(fontData, windowInfo.fontSize);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-function testRender() {
+const showDemoWindow = Bool.of(true);
+const showMetricsWindow = Bool.of(false);
+const showDebugLogWindow = Bool.of(false);
+const showStackToolWindow = Bool.of(false);
+const showAboutWindow = Bool.of(false);
+
+function showControllWindow() {
   imgui.begin("deno, debug, info windows control");
-  imgui.checkbox("demo", showDemoWindow);
-  imgui.checkbox("metrics", showMetricsWindow);
-  imgui.checkbox("debug info", showDebugLogWindow);
-  imgui.checkbox("stack tool", showStackToolWindow);
-  imgui.checkbox("about", showAboutWindow);
+  imgui.checkbox("demo", showDemoWindow.buffer);
+  imgui.checkbox("metrics", showMetricsWindow.buffer);
+  imgui.checkbox("debug info", showDebugLogWindow.buffer);
+  imgui.checkbox("stack tool", showStackToolWindow.buffer);
+  imgui.checkbox("about", showAboutWindow.buffer);
   imgui.showStyleSelector("style selector");
   imgui.showFontSelector("font selector");
-
-  imgui.separator();
-
-  imgui.text("The following is user guide!");
-  imgui.showUserGuide();
   imgui.end();
 
   if (showDemoWindow.value) {
-    imgui.showDemoWindow(showDemoWindow);
+    imgui.showDemoWindow(showDemoWindow.buffer);
   }
   if (showDebugLogWindow.value) {
-    imgui.showDebugLogWindow(showDebugLogWindow);
+    imgui.showDebugLogWindow(showDebugLogWindow.buffer);
   }
   if (showMetricsWindow.value) {
-    imgui.showMetricsWindow(showMetricsWindow);
+    imgui.showMetricsWindow(showMetricsWindow.buffer);
   }
   if (showDebugLogWindow.value) {
-    imgui.showDebugLogWindow(showDebugLogWindow);
+    imgui.showDebugLogWindow(showDebugLogWindow.buffer);
   }
   if (showStackToolWindow.value) {
-    imgui.showStackToolWindow(showStackToolWindow);
+    imgui.showStackToolWindow(showStackToolWindow.buffer);
   }
   if (showAboutWindow.value) {
-    imgui.showAboutWindow(showAboutWindow);
+    imgui.showAboutWindow(showAboutWindow.buffer);
   }
 }
 
@@ -75,8 +93,8 @@ await mainloop(() => {
   imgui.implOpenGL3NewFrame();
   imgui.implGlfwNewFrame();
   imgui.newFrame();
-  testRender();
-  testWidget();
+  showControllWindow();
+  showWidgetDemoWindow();
   imgui.render();
   const drawData = imgui.getDrawData();
 
